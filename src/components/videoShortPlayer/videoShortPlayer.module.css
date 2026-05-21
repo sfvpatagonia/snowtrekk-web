@@ -1,0 +1,105 @@
+.videoContainerShort {
+  position: relative;
+}
+
+.videoOverlayShort {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente negro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white; /* Texto blanco para contraste */
+  font-size: 1.5rem; /* Tamaño de letra grande para ser legible */
+  cursor: pointer; /* Cursor tipo pointer para indicar que se puede hacer clic */
+  z-index: 12; /* Asegura que el cartel esté sobre los controles personalizados */
+}
+
+/* Para el botón de pantalla completa en la esquina superior derecha */
+
+.customControlsShort {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  width: 90%;
+  justify-content: space-between;
+  bottom: 0;
+  left: 5%;
+}
+
+.customControls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: rgb(239, 239, 239);
+}
+
+.infoVideo {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: start;
+  width: 100%;
+  top: 0;
+  flex-direction: column;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  padding-bottom: 1em;
+}
+
+.infoContainer {
+  position: relative;
+  width: 100%; /* Ancho del contenedor */
+  overflow: hidden;
+  display: flex;
+  padding: 0.2em;
+}
+
+.title {
+  padding-left: 1em;
+  color: var(--color-600);
+  font-size: 1.2em;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+  50.0001% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  51% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+.infoVideo {
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+.slider {
+  color: #f1f1f1;
+}
+.slide {
+  font-size: 0.8em;
+  padding-left: 1em;
+}
+.slideTrack {
+  animation: scroll 40s linear infinite;
+  min-width: 100%;
+}

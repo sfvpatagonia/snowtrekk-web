@@ -1,0 +1,59 @@
+.subContainer {
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
+}
+@media (width <= 1180px) {
+  .subContainer {
+    display: flex;
+    flex-direction: column;
+  }
+}
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5em 0em;
+  gap: 0.7em;
+}
+
+/**BOTONERA
+**/
+.menuContainer {
+  /* margin: 0 0 0 2rem  ; */
+  /* display: flex; */
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+
+  /* justify-content: space-between; */
+  width: 90%;
+}
+@media screen and (max-width: 1050px) {
+  .menuContainer {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 1em;
+    margin: 0 0 0 0;
+  }
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  /* padding: 1em; */
+}
+@media screen and (max-width: 1050px) {
+  .buttonContainer {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+}
+
+.advertise {
+  display: flex;
+  justify-content: center;
+}

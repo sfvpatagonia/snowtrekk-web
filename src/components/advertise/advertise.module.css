@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  overflow: hidden; /* Esto mantendrá todo dentro del contenedor padre */
+  
+}
+
+.carousel {
+  display: flex;
+  flex-wrap: nowrap; /* Asegura que los elementos estén en una sola fila */
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Oculta la barra de desplazamiento para Webkit */
+}
+
+/* Estilos para AdCard */
+.adCard {
+  flex: 0 0 auto; /* Cambia el auto por porcentajes específicos para controlar el tamaño */
+}
+
+/* Media queries para diferentes tamaños de pantalla */
+@media (min-width: 1024px) { /* Pantallas grandes */
+  .adCard {
+    width: 25%; /* 4 tarjetas en una fila */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) { /* Tablets y pantallas medianas */
+  .adCard {
+    width: 33.33%; /* 3 tarjetas en una fila */
+  }
+}
+
+@media (max-width: 767px) { /* Pantallas pequeñas y móviles */
+  .adCard {
+    width: 50%; /* 2 tarjetas en una fila */
+  }
+}
+
+@media (max-width: 480px) { /* Celulares */
+  .adCard {
+    width: 100%; /* 1 tarjeta a la vez */
+  }
+}

@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-self: center;
+  position: relative;
+}
+
+.defaultValue {
+  border: 1px solid var(--color-600);
+  border-radius: 0.2em;
+  padding: 0.1em 1em;
+  cursor: pointer;
+  white-space: nowrap;
+  width: 75%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal {
+  position: absolute;
+  left: calc(100% + 2px);
+  z-index: 999;
+  top: 0;
+  background-color: #f1f1f1;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+}
+
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 0.2em 1em;
+  color: var(--color-600);
+  text-align: left;
+  font-weight: 600;
+}
+
+.listContainer .active {
+  width: 100%;
+  border-bottom: 1px solid green;
+  border-top: 1px solid green;
+  color: green;
+}

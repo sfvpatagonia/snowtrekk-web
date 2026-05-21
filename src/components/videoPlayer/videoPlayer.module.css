@@ -1,0 +1,51 @@
+.videoContainer {
+  position: relative;
+  width: 90%;
+  flex: 1;
+  aspect-ratio: 16 / 9; /* Puedes cambiar esto según el aspecto de tu video */
+
+}
+
+.videoOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente negro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white; /* Texto blanco para contraste */
+  font-size: 1.5rem; /* Tamaño de letra grande para ser legible */
+  cursor: pointer; /* Cursor tipo pointer para indicar que se puede hacer clic */
+  z-index: 12; /* Asegura que el cartel esté sobre los controles personalizados */
+}
+
+/* Para el botón de pantalla completa en la esquina superior derecha */
+.customControls .fullscreenButton {
+  margin-left: auto; /* Empuja el botón de pantalla completa al final (derecha) */
+}
+
+.customControls {
+  position: absolute;
+  z-index: 1;
+  bottom: 0.2%; /* Ajusta la posición de los botones en relación con el tamaño del contenedor */
+  width: 100%; /* Hace que los controles tengan el mismo ancho que el contenedor del video */
+  display: flex;
+  justify-content: space-between; /* Distribuye los botones uniformemente */
+}
+
+.customControls button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 3vw; /* Tamaño de fuente basado en el ancho de la ventana */
+  padding: 15px; 
+}
+@media (min-width: 600px) {
+  .customControls button {
+    font-size: 18px; /* Tamaño fijo para pantallas más grandes */
+  }
+}
