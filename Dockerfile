@@ -1,5 +1,5 @@
 # Usa una imagen base de Node.js para construir el proyecto
-FROM node:18 as build
+FROM node:22-alpine AS build
 
 # Definir argumentos de construcción para variables de entorno
 ARG VITE_API_URL
