@@ -1,0 +1,7 @@
+.MuiPaper-root.MuiAccordion-root {
+  background-color: var(--color-100);
+}
+
+.MuiAccordionSummary-content.MuiAccordionSummary-contentGutters {
+  overflow: hidden;
+}
