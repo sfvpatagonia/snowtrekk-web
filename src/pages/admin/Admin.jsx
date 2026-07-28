@@ -19,6 +19,7 @@ import UsersTab from "./components/usersTab/UsersTab";
 import VideosTab from "./components/videosTab/VideosTab";
 import ShopsTab from "./components/shopsTab/ShopsTab";
 import StatsTab from "./components/statsTab/StatsTab";
+import TrackMapTab from "./components/trackMapTab/TrackMapTab";
 
 const Admin = () => {
   const location = useLocation();
@@ -281,6 +282,8 @@ const Admin = () => {
             ]}
           />
         );
+      case "trackmap":
+        return <TrackMapTab />;
       default:
         return (
           <ClientLeadsTab
@@ -364,6 +367,9 @@ const Admin = () => {
               <div className={`button `} onClick={() => setTab("videos")}>
                 Videos
               </div>
+            </li>
+            <li className={`button`} onClick={() => setTab("trackmap")}>
+              Mapa
             </li>
             <li>
               <Link to={"/my-profile"} className={`button `}>
