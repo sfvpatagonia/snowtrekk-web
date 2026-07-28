@@ -1,0 +1,30 @@
+.subContainer {
+  display: flex;
+  max-height: calc(100vh - 60px);
+}
+
+.mainContainer {
+  display: flex;
+  padding: 0.5em;
+  width: 100%;
+  justify-content: space-evenly;
+}
+@media (width <= 1024px) {
+  .mainContainer {
+    justify-content: center;
+  }
+}
+.sideContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  background-color: var(--color-50);
+}
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  justify-content: center;
+  align-items: center;
+  /* padding: 1em; */
+}

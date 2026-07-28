@@ -1,0 +1,19 @@
+.containerAds {
+  background-color: var(--color-50);
+  height: 70%;
+  padding: 1.5em;
+  display: flex;
+  flex: 1; /* Ocupa el espacio disponible */
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5em;
+  align-items: center;
+  border-left: var(--color-100) solid 2px;
+  color: var(--color-0);
+}
+@media (width <= 1050px) {
+  .containerAds {
+    flex-direction: row;
+    padding: 1rem;
+  }
+}

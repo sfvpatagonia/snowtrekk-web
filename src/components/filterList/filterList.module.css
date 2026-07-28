@@ -1,0 +1,25 @@
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+  padding: 0.5em;
+  gap: 0.3em;
+  overflow-y: auto;
+  background-color: var(--color-100);
+  color: var(--color-0);
+}
+.listContainer li {
+  padding: 0 0.5em;
+  transition: 0.3s all ease;
+  cursor: pointer;
+}
+
+.listContainer .active {
+  background-color: var(--color-600);
+  color: var(--color-1000);
+}
+.listContainer li:hover {
+  background-color: var(--color-600);
+  color: var(--color-1000);
+  border-radius: 0.2em;
+}

@@ -1,0 +1,91 @@
+.padre{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  padding: 1em;
+  background-color: var(--color-50);
+  position: sticky;
+}
+
+.containerGuide {
+  background-color: var(--color-50);
+  width: 100%;
+  padding: 1.5em;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  /* justify-content: center; */
+  gap: 0.5em;
+  align-items: center;
+  border-left: var(--color-100) solid 2px;
+  border-right: var(--color-100) solid 2px;
+  color: var(--color-0);
+  gap: 2em;
+}
+@media (width <= 1050px) {
+  .containerGuide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 1rem;
+  }
+}
+
+.containerGuide label {
+  margin-top: 1rem;
+}
+
+.containerGuide select {
+  border: none;
+  color: var(--color-0);
+  background-color: var(--color-100);
+  width: 100%;
+  transition: background-color 0.2s ease-in-out;
+  border-radius: 5px;
+  padding: 1em;
+  
+}
+
+.containerGuide select:hover {
+  background-color: var(--color-200);
+}
+
+.subtitle {
+  font-weight: bold;
+  color: var(--color-0);
+}
+
+.destinationBtn {
+  background-color: var(--color-600);
+  border-radius: 0.3em;
+  color: var(--color-1000);
+  padding: 0.5em 1em;
+  transition: all 0.5s ease;
+  gap: 0.2em;
+  align-items: center;
+  font-weight: 600;
+  max-width: 100%;
+  /* width: 10rem; */
+  height: 2.5rem;
+  cursor: pointer;
+  margin: 0.5rem;
+}
+
+
+/* YourStyles.module.css */
+.rangeSlider {
+  position: relative;
+  margin: 20px 0;
+}
+
+.rangeInput {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
