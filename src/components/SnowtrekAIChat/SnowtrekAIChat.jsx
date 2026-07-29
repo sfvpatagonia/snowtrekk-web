@@ -9,12 +9,13 @@ const GROUP_LABELS = {
   destinations: "Destinos",
   activities: "Actividades",
   shops: "Shops",
+  businesses: "Negocios",
 };
 
 const getItemTitle = (item) => item?.name || item?.title || "Resultado Snowtrek";
 
 function ResultCard({ item }) {
-  const meta = [item?.city, item?.country, item?.address, item?.type, item?.price !== undefined ? `$${item.price}` : null].filter(Boolean);
+  const meta = [item?.city, item?.country, item?.address, item?.phone, item?.category, item?.type, item?.price !== undefined ? `$${item.price}` : null].filter(Boolean);
 
   return (
     <div className={styles.card}>
