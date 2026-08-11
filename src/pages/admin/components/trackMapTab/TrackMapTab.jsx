@@ -1,5 +1,5 @@
 import 'leaflet/dist/leaflet.css';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   MapContainer,
   TileLayer,
@@ -49,6 +49,51 @@ const ESRI_IMAGERY_URL =
 const ESRI_ATTRIBUTION =
   'Tiles \u00a9 Esri \u2014 Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community';
 
+// Elevation-at-point via GeoServer's GetFeatureInfo, sampling a 1x1px "image"
+// over a near-zero bbox centered on the clicked point (same trick IGN's own
+// viewer uses internally for its "Perfil de Elevaci\u00f3n" tool). Undocumented
+// but public \u2014 no auth required.
+const IGN_ELEVATION_WMS_URL = 'https://imagenes.ign.gob.ar/geoserver/ows';
+const IGN_ELEVATION_LAYER = 'geoprocesos:alos_unificado';
+
+async function fetchIgnElevation(lat, lng) {
+  const eps = 1e-7;
+  const bbox = [lng, lat, lng + eps, lat + eps].join(',');
+  const params = new URLSearchParams({
+    service: 'WMS',
+    version: '1.1.1',
+    REQUEST: 'GetFeatureInfo',
+    QUERY_LAYERS: IGN_ELEVATION_LAYER,
+    LAYERS: IGN_ELEVATION_LAYER,
+    INFO_FORMAT: 'application/json',
+    FEATURE_COUNT: '1',
+    X: '1',
+    Y: '1',
+    SRS: 'EPSG:4326',
+    WIDTH: '1',
+    HEIGHT: '1',
+    BBOX: bbox,
+  });
+
+  const response = await fetch(`${IGN_ELEVATION_WMS_URL}?${params.toString()}`);
+  if (!response.ok) {
+    throw new Error(`IGN elevation request failed: ${response.status}`);
+  }
+  const data = await response.json();
+  const value = data?.features?.[0]?.properties?.GRAY_INDEX;
+  if (typeof value !== 'number') {
+    throw new Error('IGN elevation response missing GRAY_INDEX');
+  }
+  return value;
+}
+
+function formatElevation(elevation) {
+  if (elevation === 'loading') return 'cargando...';
+  if (elevation === 'error') return 'no disponible';
+  if (typeof elevation === 'number') return `${Math.round(elevation)} m`;
+  return null;
+}
+
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
     click(e) {
@@ -60,6 +105,27 @@ function MapClickHandler({ onMapClick }) {
 
 const TrackMapTab = ({ geojsonPoints }) => {
   const [clickedPoint, setClickedPoint] = useState(null);
+  // Elevation state machine: null (no query yet) | 'loading' | number (meters) | 'error'
+  const [elevation, setElevation] = useState(null);
+  const elevationRequestIdRef = useRef(0);
+
+  const handleMapClick = (latlng) => {
+    setClickedPoint(latlng);
+    setElevation('loading');
+
+    const requestId = ++elevationRequestIdRef.current;
+    fetchIgnElevation(latlng.lat, latlng.lng)
+      .then((value) => {
+        if (elevationRequestIdRef.current === requestId) {
+          setElevation(value);
+        }
+      })
+      .catch(() => {
+        if (elevationRequestIdRef.current === requestId) {
+          setElevation('error');
+        }
+      });
+  };
 
   return (
     <div style={{ padding: '16px', height: '100%' }}>
@@ -123,7 +189,7 @@ const TrackMapTab = ({ geojsonPoints }) => {
           </LayersControl>
 
           {/* Click handler — active regardless of which base layer is selected */}
-          <MapClickHandler onMapClick={(latlng) => setClickedPoint(latlng)} />
+          <MapClickHandler onMapClick={handleMapClick} />
 
           {/* Temporary click marker */}
           {clickedPoint && (
@@ -131,7 +197,8 @@ const TrackMapTab = ({ geojsonPoints }) => {
               <Popup>
                 <strong>Punto seleccionado</strong><br />
                 Lat: {clickedPoint.lat.toFixed(6)}<br />
-                Lng: {clickedPoint.lng.toFixed(6)}
+                Lng: {clickedPoint.lng.toFixed(6)}<br />
+                Elevación: {formatElevation(elevation)}
               </Popup>
             </Marker>
           )}
@@ -165,7 +232,8 @@ const TrackMapTab = ({ geojsonPoints }) => {
             }}
           >
             Lat:&nbsp;{clickedPoint.lat.toFixed(6)}&nbsp;&nbsp;
-            Lng:&nbsp;{clickedPoint.lng.toFixed(6)}
+            Lng:&nbsp;{clickedPoint.lng.toFixed(6)}&nbsp;&nbsp;|&nbsp;&nbsp;
+            Elevación:&nbsp;{formatElevation(elevation)}
           </div>
         )}
       </div>
