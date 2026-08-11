@@ -30,11 +30,19 @@ const INITIAL_ZOOM = 14;
 const IGN_HYBRID_URL =
   'https://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.0/mapabase_hibrido@EPSG:3857@png/{z}/{x}/{-y}.png';
 
+const IGN_TOPO_URL =
+  'https://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.0/mapabase_topo@EPSG%3A3857@png/{z}/{x}/{-y}.png';
+
 const IGN_WMS_URL =
   'https://imagenes.ign.gob.ar/geoserver/ortomosaicos_fotogrametria/ows';
 
 // Root group layer — serves all available ortomosaico sub-layers in one request
 const IGN_WMS_LAYER = 'vuelos_2011';
+
+// Confirmed against GetCapabilities (wms.ign.gob.ar) — "lineas_hipsometricas":
+// curva que une puntos de igual altitud (isohipsa / curva de nivel)
+const IGN_CONTOUR_WMS_URL = 'https://wms.ign.gob.ar/geoserver/ows';
+const IGN_CONTOUR_LAYER = 'ign:lineas_de_geomorfologia_CA010';
 
 const ESRI_IMAGERY_URL =
   'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
@@ -91,6 +99,27 @@ const TrackMapTab = ({ geojsonPoints }) => {
                 maxZoom={19}
               />
             </LayersControl.BaseLayer>
+
+            <LayersControl.BaseLayer name="Argenmap Topográfico">
+              <TileLayer
+                url={IGN_TOPO_URL}
+                attribution="Instituto Geográfico Nacional"
+                maxNativeZoom={13}
+                maxZoom={19}
+              />
+            </LayersControl.BaseLayer>
+
+            {/* Contour line overlay — off by default, works on top of any base layer */}
+            <LayersControl.Overlay name="Curvas de nivel (IGN)">
+              <WMSTileLayer
+                url={IGN_CONTOUR_WMS_URL}
+                layers={IGN_CONTOUR_LAYER}
+                format="image/png"
+                transparent={true}
+                version="1.3.0"
+                attribution="IGN Argentina - Curvas de nivel"
+              />
+            </LayersControl.Overlay>
           </LayersControl>
 
           {/* Click handler — active regardless of which base layer is selected */}
