@@ -16,6 +16,7 @@ import {
 import L from 'leaflet';
 import jorgeFieldPointsRaw from '@/comparacion_ign_real_vs_gps_limpio.csv?raw';
 import osmPistesGeoJSON from '@/lasLenasOsmPistes.json';
+import tigreRutaRaw from '@/test1_tigre_ruta.csv?raw';
 
 // Fix Leaflet's default icon paths broken by Vite's asset pipeline
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
@@ -183,6 +184,42 @@ function bindNamePopup(feature, layer) {
   }
 }
 
+// FDR field-test route (Tigre, Buenos Aires) — validates the new heading-change
+// trigger and sampling interval against a real drive. Independent of Jorge's
+// Las Leñas data and the OSM piste overlay.
+const TIGRE_ROUTE_COLOR = '#7c3aed';
+const TIGRE_SPEED_COLORS = {
+  slow: '#6b7280', // < 20 km/h — urban
+  normal: '#2563eb', // 20-60 km/h
+  highway: '#7c3aed', // > 60 km/h
+};
+
+function classifyTigreSpeed(speedKmh) {
+  if (speedKmh < 20) return 'slow';
+  if (speedKmh <= 60) return 'normal';
+  return 'highway';
+}
+
+function parseTigreRuta(raw) {
+  const lines = raw.trim().split('\n');
+  const rows = lines.slice(1); // skip header
+  return rows
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [index, latitude, longitude, speedKmh, time] = line.split(',');
+      return {
+        index: Number(index),
+        lat: Number(latitude),
+        lng: Number(longitude),
+        speedKmh: Number(speedKmh),
+        time,
+      };
+    });
+}
+
+const TIGRE_ROUTE_POINTS = parseTigreRuta(tigreRutaRaw);
+
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
     click(e) {
@@ -264,6 +301,16 @@ const TrackMapTab = ({ geojsonPoints }) => {
               />
             </LayersControl.BaseLayer>
 
+            {/* Internal testing only — Google roadmap tiles for street-level route inspection */}
+            <LayersControl.BaseLayer name="Calles (Google)">
+              <TileLayer
+                url="https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+                attribution="Google"
+                maxZoom={20}
+              />
+            </LayersControl.BaseLayer>
+
             {/* Contour line overlay — off by default, works on top of any base layer */}
             <LayersControl.Overlay name="Curvas de nivel (IGN)">
               <WMSTileLayer
@@ -330,6 +377,44 @@ const TrackMapTab = ({ geojsonPoints }) => {
                   style={pisteStyle}
                   onEachFeature={bindNamePopup}
                 />
+              </LayerGroup>
+            </LayersControl.Overlay>
+
+            {/* FDR field-test route — Tigre, Buenos Aires — off by default */}
+            <LayersControl.Overlay name="Test FDR — Tigre">
+              <LayerGroup>
+                <Polyline
+                  positions={TIGRE_ROUTE_POINTS.map((p) => [p.lat, p.lng])}
+                  pathOptions={{
+                    color: TIGRE_ROUTE_COLOR,
+                    weight: 0.75,
+                    opacity: 0.8,
+                  }}
+                />
+
+                {TIGRE_ROUTE_POINTS.map((point) => {
+                  const speedClass = classifyTigreSpeed(point.speedKmh);
+                  const color = TIGRE_SPEED_COLORS[speedClass];
+                  return (
+                    <CircleMarker
+                      key={`tigre-point-${point.index}`}
+                      center={[point.lat, point.lng]}
+                      radius={1.5}
+                      pathOptions={{
+                        color,
+                        fillColor: color,
+                        fillOpacity: 0.85,
+                        weight: 1,
+                      }}
+                    >
+                      <Popup>
+                        <strong>Índice:</strong> {point.index}<br />
+                        <strong>Velocidad:</strong> {point.speedKmh.toFixed(1)} km/h<br />
+                        <strong>Hora:</strong> {point.time}
+                      </Popup>
+                    </CircleMarker>
+                  );
+                })}
               </LayerGroup>
             </LayersControl.Overlay>
           </LayersControl>
