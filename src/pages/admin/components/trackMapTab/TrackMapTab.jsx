@@ -220,6 +220,59 @@ function parseTigreRuta(raw) {
 
 const TIGRE_ROUTE_POINTS = parseTigreRuta(tigreRutaRaw);
 
+// Manual digitizing editor — traces lifts/pistes missing from OSM (Minerva, Caris,
+// Apolo, Jupiter) directly over the satellite imagery. Purely client-side; output
+// matches the GeoJSON conventions already used in lasLenasOsmPistes.json.
+const MANUAL_ELEMENT_COLOR = '#eab308';
+const PISTE_DIFFICULTY_OPTIONS = ['novice', 'easy', 'intermediate', 'advanced'];
+
+function buildManualElementsGeoJSON(elements) {
+  return {
+    type: 'FeatureCollection',
+    features: elements.map((el) => ({
+      type: 'Feature',
+      properties: {
+        name: el.name,
+        kind: el.kind,
+        source: 'manual_digitized',
+        digitizedAt: el.digitizedAt,
+        ...(el.kind === 'piste' && el.difficulty ? { 'piste:difficulty': el.difficulty } : {}),
+      },
+      geometry: {
+        type: 'LineString',
+        coordinates: el.vertices.map((v) => [v.lng, v.lat]),
+      },
+    })),
+  };
+}
+
+function parseManualElementsGeoJSON(geojson) {
+  if (!geojson || !Array.isArray(geojson.features)) return [];
+  return geojson.features.map((feature) => {
+    const props = feature.properties || {};
+    const coords = feature.geometry?.coordinates || [];
+    return {
+      name: props.name || '',
+      kind: props.kind || 'lift',
+      difficulty: props['piste:difficulty'] || null,
+      digitizedAt: props.digitizedAt || new Date().toISOString(),
+      vertices: coords.map(([lng, lat]) => ({ lat, lng })),
+    };
+  });
+}
+
+function downloadJSON(filename, data) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
     click(e) {
@@ -235,7 +288,20 @@ const TrackMapTab = ({ geojsonPoints }) => {
   const [elevation, setElevation] = useState(null);
   const elevationRequestIdRef = useRef(0);
 
+  // Manual digitizing editor
+  const [editorMode, setEditorMode] = useState(false);
+  const [currentVertices, setCurrentVertices] = useState([]);
+  const [elementName, setElementName] = useState('');
+  const [elementKind, setElementKind] = useState('lift');
+  const [elementDifficulty, setElementDifficulty] = useState('');
+  const [savedElements, setSavedElements] = useState([]);
+
   const handleMapClick = (latlng) => {
+    if (editorMode) {
+      setCurrentVertices((prev) => [...prev, { lat: latlng.lat, lng: latlng.lng }]);
+      return;
+    }
+
     setClickedPoint(latlng);
     setElevation('loading');
 
@@ -251,6 +317,68 @@ const TrackMapTab = ({ geojsonPoints }) => {
           setElevation('error');
         }
       });
+  };
+
+  const handleToggleEditorMode = () => {
+    setEditorMode((prev) => {
+      const next = !prev;
+      if (next) {
+        // entering editor mode: clear any stale elevation lookup panel
+        setClickedPoint(null);
+        setElevation(null);
+      }
+      return next;
+    });
+  };
+
+  const handleUndoVertex = () => {
+    setCurrentVertices((prev) => prev.slice(0, -1));
+  };
+
+  const handleDiscardElement = () => {
+    setCurrentVertices([]);
+    setElementName('');
+    setElementKind('lift');
+    setElementDifficulty('');
+  };
+
+  const handleSaveElement = () => {
+    if (currentVertices.length < 2) return;
+    setSavedElements((prev) => [
+      ...prev,
+      {
+        name: elementName.trim() || `Elemento ${prev.length + 1}`,
+        kind: elementKind,
+        difficulty: elementKind === 'piste' ? elementDifficulty || null : null,
+        vertices: currentVertices,
+        digitizedAt: new Date().toISOString(),
+      },
+    ]);
+    setCurrentVertices([]);
+    setElementName('');
+    setElementKind('lift');
+    setElementDifficulty('');
+  };
+
+  const handleExportJSON = () => {
+    downloadJSON('lasLenasManualElements.json', buildManualElementsGeoJSON(savedElements));
+  };
+
+  const handleImportJSON = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        const imported = parseManualElementsGeoJSON(parsed);
+        setSavedElements((prev) => [...prev, ...imported]);
+      } catch (err) {
+        console.error('Failed to import manual elements JSON:', err);
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
   };
 
   return (
@@ -422,6 +550,52 @@ const TrackMapTab = ({ geojsonPoints }) => {
           {/* Click handler — active regardless of which base layer is selected */}
           <MapClickHandler onMapClick={handleMapClick} />
 
+          {/* Manual digitizing — in-progress polyline + vertices */}
+          {currentVertices.length >= 2 && (
+            <Polyline
+              positions={currentVertices.map((v) => [v.lat, v.lng])}
+              pathOptions={{
+                color: MANUAL_ELEMENT_COLOR,
+                weight: 3,
+                dashArray: '6 6',
+                opacity: 0.9,
+              }}
+            />
+          )}
+          {currentVertices.map((v, index) => (
+            <CircleMarker
+              key={`manual-vertex-${index}`}
+              center={[v.lat, v.lng]}
+              radius={4}
+              pathOptions={{
+                color: MANUAL_ELEMENT_COLOR,
+                fillColor: MANUAL_ELEMENT_COLOR,
+                fillOpacity: 0.9,
+                weight: 1,
+              }}
+            />
+          ))}
+
+          {/* Manual digitizing — saved elements */}
+          {savedElements.map((el, index) => (
+            <Polyline
+              key={`manual-saved-${index}`}
+              positions={el.vertices.map((v) => [v.lat, v.lng])}
+              pathOptions={{ color: MANUAL_ELEMENT_COLOR, weight: 3, opacity: 0.95 }}
+            >
+              <Popup>
+                <strong>{el.name}</strong><br />
+                {el.kind === 'lift' ? 'Medio de elevación' : 'Pista'}
+                {el.difficulty && (
+                  <>
+                    <br />
+                    Dificultad: {el.difficulty}
+                  </>
+                )}
+              </Popup>
+            </Polyline>
+          ))}
+
           {/* Temporary click marker */}
           {clickedPoint && (
             <Marker position={[clickedPoint.lat, clickedPoint.lng]}>
@@ -442,6 +616,133 @@ const TrackMapTab = ({ geojsonPoints }) => {
               </Marker>
             ))}
         </MapContainer>
+
+        {/* Manual digitizing editor — toggle + panel */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '10px',
+            left: '60px',
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px',
+            maxWidth: '260px',
+          }}
+        >
+          <button
+            type="button"
+            onClick={handleToggleEditorMode}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '6px',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              backgroundColor: editorMode ? '#eab308' : '#374151',
+              color: editorMode ? '#111827' : '#fff',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+            }}
+          >
+            {editorMode ? 'Modo edición: ON' : 'Modo edición: OFF'}
+          </button>
+
+          {editorMode && (
+            <div
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.97)',
+                borderRadius: '6px',
+                padding: '10px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                fontSize: '0.8rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+              }}
+            >
+              <div>Vértices: {currentVertices.length}</div>
+              <input
+                type="text"
+                placeholder="Nombre (ej: TS Minerva II)"
+                value={elementName}
+                onChange={(e) => setElementName(e.target.value)}
+                style={{ padding: '4px 6px', fontSize: '0.8rem' }}
+              />
+              <select
+                value={elementKind}
+                onChange={(e) => setElementKind(e.target.value)}
+                style={{ padding: '4px 6px', fontSize: '0.8rem' }}
+              >
+                <option value="lift">Medio de elevación (lift)</option>
+                <option value="piste">Pista (piste)</option>
+              </select>
+              {elementKind === 'piste' && (
+                <select
+                  value={elementDifficulty}
+                  onChange={(e) => setElementDifficulty(e.target.value)}
+                  style={{ padding: '4px 6px', fontSize: '0.8rem' }}
+                >
+                  <option value="">Dificultad (opcional)</option>
+                  {PISTE_DIFFICULTY_OPTIONS.map((level) => (
+                    <option key={level} value={level}>
+                      {level}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                <button type="button" onClick={handleUndoVertex} disabled={currentVertices.length === 0}>
+                  Deshacer último punto
+                </button>
+                <button type="button" onClick={handleSaveElement} disabled={currentVertices.length < 2}>
+                  Guardar elemento
+                </button>
+                <button type="button" onClick={handleDiscardElement} disabled={currentVertices.length === 0}>
+                  Descartar
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.97)',
+              borderRadius: '6px',
+              padding: '8px 10px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              fontSize: '0.8rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+            }}
+          >
+            <div>Elementos guardados: {savedElements.length}</div>
+            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+              <button type="button" onClick={handleExportJSON} disabled={savedElements.length === 0}>
+                Exportar JSON
+              </button>
+              <label
+                style={{
+                  padding: '4px 8px',
+                  fontSize: '0.75rem',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  backgroundColor: '#f3f4f6',
+                }}
+              >
+                Importar JSON
+                <input
+                  type="file"
+                  accept="application/json,.json"
+                  onChange={handleImportJSON}
+                  style={{ display: 'none' }}
+                />
+              </label>
+            </div>
+          </div>
+        </div>
 
         {/* Floating lat/lng display panel */}
         {clickedPoint && (
