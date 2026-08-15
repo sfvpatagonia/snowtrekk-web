@@ -47,6 +47,7 @@ import ConsentPreferencesModal from "./components/ConsentPreferencesModal";
 import SnowtrekAIChat from "./components/SnowtrekAIChat/SnowtrekAIChat";
 import VisitorTracker from "./components/VisitorTracker";
 import VerifyEmail from "./pages/VerifyEmail";
+import TravelerJoin from "./pages/TravelerJoin";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -134,6 +135,7 @@ function App() {
           <Route path="/login" Component={Login} />
           <Route path="/register" Component={Register} />
           <Route path="/verify-email" Component={VerifyEmail} />
+          <Route path="/join" Component={TravelerJoin} />
           <Route path="/stores/register" Component={StoreRegister} />
           <Route path="/admin/login" Component={AdminLogin} />
           <Route path="/business/login" Component={BusinessLogin} />

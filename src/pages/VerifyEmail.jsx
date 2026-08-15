@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "@/redux/userSlice";
+import userService from "../services/user";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -24,14 +25,31 @@ export default function VerifyEmail() {
       body: JSON.stringify({ token }),
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(async (data) => {
         if (!data.ok) {
           setStatus("error");
           return;
         }
 
-        sessionStorage.setItem("token", data.body.token);
-        dispatch(addUser({ token: data.body.token }));
+        const authToken = data.body.token;
+        const verifyResponse = await userService.verifyTokenRequest(authToken);
+        if (!verifyResponse) {
+          setStatus("error");
+          return;
+        }
+
+        sessionStorage.setItem("token", authToken);
+        dispatch(
+          addUser({
+            id: verifyResponse.body.id,
+            name: verifyResponse.body.name,
+            email: verifyResponse.body.email,
+            isAdmin: verifyResponse.body.isAdmin,
+            isSuperAdmin: verifyResponse.body.isSuperAdmin,
+            role: verifyResponse.body.role,
+            token: authToken,
+          })
+        );
         setStatus("success");
 
         setTimeout(() => navigate("/"), 2000);
@@ -64,7 +82,7 @@ export default function VerifyEmail() {
             <p className="text-gray-500 dark:text-gray-300 text-sm">
               El link de acceso ya fue usado o expiró. Podés solicitar uno nuevo.
             </p>
-            <a href="/register" className="button mt-2">
+            <a href="/join" className="button mt-2">
               Solicitar nuevo link
             </a>
           </>

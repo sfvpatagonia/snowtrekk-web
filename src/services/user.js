@@ -218,6 +218,23 @@ async function changeUserImage(userId, image, token) {
   }
 }
 
+async function preRegister(payload) {
+  try {
+    const response = await fetch(`${apiUrl}/user/pre-register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Network error:", error);
+    return { ok: false, message: "Network error" };
+  }
+}
+
 async function activateAccount(token, password) {
   try {
     const response = await fetch(`${apiUrl}/user/activate`, {
@@ -250,4 +267,5 @@ export default {
   logIn,
   verifyTokenRequest,
   activateAccount,
+  preRegister,
 };
