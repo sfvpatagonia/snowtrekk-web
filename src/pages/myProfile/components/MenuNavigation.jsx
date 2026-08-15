@@ -10,6 +10,7 @@ import StoreIcon from "@mui/icons-material/Store";
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { logout } from "@/redux/userSlice";
+import userService from "@/services/user";
 
 export default function MenuNavigation({ activeTab, updateQuery }) {
   const user = useSelector((state) => state.user);
@@ -17,6 +18,7 @@ export default function MenuNavigation({ activeTab, updateQuery }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    userService.travelerLogout();
     dispatch(logout());
     navigate("/");
   };

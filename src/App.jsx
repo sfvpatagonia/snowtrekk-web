@@ -46,6 +46,7 @@ import ConsentManager from "./components/ConsentManager";
 import ConsentPreferencesModal from "./components/ConsentPreferencesModal";
 import SnowtrekAIChat from "./components/SnowtrekAIChat/SnowtrekAIChat";
 import VisitorTracker from "./components/VisitorTracker";
+import SilentAuth from "./components/SilentAuth";
 import VerifyEmail from "./pages/VerifyEmail";
 import TravelerJoin from "./pages/TravelerJoin";
 
@@ -80,6 +81,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <VisitorTracker />
+      <SilentAuth />
       <ConsentManager />
       <ConsentPreferencesModal />
       <Router>

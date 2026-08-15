@@ -235,6 +235,32 @@ async function preRegister(payload) {
   }
 }
 
+async function refreshTravelerSession() {
+  try {
+    const response = await fetch(`${apiUrl}/user/session/refresh`, {
+      method: "POST",
+      credentials: "include",
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, message: "Network error" };
+  }
+}
+
+async function travelerLogout() {
+  try {
+    const response = await fetch(`${apiUrl}/user/session/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, message: "Network error" };
+  }
+}
+
 async function activateAccount(token, password) {
   try {
     const response = await fetch(`${apiUrl}/user/activate`, {
@@ -268,4 +294,6 @@ export default {
   verifyTokenRequest,
   activateAccount,
   preRegister,
+  refreshTravelerSession,
+  travelerLogout,
 };

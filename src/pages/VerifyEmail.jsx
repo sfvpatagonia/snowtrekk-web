@@ -22,6 +22,7 @@ export default function VerifyEmail() {
     fetch(`${apiUrl}/user/verify-magic-link`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ token }),
     })
       .then((res) => res.json())
