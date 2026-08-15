@@ -27,8 +27,8 @@ jobs:
         run: |
           docker build \
           --build-arg VITE_API_URL=/api \
-          -t ghcr.io/alexismaubertdev/snowtrekk-web:latest .
+          -t ghcr.io/sfvpatagonia/snowtrekk-web:latest .
 
       - name: Push image
         run: |
-          docker push ghcr.io/alexismaubertdev/snowtrekk-web:latest
+          docker push ghcr.io/sfvpatagonia/snowtrekk-web:latest
