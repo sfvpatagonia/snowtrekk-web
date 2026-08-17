@@ -180,12 +180,20 @@ const Header = () => {
             My profile
           </Link>
         ) : (
-          <Link
-            to="/login"
-            className="text-[#f3f3f3] transition-all duration-300 text-[1.15em] relative cursor-pointer hover:text-[var(--color-500)]"
-          >
-            Log in
-          </Link>
+          <>
+            <Link
+              to="/join"
+              className="text-[#f3f3f3] transition-all duration-300 text-[1.15em] relative cursor-pointer hover:text-[var(--color-500)]"
+            >
+              Sumate
+            </Link>
+            <Link
+              to="/login"
+              className="text-[#f3f3f3] transition-all duration-300 text-[1.15em] relative cursor-pointer hover:text-[var(--color-500)]"
+            >
+              Log in
+            </Link>
+          </>
         )}
 
         <button

@@ -61,7 +61,7 @@ function TravelerJoin() {
               <span className="text-5xl">📧</span>
               <p className="font-semibold">Revisá tu email</p>
               <p className="text-sm text-gray-500 dark:text-gray-300">
-                Te enviamos un link para activar tu cuenta. Expira en 15 minutos.
+                Te mandamos un link para entrar a tu cuenta. Expira en 24 horas.
               </p>
             </div>
           ) : (

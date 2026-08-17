@@ -10,7 +10,7 @@ export default function VerifyEmail() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [status, setStatus] = useState("verifying"); // verifying | success | error
+  const [status, setStatus] = useState("verifying"); // verifying | success | error | expired_resent
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -28,7 +28,7 @@ export default function VerifyEmail() {
       .then((res) => res.json())
       .then(async (data) => {
         if (!data.ok) {
-          setStatus("error");
+          setStatus(data.message === "expired_resent" ? "expired_resent" : "error");
           return;
         }
 
@@ -74,6 +74,15 @@ export default function VerifyEmail() {
               ¡Bienvenido a Snowtrekk!
             </h1>
             <p className="text-gray-500 dark:text-gray-300">Redirigiendo...</p>
+          </>
+        )}
+        {status === "expired_resent" && (
+          <>
+            <span className="text-5xl">📧</span>
+            <h1 className="text-xl font-bold dark:text-white">Tu link venció</h1>
+            <p className="text-gray-500 dark:text-gray-300 text-sm">
+              Pero ya te mandamos uno nuevo — revisá tu email de nuevo.
+            </p>
           </>
         )}
         {status === "error" && (
