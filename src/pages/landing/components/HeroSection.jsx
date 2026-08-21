@@ -92,12 +92,7 @@ export default function HeroSection({ regionData }) {
           >
             {c.cta.business}
           </Link>
-          <Link
-            to="/contact"
-            className="border-2 border-[var(--color-500)] text-[var(--color-500)] px-7 py-3 rounded font-semibold hover:bg-[var(--color-500)] hover:text-white transition-all duration-200 flex items-center justify-center"
-          >
-            {c.cta.advertise}
-          </Link>
+          {/* "Advertise"/"Anunciar" hidden — no advertising page exists yet, /contact 404s */}
         </div>
 
         {/* Dot indicators */}
