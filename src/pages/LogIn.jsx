@@ -167,7 +167,7 @@ function Login() {
           <p className=" py-4">
             Don't have an account?{" "}
             <Link
-              to="/register"
+              to="/join"
               className="text-green-700 dark:text-green-500 duration-300 ease-in hover:text-main-600 hover:dark:text-main-400"
             >
               Sign up

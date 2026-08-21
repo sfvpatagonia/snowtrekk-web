@@ -83,7 +83,7 @@ export default function HeroSection({ regionData }) {
 
         {/* 3 profile CTA buttons */}
         <div className="flex flex-col sm:flex-row gap-3 mt-2">
-          <Link to="/register" className="button text-base px-7 py-3">
+          <Link to="/join" className="button text-base px-7 py-3">
             {c.cta.free}
           </Link>
           <Link

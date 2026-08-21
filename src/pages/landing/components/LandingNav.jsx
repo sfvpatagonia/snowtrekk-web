@@ -41,7 +41,7 @@ export default function LandingNav({ regionData }) {
 
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-3">
-          <Link to="/register" className="button hidden sm:flex">
+          <Link to="/join" className="button hidden sm:flex">
             {planLabel}
           </Link>
           <button
@@ -78,7 +78,7 @@ export default function LandingNav({ regionData }) {
           >
             {nav.advertise}
           </Link>
-          <Link to="/register" className="button w-full" onClick={() => setMobileOpen(false)}>
+          <Link to="/join" className="button w-full" onClick={() => setMobileOpen(false)}>
             {planLabel}
           </Link>
         </nav>
