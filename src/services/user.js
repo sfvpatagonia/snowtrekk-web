@@ -171,6 +171,7 @@ async function logIn(credentials) {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(credentials),
     });
     const data = await response.json();
@@ -235,10 +236,12 @@ async function preRegister(payload) {
   }
 }
 
-async function refreshTravelerSession() {
+// Single source of truth for "am I logged in, as what role" — reads the
+// httpOnly session_token cookie set by login/verify-magic-link.
+async function getMe() {
   try {
-    const response = await fetch(`${apiUrl}/user/session/refresh`, {
-      method: "POST",
+    const response = await fetch(`${apiUrl}/user/me`, {
+      method: "GET",
       credentials: "include",
     });
     const data = await response.json();
@@ -248,9 +251,9 @@ async function refreshTravelerSession() {
   }
 }
 
-async function travelerLogout() {
+async function logout() {
   try {
-    const response = await fetch(`${apiUrl}/user/session/logout`, {
+    const response = await fetch(`${apiUrl}/user/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -294,6 +297,6 @@ export default {
   verifyTokenRequest,
   activateAccount,
   preRegister,
-  refreshTravelerSession,
-  travelerLogout,
+  getMe,
+  logout,
 };

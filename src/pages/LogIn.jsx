@@ -64,31 +64,18 @@ function Login() {
     try {
       const response = await userService.logIn(formData);
       if (response.ok) {
-        const { token } = response.body;
-
-        const verifyResponse = await userService.verifyTokenRequest(token);
-        if (!verifyResponse) {
+        const me = await userService.getMe();
+        if (!me.ok) {
           console.log("No autenticado");
           setErrors((prevErrors) => ({
             ...prevErrors,
             general: "Authentication failed. Please try again.",
           }));
         } else {
-          localStorage.setItem("token", token);
-          dispatch(
-            addUser({
-              id: verifyResponse.body.id,
-              name: verifyResponse.body.name,
-              email: verifyResponse.body.email,
-              isAdmin: verifyResponse.body.isAdmin,
-              isSuperAdmin: verifyResponse.body.isSuperAdmin,
-              role: verifyResponse.body.role,
-              token,
-            }),
-          );
-          if (verifyResponse.body.role === "admin") {
+          dispatch(addUser(me.body));
+          if (me.body.role === "admin") {
             navigate("/admin");
-          } else if (verifyResponse.body.role === "business") {
+          } else if (me.body.role === "business") {
             navigate("/business/dashboard");
           } else {
             navigate("/");

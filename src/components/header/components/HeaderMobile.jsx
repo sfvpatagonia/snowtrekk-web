@@ -85,7 +85,7 @@ const URL = import.meta.env.VITE_API_URL.replace("/api", "");
               </Link>
             </li>
             <li className="flex gap-2 w-full border-t border-main-600 dark:border-main-400 first:border-0 p-2">
-              {user.token !== "" ? (
+              {user.id ? (
                 <Link
                   to="/my-profile"
                   className="text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in"

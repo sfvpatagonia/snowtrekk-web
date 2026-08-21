@@ -173,7 +173,7 @@ const Header = () => {
 
       {/* Controles personales */}
       <div className="hidden sm:flex gap-8 items-center">
-        {user.token !== "" ? (
+        {user.id ? (
           <Link
             to="/my-profile"
             className="text-[#f3f3f3] transition-all duration-300 text-[1.15em] relative cursor-pointer hover:text-[var(--color-500)]"

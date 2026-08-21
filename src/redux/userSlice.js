@@ -75,6 +75,7 @@ export const userSlice = createSlice({
     },
     logout: (state) => {
       sessionStorage.removeItem("token");
+      localStorage.removeItem("token");
       state = initialState;
       return state;
     },

@@ -36,8 +36,7 @@ import CancellationPolicyPage from "./pages/CancellationPolicyPage";
 import AboutUs from "./pages/AboutUs";
 import UserPage from "./pages/UserPage";
 import StoreRegister from "./pages/storeRegister/StoreRegister";
-import AdminLogin from "./pages/adminLogin/AdminLogin";
-import BusinessLogin from "./pages/businessLogin/BusinessLogin";
+import CredentialsLogin from "./pages/credentialsLogin/CredentialsLogin";
 import BusinessActivate from "./pages/businessActivate/BusinessActivate";
 import BusinessDashboard from "./pages/businessDashboard/BusinessDashboard";
 
@@ -137,8 +136,14 @@ function App() {
           <Route path="/verify-email" Component={VerifyEmail} />
           <Route path="/join" Component={TravelerJoin} />
           <Route path="/stores/register" Component={StoreRegister} />
-          <Route path="/admin/login" Component={AdminLogin} />
-          <Route path="/business/login" Component={BusinessLogin} />
+          <Route
+            path="/admin/login"
+            element={<CredentialsLogin allowedRole="admin" />}
+          />
+          <Route
+            path="/business/login"
+            element={<CredentialsLogin allowedRole="business" />}
+          />
           <Route path="/business/activate" Component={BusinessActivate} />
 
           {/* 

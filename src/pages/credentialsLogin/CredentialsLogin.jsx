@@ -5,9 +5,23 @@ import Footer from "@/components/footer/Footer";
 import { addUser } from "@/redux/userSlice";
 import { useDispatch } from "react-redux";
 import { TextField } from "@mui/material";
-import userService from "../../services/user";
+import userService from "@/services/user";
 
-function BusinessLogin() {
+const ROLE_CONFIG = {
+  admin: {
+    heading: "Admin Login",
+    redirectTo: "/admin",
+    mismatchMessage: "This account does not have admin access",
+  },
+  business: {
+    heading: "Business Login",
+    redirectTo: "/business/dashboard",
+    mismatchMessage: "This account is not a business account",
+  },
+};
+
+function CredentialsLogin({ allowedRole }) {
+  const { heading, redirectTo, mismatchMessage } = ROLE_CONFIG[allowedRole];
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -30,27 +44,15 @@ function BusinessLogin() {
         return;
       }
 
-      const { token } = response.body;
-      const verifyResponse = await userService.verifyTokenRequest(token);
+      const me = await userService.getMe();
 
-      if (!verifyResponse || verifyResponse.body?.role !== "business") {
-        setErrors({ general: "This account is not a business account" });
+      if (!me.ok || me.body?.role !== allowedRole) {
+        setErrors({ general: mismatchMessage });
         return;
       }
 
-      localStorage.setItem("token", token);
-      dispatch(
-        addUser({
-          id: verifyResponse.body.id,
-          name: verifyResponse.body.name,
-          email: verifyResponse.body.email,
-          isAdmin: verifyResponse.body.isAdmin,
-          isSuperAdmin: verifyResponse.body.isSuperAdmin,
-          role: verifyResponse.body.role,
-          token,
-        }),
-      );
-      navigate("/business/dashboard");
+      dispatch(addUser(me.body));
+      navigate(redirectTo);
     } catch (error) {
       console.error(error);
       setErrors({ general: "An error occurred when trying to log in" });
@@ -70,7 +72,7 @@ function BusinessLogin() {
       <Header />
       <div className="flex flex-col items-center justify-start shadow bg-[url('/fondoLogin.jpg')] h-[100vh] bg-cover bg-center text-main-0 dark:text-main-1000">
         <div className="flex flex-col rounded bg-main-50 dark:bg-main-950 mt-8 px-8 justify-center items-center py-3 shadow-xl">
-          <h1 className="text-2xl font-bold my-4">Business Login</h1>
+          <h1 className="text-2xl font-bold my-4">{heading}</h1>
 
           <form onSubmit={onSubmit} className="flex flex-col gap-2 p-4">
             <TextField
@@ -95,15 +97,17 @@ function BusinessLogin() {
             </button>
           </form>
 
-          <p className="py-4 text-sm">
-            ¿Todavía no activaste tu cuenta?{" "}
-            <Link
-              to="/stores/register"
-              className="text-green-700 dark:text-green-500"
-            >
-              Registrá tu negocio
-            </Link>
-          </p>
+          {allowedRole === "business" && (
+            <p className="py-4 text-sm">
+              ¿Todavía no activaste tu cuenta?{" "}
+              <Link
+                to="/stores/register"
+                className="text-green-700 dark:text-green-500"
+              >
+                Registrá tu negocio
+              </Link>
+            </p>
+          )}
         </div>
       </div>
       <Footer />
@@ -111,4 +115,4 @@ function BusinessLogin() {
   );
 }
 
-export default BusinessLogin;
+export default CredentialsLogin;

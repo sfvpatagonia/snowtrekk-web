@@ -1,53 +1,39 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { verifyTokenRequest } from "../api/auth";
+import { useDispatch } from "react-redux";
 import { addUser, logout } from "../redux/userSlice";
-import { jwtDecode } from "jwt-decode";
+import userService from "../services/user";
 
 const BusinessRoute = () => {
   const dispatch = useDispatch();
-
-  const user = useSelector((state) => state.user);
-  const token = localStorage.getItem("token");
+  const [status, setStatus] = useState("checking"); // checking | allowed | denied
 
   useEffect(() => {
-    if (!token) {
-      dispatch(logout());
-      return;
-    }
+    let cancelled = false;
 
-    try {
-      const decoded = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
+    userService.getMe().then((me) => {
+      if (cancelled) return;
 
-      if (decoded.exp < currentTime) {
+      if (me.ok && me.body?.role === "business") {
+        dispatch(addUser(me.body));
+        setStatus("allowed");
+      } else {
         dispatch(logout());
-        return;
+        setStatus("denied");
       }
+    });
 
-      verifyTokenRequest(token).then((data) => {
-        if (data.email) {
-          dispatch(
-            addUser({
-              id: data.id,
-              email: data.email,
-              name: data.name,
-              isAdmin: data.isAdmin,
-              isSuperAdmin: data.isSuperAdmin,
-              role: data.role,
-              token,
-            })
-          );
-        }
-      });
-    } catch (error) {
-      console.error("Error decoding token:", error);
-      dispatch(logout());
-    }
-  }, [dispatch, token]);
+    return () => {
+      cancelled = true;
+    };
+  }, [dispatch]);
 
-  return user.role === "business" ? <Outlet /> : <Navigate to="/business/login" replace />;
+  if (status === "checking") return null;
+  return status === "allowed" ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/business/login" replace />
+  );
 };
 
 export default BusinessRoute;
