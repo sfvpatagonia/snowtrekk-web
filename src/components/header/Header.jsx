@@ -130,7 +130,8 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="flex justify-evenly items-center bg-[#444] h-max">
+    <>
+      <header className="flex justify-evenly items-center bg-[#444] h-max">
       {/* Logo */}
       <div className="flex h-[60px]">
         <Link to="/" className="flex h-full items-center">
@@ -226,7 +227,15 @@ const Header = () => {
 
       {/* Dropdown y Cart Drawer */}
       <CartDrawer open={openCart} setOpen={setOpenCart} />
-    </header>
+      </header>
+
+      {/* Aviso temporal — la plataforma está en ajustes */}
+      <div className="w-full bg-[var(--color-500)]/10 border-b border-[var(--color-500)]/25 py-1.5 px-4 text-center">
+        <p className="text-xs sm:text-sm text-[#333] dark:text-[#f3f3f3]">
+          Estamos afinando la plataforma — algunas funciones pueden variar en los próximos días.
+        </p>
+      </div>
+    </>
   );
 };
 
