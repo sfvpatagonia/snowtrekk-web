@@ -4,6 +4,7 @@ async function getMyPurchases(token) {
   try {
     const response = await fetch(`${apiUrl}/purchase/my-purchases`, {
       method: "GET",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },

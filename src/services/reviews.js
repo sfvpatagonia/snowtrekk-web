@@ -4,6 +4,7 @@ async function getMyReviews(token) {
   try {
     const response = await fetch(`${apiUrl}/review/my-reviews`, {
       method: "GET",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -21,6 +22,7 @@ async function createReview(idService, data, token) {
   try {
     const response = await fetch(`${apiUrl}/review/services/${idService}`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

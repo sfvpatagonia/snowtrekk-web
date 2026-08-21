@@ -9,6 +9,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export const newQuestion = async (id, question, token) => {
   const response = await fetch(`${apiUrl}/admin/service/${id}/questions`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -24,6 +25,7 @@ export const newAnswer = async (id, questionId, answer, token) => {
     `${apiUrl}/admin/service/${id}/questions/${questionId}`,
     {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

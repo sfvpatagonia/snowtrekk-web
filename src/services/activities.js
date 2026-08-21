@@ -4,6 +4,7 @@ async function getActivities() {
   try {
     const response = await fetch(`${apiUrl}/activities/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -19,6 +20,7 @@ async function getActivitiesName() {
   try {
     const response = await fetch(`${apiUrl}/activities/names/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -34,6 +36,7 @@ async function newActivity(activity) {
   try {
     const response = await fetch(`${apiUrl}/activities/`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -51,6 +54,7 @@ async function updateActivity(activity, token) {
   try {
     const response = await fetch(`${apiUrl}/activities/${activity.id}`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -70,6 +74,7 @@ async function getFeaturedActivities() {
   try {
     const response = await fetch(`${apiUrl}/activities/featured/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

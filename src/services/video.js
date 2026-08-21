@@ -5,6 +5,7 @@ async function getAllVideos(token) {
   try {
     const response = await fetch(`${apiUrl}/video/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -23,6 +24,7 @@ async function getVideoById(id, token) {
   try {
     const response = await fetch(`${apiUrl}/video/${id}`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -43,6 +45,7 @@ async function getVideosByDestination(idDestination, token) {
       `${apiUrl}/video/destination/${idDestination}`,
       {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -72,6 +75,7 @@ async function getVideosPaginated(
 
     const response = await fetch(url, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -90,6 +94,7 @@ async function createVideo(formData, token) {
   try {
     const response = await fetch(`${apiUrl}/video/`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -108,6 +113,7 @@ async function updateVideo(id, formData, token) {
   try {
     const response = await fetch(`${apiUrl}/video/${id}`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -126,6 +132,7 @@ async function deleteVideo(id, token) {
   try {
     const response = await fetch(`${apiUrl}/video/${id}`, {
       method: "DELETE",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -143,6 +150,7 @@ async function reorderDestinations(destinationId, newOrder, token) {
   try {
     const response = await fetch(`${apiUrl}/video/reorder`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

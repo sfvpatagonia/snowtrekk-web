@@ -4,6 +4,7 @@ async function getStats(token) {
   try {
     const response = await fetch(`${apiUrl}/admin/stats`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

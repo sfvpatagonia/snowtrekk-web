@@ -6,6 +6,7 @@ const getOrderByOrderNumber = async (orderNumber, token) => {
       `${apiUrl}/order/order-number/${orderNumber}`,
       {
         method: "GET",
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
         },

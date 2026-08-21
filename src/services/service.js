@@ -4,6 +4,7 @@ async function createService(newService, token) {
   try {
     const response = await fetch(`${apiUrl}/admin/services/`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -22,6 +23,7 @@ async function getFeaturedServices() {
   try {
     const response = await fetch(`${apiUrl}/admin/services/featured/`, {
       method: "GET",
+      credentials: "include",
     });
     const data = await response.json();
     return data;
@@ -35,6 +37,7 @@ async function getServices(idShop, token) {
   try {
     const response = await fetch(`${apiUrl}/admin/services?idShop=${idShop}`, {
       method: "GET",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -51,6 +54,7 @@ async function getServiceById(idService, token) {
   try {
     const response = await fetch(`${apiUrl}/admin/services/${idService}`, {
       method: "GET",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -69,6 +73,7 @@ async function changeAvailability(idService, body, token) {
       `${apiUrl}/admin/services/${idService}/changeAvailability`,
       {
         method: "POST",
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -90,6 +95,7 @@ async function toggleServiceVisibility(idService, token) {
       `${apiUrl}/admin/services/${idService}/toggleVisibility`,
       {
         method: "PUT",
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -107,6 +113,7 @@ async function deleteService(idService, token) {
   try {
     const response = await fetch(`${apiUrl}/admin/services/${idService}`, {
       method: "DELETE",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -123,6 +130,7 @@ async function updateService(idService, updatedService, token) {
   try {
     const response = await fetch(`${apiUrl}/admin/services/${idService}`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -143,6 +151,7 @@ async function getServicesByDestinationId(idDestination) {
       `${apiUrl}/admin/services/destination/${idDestination}`,
       {
         method: "GET",
+        credentials: "include",
       },
     );
     const data = await response.json();
@@ -159,6 +168,7 @@ async function leaveAQuestion(idService, question, token) {
       `${apiUrl}/admin/services/${idService}/question`,
       {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -179,6 +189,7 @@ async function leaveAnAnswer(idService, question, answer, token) {
       `${apiUrl}/admin/services/${idService}/question/${question}/answer`,
       {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -200,6 +211,7 @@ async function deleteQuestion(idService, idQuestion, token) {
       `${apiUrl}/admin/services/${idService}/question/${idQuestion}`,
       {
         method: "DELETE",
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
         },

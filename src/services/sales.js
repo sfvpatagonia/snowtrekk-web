@@ -6,6 +6,7 @@ async function getShopSales(idShop, token) {
   try {
     const response = await fetch(`${apiUrl}/order/shopOrders?idShop=${idShop}`, {
       method: "GET",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },

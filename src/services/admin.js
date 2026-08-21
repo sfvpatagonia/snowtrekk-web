@@ -4,6 +4,7 @@ async function getCountries() {
   try {
     const response = await fetch(`${apiUrl}/country/admin/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -20,6 +21,7 @@ async function getAreas() {
   try {
     const response = await fetch(`${apiUrl}/area/admin/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -36,6 +38,7 @@ async function getCities() {
   try {
     const response = await fetch(`${apiUrl}/city/admin/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -52,6 +55,7 @@ async function getDestinations() {
   try {
     const response = await fetch(`${apiUrl}/destination/admin/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -68,6 +72,7 @@ async function getActivities() {
   try {
     const response = await fetch(`${apiUrl}/activities/admin`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -84,6 +89,7 @@ async function getRegions() {
   try {
     const response = await fetch(`${apiUrl}/region/admin/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -101,6 +107,7 @@ async function getLeads(limit, offset) {
       `${apiUrl}/leads?limit=${limit}&offset=${offset}/`,
       {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -119,6 +126,7 @@ async function searchLeads(searchQuery, limit, offset) {
       `${apiUrl}/leads/search?search=${searchQuery}&limit=${limit}&offset=${offset}`,
       {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -136,6 +144,7 @@ async function sendEmail(body) {
   try {
     const response = await fetch(`${apiUrl}/leads/send-email/`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -156,6 +165,7 @@ async function getAllServices(limit, offset, token) {
       `${apiUrl}/admin/services/admin?limit=${limit}&offset=${offset}/`,
       {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -176,6 +186,7 @@ async function changeAdvertise(id, token) {
       `${apiUrl}/admin/services/${id}/change-advertise`,
       {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -193,6 +204,7 @@ async function getShops(token) {
   try {
     const response = await fetch(`${apiUrl}/shop/`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -210,6 +222,7 @@ async function getCollectorPendingPlaces(token) {
   try {
     const response = await fetch(`${apiUrl}/collector/pending`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -227,6 +240,7 @@ async function approveCollectorPlace(id, token) {
   try {
     const response = await fetch(`${apiUrl}/collector/approve/${id}`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -244,6 +258,7 @@ async function rejectCollectorPlace(id, reason, token) {
   try {
     const response = await fetch(`${apiUrl}/collector/reject/${id}`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -262,6 +277,7 @@ async function updateCollectorPlace(id, payload, token) {
   try {
     const response = await fetch(`${apiUrl}/collector/edit/${id}`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -280,6 +296,7 @@ async function deleteLocation({ id, type }, token) {
   try {
     const response = await fetch(`${apiUrl}/${type}/${id}`, {
       method: "DELETE",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -297,6 +314,7 @@ async function updateBasicInfoShop(shop, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shop.id}/info`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -314,6 +332,7 @@ async function updateBillingInfoShop(id, billingInfo, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${id}/billing`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -331,6 +350,7 @@ async function updateBillingPriceShop(id, billingPrice, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${id}/price`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

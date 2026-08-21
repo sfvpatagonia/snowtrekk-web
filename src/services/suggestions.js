@@ -9,6 +9,7 @@ async function getSuggestions() {
   try {
     const response = await fetch(`${apiUrl}/suggestion/`, {
       method: "GET",
+      credentials: "include",
       headers: authHeaders(),
     });
     const data = await response.json();
@@ -22,6 +23,7 @@ async function deleteSuggestion(id) {
   try {
     const response = await fetch(`${apiUrl}/suggestion/${id}`, {
       method: "DELETE",
+      credentials: "include",
       headers: authHeaders(),
     });
     const data = await response.json();

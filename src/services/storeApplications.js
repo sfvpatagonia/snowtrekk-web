@@ -4,6 +4,7 @@ async function registerStore(formData) {
   try {
     const response = await fetch(`${apiUrl}/stores/register`, {
       method: "POST",
+      credentials: "include",
       body: formData,
     });
     const data = await response.json();
@@ -19,6 +20,7 @@ async function getApplications(token, status) {
     const query = status ? `?status=${status}` : "";
     const response = await fetch(`${apiUrl}/stores/applications${query}`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -36,6 +38,7 @@ async function verifyApplication(id, token) {
   try {
     const response = await fetch(`${apiUrl}/stores/applications/${id}/verify`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -53,6 +56,7 @@ async function rejectApplication(id, reason, token) {
   try {
     const response = await fetch(`${apiUrl}/stores/applications/${id}/reject`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -73,6 +77,7 @@ async function requestMoreInfo(id, message, token) {
       `${apiUrl}/stores/applications/${id}/request-info`,
       {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

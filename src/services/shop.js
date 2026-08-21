@@ -4,6 +4,7 @@ async function createShop(data, token) {
   try {
     const response = await fetch(`${apiUrl}/shop`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -23,6 +24,7 @@ async function getShopsByUserId(userId, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/user/${userId}`, {
       method: "GET",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -42,6 +44,7 @@ async function getShopById(shopId, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shopId}`, {
       method: "GET",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -61,6 +64,7 @@ async function updateShop(shopId, data, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shopId}`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -81,6 +85,7 @@ async function advertiseService(shopId, service, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shopId}/advertise-service`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -101,6 +106,7 @@ async function changePassword(shopId, data, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shopId}/password`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -123,6 +129,7 @@ async function changeShopImage(shopId, image, token) {
     formData.append("image", image);
     const response = await fetch(`${apiUrl}/shop/${shopId}/image`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -140,6 +147,7 @@ async function addUserToShop(shopId, newUser, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shopId}/user/${newUser}`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -159,6 +167,7 @@ async function removeUserFromShop(shopId, userId, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shopId}/user/${userId}`, {
       method: "DELETE",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -180,6 +189,7 @@ async function makeAdmin(shopId, userId, token) {
       `${apiUrl}/shop/${shopId}/user/${userId}/admin`,
       {
         method: "PUT",
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -200,6 +210,7 @@ async function removeAdmin(shopId, userId, token) {
       `${apiUrl}/shop/${shopId}/user/${userId}/operator`,
       {
         method: "PUT",
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -218,6 +229,7 @@ async function changePolicy(shopId, policies, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shopId}/policy`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -238,6 +250,7 @@ async function changeDescription(shopId, description, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shopId}/description`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

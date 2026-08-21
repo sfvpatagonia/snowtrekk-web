@@ -4,6 +4,7 @@ async function getUser(id, token) {
   try {
     const response = await fetch(`${apiUrl}/user/${id}`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -19,6 +20,7 @@ async function getCurrentUser(token) {
   try {
     const response = await fetch(`${apiUrl}/user/information`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -34,6 +36,7 @@ async function checkIsFavorite(idService, token) {
   try {
     const response = await fetch(`${apiUrl}/favorites/check/${idService}`, {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -49,6 +52,7 @@ async function setFavorite(idService, token) {
   try {
     const response = await fetch(`${apiUrl}/favorites/${idService}`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -65,6 +69,7 @@ async function updateUser(user, token) {
   try {
     const response = await fetch(`${apiUrl}/user/`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -81,6 +86,7 @@ async function changePassword(passwords, token) {
   try {
     const response = await fetch(`${apiUrl}/user/change-password`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -100,6 +106,7 @@ async function getAllUsers(limit, offset, token) {
       `${apiUrl}/user?limit=${limit}&offset=${offset}/`,
       {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -118,6 +125,7 @@ async function deleteUser(id, token) {
   try {
     const response = await fetch(`${apiUrl}/user/${id}`, {
       method: "DELETE",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -134,6 +142,7 @@ async function blockUser(id, token) {
   try {
     const response = await fetch(`${apiUrl}/user/${id}/block`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -151,6 +160,7 @@ async function makeAdmin(id, token) {
   try {
     const response = await fetch(`${apiUrl}/user/${id}/admin`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -186,6 +196,7 @@ async function verifyTokenRequest(token) {
   try {
     const response = await fetch(`${apiUrl}/user/verify`, {
       method: "GET",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -206,6 +217,7 @@ async function changeUserImage(userId, image, token) {
     formData.append("image", image);
     const response = await fetch(`${apiUrl}/user/${userId}/image`, {
       method: "POST",
+      credentials: "include",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -223,6 +235,7 @@ async function preRegister(payload) {
   try {
     const response = await fetch(`${apiUrl}/user/pre-register`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -268,6 +281,7 @@ async function activateAccount(token, password) {
   try {
     const response = await fetch(`${apiUrl}/user/activate`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

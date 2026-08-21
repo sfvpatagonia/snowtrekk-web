@@ -4,6 +4,7 @@ async function contactAdmin(body,token) {
   try {
     const response = await fetch(`${apiUrl}/shop/send-email/`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
