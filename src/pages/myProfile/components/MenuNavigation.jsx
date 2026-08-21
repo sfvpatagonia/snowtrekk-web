@@ -17,8 +17,8 @@ export default function MenuNavigation({ activeTab, updateQuery }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    userService.travelerLogout();
+  const handleLogout = async () => {
+    await userService.logout();
     dispatch(logout());
     navigate("/");
   };
@@ -88,7 +88,7 @@ export default function MenuNavigation({ activeTab, updateQuery }) {
             </button>
           )}
         </li>
-        {user.isAdmin && (
+        {user.role === "admin" && (
           <li>
             <Link className={`button text-sm gap-2  `} to={"/admin"}>
               <RocketLaunchIcon />

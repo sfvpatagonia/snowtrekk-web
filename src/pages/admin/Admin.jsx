@@ -9,7 +9,9 @@ import RegionTabs from "./components/regionTab/RegionTab";
 import CityTab from "./components/cityTab/CityTab";
 import DestinationTab from "./components/destinationTab/DestinationTab";
 import ActivityTab from "./components/activityTab/ActivityTab";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/redux/userSlice";
+import userService from "@/services/user";
 import NewsTab from "./components/newsTab/NewsTab";
 import SuggestionsTab from "./components/SuggestionsTab";
 import EmailTab from "./components/EmailTab";
@@ -24,6 +26,7 @@ import TrackMapTab from "./components/trackMapTab/TrackMapTab";
 const Admin = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const query = new URLSearchParams(location.search);
   const tab = query.get("tab") || "clients";
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -312,6 +315,12 @@ const Admin = () => {
     navigate(`/admin?tab=${newTab}&value=${value || ""}`);
   };
 
+  const handleLogout = async () => {
+    await userService.logout();
+    dispatch(logout());
+    navigate("/");
+  };
+
   return (
     <div>
       <Header />
@@ -377,6 +386,9 @@ const Admin = () => {
               </Link>
             </li>
             {/* Agregar más botones según sea necesario */}
+            <li className="button" onClick={handleLogout}>
+              Logout
+            </li>
           </ul>
         </aside>
         <div className="max-w-full py-0 px-4 overflow-x-auto bg-main-100 dark:bg-main-900">

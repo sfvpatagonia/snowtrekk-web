@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import shopService from "@/services/shop";
+import userService from "@/services/user";
+import { logout } from "@/redux/userSlice";
 
 const STATUS_LABEL = {
   active: "Active",
@@ -13,6 +16,8 @@ const STATUS_LABEL = {
 
 function BusinessDashboard() {
   const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,13 +30,24 @@ function BusinessDashboard() {
     });
   }, [user.id]);
 
+  const handleLogout = async () => {
+    await userService.logout();
+    dispatch(logout());
+    navigate("/");
+  };
+
   return (
     <>
       <Header />
       <div className="flex flex-col gap-6 p-8 min-h-[80vh] bg-main-100 dark:bg-main-900 text-main-0 dark:text-main-1000">
-        <h1 className="text-2xl font-bold">
-          Hola, {user.name || "negocio"}
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold">
+            Hola, {user.name || "negocio"}
+          </h1>
+          <button className="button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
 
         {loading ? (
           <p>Cargando tu tienda...</p>
