@@ -16,15 +16,11 @@ async function getUser(id, token) {
     return { ok: false, message: "Network error" };
   }
 }
-async function getCurrentUser(token) {
+async function getCurrentUser() {
   try {
     const response = await fetch(`${apiUrl}/user/information`, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
     });
     const data = await response.json();
     return data;

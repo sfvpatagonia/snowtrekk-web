@@ -31,7 +31,7 @@ export default function MyProfile() {
   useEffect(() => {
     if (user.id) {
       userFunctions
-        .getCurrentUser(user.token)
+        .getCurrentUser()
         .then((data) => {
           if (data.ok) {
             dispatch(addUser({ ...data.body.user, token: user.token }));
