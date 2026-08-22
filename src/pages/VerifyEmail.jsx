@@ -40,7 +40,7 @@ export default function VerifyEmail() {
       dispatch(addUser(me.body));
       setStatus("success");
 
-      setTimeout(() => navigate("/"), 2000);
+      setTimeout(() => navigate("/explore"), 2000);
     } catch {
       setStatus("error");
     }

@@ -28,6 +28,7 @@ import SalesTab from "./pages/shopProfile/components/salesTab/SalesTab";
 import UpdateServiceTab from "./pages/shopProfile/components/updateServiceTab/UpdateServiceTab";
 import UserChat from "./pages/userChat/UserChat";
 import Landing from "./pages/landing/Landing";
+import Explore from "./pages/landing/Explore";
 import CountryGuide from "./pages/CountryGuide";
 import CheckoutPage from "./pages/CheckoutPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
@@ -95,6 +96,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/my-profile" Component={MyProfile} />
             <Route path="/checkout" Component={CheckoutPage} />
+            <Route path="/explore" Component={Explore} />
 
             <Route path="/my-shop" Component={ShopProfile} />
             <Route
