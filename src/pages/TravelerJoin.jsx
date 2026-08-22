@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { TextField, Checkbox, FormControlLabel } from "@mui/material";
@@ -90,16 +90,6 @@ function TravelerJoin() {
               </button>
             </form>
           )}
-
-          <p className="py-4">
-            ¿Ya tenés cuenta?{" "}
-            <Link
-              to="/login"
-              className="text-green-700 dark:text-green-500 duration-300 ease-in hover:text-main-600 hover:dark:text-main-400"
-            >
-              Iniciar sesión
-            </Link>
-          </p>
         </div>
       </div>
       <Footer />

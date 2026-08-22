@@ -18,6 +18,7 @@ export default function LandingNav({ regionData }) {
   const nav = regionData?.nav ?? { destinations: 'Destinations', business: 'For businesses', advertise: 'Advertising' };
   const planLabel = regionData?.cta?.plan ?? 'Plan my trip';
 
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const countryStatus = useSelector((state) => state.countries.status);
   const destinationStatus = useSelector((state) => state.destinations.status);
@@ -82,9 +83,15 @@ export default function LandingNav({ regionData }) {
 
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-3">
-          <Link to="/join" className="button hidden sm:flex">
-            {planLabel}
-          </Link>
+          {user.id ? (
+            <Link to="/my-profile" className="button hidden sm:flex">
+              My profile
+            </Link>
+          ) : (
+            <Link to="/join" className="button hidden sm:flex">
+              {planLabel}
+            </Link>
+          )}
           <button
             className="sm:hidden text-[#f3f3f3]"
             onClick={() => setMobileOpen((v) => !v)}
@@ -116,9 +123,15 @@ export default function LandingNav({ regionData }) {
             {nav.business}
           </Link>
           {/* "Publicidad" hidden — no advertising page exists yet, /contact 404s */}
-          <Link to="/join" className="button w-full" onClick={() => setMobileOpen(false)}>
-            {planLabel}
-          </Link>
+          {user.id ? (
+            <Link to="/my-profile" className="button w-full" onClick={() => setMobileOpen(false)}>
+              My profile
+            </Link>
+          ) : (
+            <Link to="/join" className="button w-full" onClick={() => setMobileOpen(false)}>
+              {planLabel}
+            </Link>
+          )}
         </nav>
       )}
       {openGuide && <DrawerGuide open={openGuide} setOpen={setOpenGuide} />}
