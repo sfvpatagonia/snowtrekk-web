@@ -85,12 +85,14 @@ export default function InformationTab({ user, loading, error }) {
           >
             Edit personal information
           </Link>
-          <Link
-            className="underline text-green-700 dark:text-green-500 hover:text-green-500 dark:hover:text-green-700 duration-300 ease-in"
-            onClick={() => setOpenPasswordModal(true)}
-          >
-            Change password
-          </Link>
+          {(user.role === "admin" || user.role === "business") && (
+            <Link
+              className="underline text-green-700 dark:text-green-500 hover:text-green-500 dark:hover:text-green-700 duration-300 ease-in"
+              onClick={() => setOpenPasswordModal(true)}
+            >
+              Change password
+            </Link>
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-4 w-full bg-main-50 dark:bg-main-950 max-w-[1024px] p-4 rounded shadow-lg text-left">

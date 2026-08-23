@@ -39,7 +39,7 @@ export default function ImageModal({ open, handleClose, image }) {
     setError(null);
 
     userServices
-      .changeUserImage(user.id, acceptedFiles[0], user.token)
+      .changeUserImage(user.id, acceptedFiles[0])
       .then((data) => {
         if (!data.ok) {
           return setError(data.message);

@@ -6,7 +6,6 @@ import BasicModal from "@/components/basicModal/BasicModal";
 import userService from "@/services/user";
 
 export default function PasswordModal({ open, setOpen }) {
-  const user = useSelector((state) => state.user);
   const shop = useSelector((state) => state.shop);
   const [formData, setFormData] = useState({
     actualPassword: "",
@@ -45,7 +44,7 @@ export default function PasswordModal({ open, setOpen }) {
     }
 
     userService
-      .changePassword(formData, user.token)
+      .changePassword(formData)
       .then((data) => {
         if (data.ok) {
           setOpen(false);

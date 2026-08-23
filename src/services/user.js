@@ -78,14 +78,13 @@ async function updateUser(user, token) {
     return { ok: false, message: "Network error" };
   }
 }
-async function changePassword(passwords, token) {
+async function changePassword(passwords) {
   try {
     const response = await fetch(`${apiUrl}/user/change-password`, {
       method: "PUT",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(passwords),
     });
@@ -207,16 +206,13 @@ async function verifyTokenRequest(token) {
   }
 }
 
-async function changeUserImage(userId, image, token) {
+async function changeUserImage(userId, image) {
   try {
     const formData = new FormData();
     formData.append("image", image);
     const response = await fetch(`${apiUrl}/user/${userId}/image`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
       body: formData,
     });
     const data = await response.json();
