@@ -46,6 +46,7 @@ import SnowtrekAIChat from "./components/SnowtrekAIChat/SnowtrekAIChat";
 import VisitorTracker from "./components/VisitorTracker";
 import SilentAuth from "./components/SilentAuth";
 import VerifyEmail from "./pages/VerifyEmail";
+import ConfirmProfileEdit from "./pages/ConfirmProfileEdit";
 import TravelerJoin from "./pages/TravelerJoin";
 
 function App() {
@@ -134,6 +135,7 @@ function App() {
           <Route path="/shorts/" Component={Short} /> */}
           <Route path="/service/:id" Component={Service} />
           <Route path="/verify-email" Component={VerifyEmail} />
+          <Route path="/confirm-profile-edit" Component={ConfirmProfileEdit} />
           <Route path="/join" Component={TravelerJoin} />
           <Route path="/stores/register" Component={StoreRegister} />
           <Route

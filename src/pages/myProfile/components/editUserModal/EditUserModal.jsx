@@ -7,8 +7,6 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import userService from "@/services/user";
-import { useDispatch } from "react-redux";
-import { addUser } from "@/redux/userSlice";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -16,8 +14,8 @@ dayjs.extend(timezone);
 export default function EditUserModal({ open, setOpen, user }) {
   const [updatedUser, setUpdatedUser] = useState(user);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,14 +48,24 @@ export default function EditUserModal({ open, setOpen, user }) {
       .updateUser(updatedUser)
       .then((data) => {
         if (data.ok) {
-          dispatch(addUser({ ...data.body.updatedUser, token: user.token }));
-          setOpen(false);
+          setSuccess("Revisá tu email para confirmar los cambios.");
+          setTimeout(() => setOpen(false), 3000);
         } else {
           setError(data.message);
         }
       })
       .finally(() => setLoading(false));
   };
+
+  if (success) {
+    return (
+      <BasicModal open={open} setOpen={setOpen}>
+        <div className="flex flex-col items-center justify-between shadow-lg w-[95%] h-auto bg-main-100 dark:bg-main-900 max-w-[800px] rounded-lg p-8 gap-4 overflow-auto">
+          <p className="text-green-600">{success}</p>
+        </div>
+      </BasicModal>
+    );
+  }
 
   return (
     <BasicModal open={open} setOpen={setOpen}>
