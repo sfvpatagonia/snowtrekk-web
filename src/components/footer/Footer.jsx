@@ -2,9 +2,8 @@
 import InstagramIcon from "@mui/icons-material/Instagram";
 import logo from "@/assets/logoST.png";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Suggestion from "./components/Suggestion";
-import EmailModal from "./components/EmailModal";
 import { useSelector } from "react-redux";
 import newSuggestion from "@/services/newSuggestion";
 
@@ -12,27 +11,10 @@ const CONTACT_EMAIL = "info@snowtrekk.com";
 
 const Footer = () => {
   const user = useSelector((state) => state.user);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [contactForm, setContactForm] = useState({ name: "", email: "", message: "" });
   const [contactError, setContactError] = useState("");
   const [contactSuccess, setContactSuccess] = useState("");
-
-  useEffect(() => {
-    const userEmail = localStorage.getItem("userEmail");
-
-    const isUserEmpty = !user || Object.keys(user).length === 0 || !user.id;
-
-    if (!userEmail && isUserEmpty) {
-      setTimeout(() => {
-        setIsModalOpen(true);
-      }, 2000);
-    }
-  }, [user]);
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
 
   const handleContactSubmit = async (event) => {
     event.preventDefault();
@@ -75,7 +57,6 @@ const Footer = () => {
   return (
     <footer className="flex flex-col bg-[#444] z-10">
       <Suggestion />
-      <EmailModal open={isModalOpen} handleClose={handleCloseModal} />
 
       <div className="flex flex-col sm:flex-row w-full gap-12 sm:gap-0 max-w-7xl mx-auto justify-evenly p-16">
         <ul className="flex flex-col gap-4 text-left">
