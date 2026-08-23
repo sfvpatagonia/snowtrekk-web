@@ -47,7 +47,7 @@ export default function EditUserModal({ open, setOpen, user }) {
     }
 
     userService
-      .updateUser(updatedUser, user.token)
+      .updateUser(updatedUser)
       .then((data) => {
         if (data.ok) {
           dispatch(addUser({ ...data.body.updatedUser, token: user.token }));
@@ -63,7 +63,7 @@ export default function EditUserModal({ open, setOpen, user }) {
     <BasicModal open={open} setOpen={setOpen}>
       <div className="flex flex-col items-center justify-between shadow-lg w-[95%] h-auto bg-main-100 dark:bg-main-900 max-w-[800px] rounded-lg p-8 gap-4 overflow-auto">
         <h2 className="hidden md:block font-bold text-main-0 dark:text-main-1000 ">
-          Edit Shop
+          Edit personal information
         </h2>
         <form className="flex flex-col gap-4 p-2" onSubmit={handleSubmit}>
           <TextField

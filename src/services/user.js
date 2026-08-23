@@ -61,14 +61,13 @@ async function setFavorite(idService, token) {
   }
 }
 
-async function updateUser(user, token) {
+async function updateUser(user) {
   try {
     const response = await fetch(`${apiUrl}/user/`, {
       method: "PUT",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(user),
     });
