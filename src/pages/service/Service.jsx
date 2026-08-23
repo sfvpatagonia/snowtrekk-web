@@ -31,7 +31,7 @@ const Service = () => {
       })
       .catch((error) => {
         console.error(error);
-        navigate("/login");
+        navigate("/join");
       })
       .finally(() => setLoading(false));
 

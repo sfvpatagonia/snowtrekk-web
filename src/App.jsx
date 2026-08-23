@@ -6,7 +6,6 @@ import DestinationGuide from "./pages/DestinationGuide";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import Service from "./pages/service/Service";
-import Login from "./pages/LogIn";
 import Admin from "./pages/admin/Admin";
 import RegionGuide from "./pages/RegionGuide";
 import Area from "./pages/AreaGuide";
@@ -134,7 +133,6 @@ function App() {
           {/* <Route path="/channel/" Component={Channel} />
           <Route path="/shorts/" Component={Short} /> */}
           <Route path="/service/:id" Component={Service} />
-          <Route path="/login" Component={Login} />
           <Route path="/verify-email" Component={VerifyEmail} />
           <Route path="/join" Component={TravelerJoin} />
           <Route path="/stores/register" Component={StoreRegister} />

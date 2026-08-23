@@ -94,22 +94,13 @@ const URL = import.meta.env.VITE_API_URL.replace("/api", "");
                   My profile
                 </Link>
               ) : (
-                <div className="flex gap-4">
-                  <Link
-                    to="/join"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in"
-                  >
-                    Sumate
-                  </Link>
-                  <Link
-                    to="/login"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in"
-                  >
-                    Log in
-                  </Link>
-                </div>
+                <Link
+                  to="/join"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in"
+                >
+                  Sumate
+                </Link>
               )}
             </li>
             <li className="flex gap-2 w-full border-t border-main-600 dark:border-main-400 first:border-0 p-2">

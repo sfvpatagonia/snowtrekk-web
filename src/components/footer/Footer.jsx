@@ -139,7 +139,7 @@ const Footer = () => {
           <li>
             <Link
               className="text-main-1000 hover:text-green-700 duration-300 ease-in border-b border-transparent hover:border-green-700"
-              to={user.id ? "/my-profile?tab=create-shop" : "/login"}
+              to={user.id ? "/my-profile?tab=create-shop" : "/join"}
               reloadDocument
             >
               I want to sell

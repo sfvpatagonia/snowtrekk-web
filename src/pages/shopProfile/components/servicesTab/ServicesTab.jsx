@@ -40,7 +40,7 @@ export default function ServicesTab() {
       .catch((error) => {
         console.error(error);
 
-        navigate("/login");
+        navigate("/join");
       })
       .finally(() => setLoading(false));
   }, []);
