@@ -1,6 +1,7 @@
 ﻿import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./SnowtrekAIChat.module.css";
 import { sendSnowtrekAiMessage } from "../../services/snowtrekAiClient";
+import { useRequireTrekker } from "@/hooks/useRequireTrekker";
 
 const MAX_RESULTS_PER_GROUP = 3;
 
@@ -66,6 +67,7 @@ function ResultGroups({ results }) {
 }
 
 function SnowtrekAIChat() {
+  const { guardAction, verificationModal } = useRequireTrekker();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
@@ -232,9 +234,16 @@ function SnowtrekAIChat() {
         </div>
       ) : null}
 
-      <button className={styles.floatingButton} type="button" onClick={toggleOpen} aria-label="Abrir SnowtrekIA">
+      <button
+        className={styles.floatingButton}
+        type="button"
+        onClick={() => guardAction(toggleOpen)}
+        aria-label="Abrir SnowtrekIA"
+      >
         AI
       </button>
+
+      {verificationModal}
     </div>
   );
 }

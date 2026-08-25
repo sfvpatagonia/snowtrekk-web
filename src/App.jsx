@@ -48,6 +48,9 @@ import SilentAuth from "./components/SilentAuth";
 import VerifyEmail from "./pages/VerifyEmail";
 import ConfirmProfileEdit from "./pages/ConfirmProfileEdit";
 import TravelerJoin from "./pages/TravelerJoin";
+import TrekkerLogin from "./pages/TrekkerLogin";
+import RequestPasswordReset from "./pages/RequestPasswordReset";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const darkMode = useSelector((state) => state.theme.darkMode);
@@ -137,6 +140,9 @@ function App() {
           <Route path="/verify-email" Component={VerifyEmail} />
           <Route path="/confirm-profile-edit" Component={ConfirmProfileEdit} />
           <Route path="/join" Component={TravelerJoin} />
+          <Route path="/traveler/login" Component={TrekkerLogin} />
+          <Route path="/forgot-password" Component={RequestPasswordReset} />
+          <Route path="/reset-password" Component={ResetPassword} />
           <Route path="/stores/register" Component={StoreRegister} />
           <Route
             path="/admin/login"

@@ -19,6 +19,7 @@ const initialState = {
   Images: [],
   token: "",
   role: "traveler",
+  verified: false,
 };
 
 export const userSlice = createSlice({
@@ -45,6 +46,7 @@ export const userSlice = createSlice({
         Images = [],
         token = "",
         role,
+        verified = false,
       } = action.payload;
 
       state.id = id;
@@ -65,6 +67,7 @@ export const userSlice = createSlice({
       state.token = token;
       state.Images = Images;
       state.role = role ?? state.role;
+      state.verified = verified;
     },
     changeName: (state, action) => {
       state.name = action.payload;

@@ -268,6 +268,66 @@ async function logout() {
   }
 }
 
+// Unauthenticated, read-only lookup — lets a form recognize a returning
+// email before any real auth action.
+async function checkEmail(email) {
+  try {
+    const response = await fetch(
+      `${apiUrl}/user/check-email?email=${encodeURIComponent(email)}`,
+      { method: "GET", credentials: "include" }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, message: "Network error" };
+  }
+}
+
+async function completeVerification(payload) {
+  try {
+    const response = await fetch(`${apiUrl}/user/complete-verification`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, message: "Network error" };
+  }
+}
+
+async function requestPasswordReset(email) {
+  try {
+    const response = await fetch(`${apiUrl}/user/request-password-reset`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, message: "Network error" };
+  }
+}
+
+async function resetPassword(token, newPassword) {
+  try {
+    const response = await fetch(`${apiUrl}/user/reset-password`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, newPassword }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return { ok: false, message: "Network error" };
+  }
+}
+
 async function activateAccount(token, password) {
   try {
     const response = await fetch(`${apiUrl}/user/activate`, {
@@ -304,4 +364,8 @@ export default {
   preRegister,
   getMe,
   logout,
+  checkEmail,
+  completeVerification,
+  requestPasswordReset,
+  resetPassword,
 };

@@ -214,6 +214,15 @@ const Footer = () => {
           <img src={logo} className="w-60" />
 
           <p className="text-main-1000">Copyright© 1999 - 2026 Snowtrekk</p>
+
+          <div className="flex gap-3 text-xs text-main-1000/60">
+            <Link to="/admin/login" className="hover:text-main-1000">
+              Admin
+            </Link>
+            <Link to="/business/login" className="hover:text-main-1000">
+              Business
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

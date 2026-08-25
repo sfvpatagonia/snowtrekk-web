@@ -1,19 +1,36 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { TextField, Checkbox, FormControlLabel } from "@mui/material";
 import userService from "../services/user";
+import { useDebouncedCheckEmail } from "@/hooks/useDebouncedCheckEmail";
+import { useTrekkerPasswordLogin } from "@/hooks/useTrekkerPasswordLogin";
+
+const isEmailValid = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 function TravelerJoin() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
-  const isEmailValid = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  const { recognized, name, verified } = useDebouncedCheckEmail(email);
+  const {
+    password,
+    setPassword,
+    submit: submitLogin,
+    loading: loginLoading,
+    error: loginError,
+  } = useTrekkerPasswordLogin(email);
+
+  // A recognized, already-verified Trekker logs in inline here instead of
+  // going through the magic-link flow again.
+  const isTrekkerLogin = recognized && verified;
+  const busy = isTrekkerLogin ? loginLoading : loading;
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -21,6 +38,12 @@ function TravelerJoin() {
 
     if (!email || !isEmailValid(email)) {
       setError("Ingresá un email válido");
+      return;
+    }
+
+    if (isTrekkerLogin) {
+      const ok = await submitLogin();
+      if (ok) navigate("/explore");
       return;
     }
 
@@ -66,6 +89,14 @@ function TravelerJoin() {
             </div>
           ) : (
             <form onSubmit={onSubmit} className="flex flex-col gap-2 p-4 w-full">
+              {recognized && (
+                <p className="text-sm text-center">
+                  {isTrekkerLogin
+                    ? `¡Hola de nuevo, ${name}! Para tu seguridad, ingresá tu contraseña.`
+                    : "¡Hola de nuevo! Para tu seguridad, te vamos a mandar un link a tu mail."}
+                </p>
+              )}
+
               <TextField
                 label="Tu email"
                 name="email"
@@ -73,20 +104,39 @@ function TravelerJoin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={marketingConsent}
-                    onChange={(e) => setMarketingConsent(e.target.checked)}
-                  />
-                }
-                label="Quiero recibir novedades y ofertas"
-              />
+              {isTrekkerLogin ? (
+                <TextField
+                  label="Contraseña"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loginLoading}
+                />
+              ) : (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={marketingConsent}
+                      onChange={(e) => setMarketingConsent(e.target.checked)}
+                    />
+                  }
+                  label="Quiero recibir novedades y ofertas"
+                />
+              )}
 
-              <button className="button" disabled={loading}>
-                {loading ? "Enviando..." : "Enviarme el link"}
+              <p className="text-red-600 dark:text-red-400 text-sm">
+                {isTrekkerLogin ? loginError : error}
+              </p>
+
+              <button className="button" disabled={busy}>
+                {isTrekkerLogin
+                  ? busy
+                    ? "Ingresando..."
+                    : "Ingresar"
+                  : busy
+                    ? "Enviando..."
+                    : "Enviarme el link"}
               </button>
             </form>
           )}
