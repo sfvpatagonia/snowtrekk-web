@@ -1,17 +1,26 @@
 import { useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import TrekkerVerificationModal from "@/components/TrekkerVerificationModal/TrekkerVerificationModal";
 
 // Any current or future entry point to a Trekker-only action (AI chat,
 // purchase, ...) calls guardAction(fn) instead of calling fn directly.
-// Verified users pass straight through; unverified travelers see the
-// verification modal, and fn fires automatically once they complete it.
+// No active session at all -> /join (the verification modal's endpoint
+// requires a session and would just fail for an anonymous visitor).
+// Logged in but unverified -> the verification modal, and fn fires
+// automatically once they complete it. Verified -> fn runs immediately.
 export function useRequireTrekker() {
+  const userId = useSelector((state) => state.user.id);
   const verified = useSelector((state) => state.user.verified);
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const pendingAction = useRef(null);
 
   const guardAction = (action) => {
+    if (!userId) {
+      navigate("/join");
+      return;
+    }
     if (verified) {
       action();
       return;

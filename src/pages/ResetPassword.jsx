@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { TextField } from "@mui/material";
+import PasswordField from "@/components/PasswordField/PasswordField";
 import userService from "@/services/user";
 
 export default function ResetPassword() {
@@ -41,9 +41,8 @@ export default function ResetPassword() {
             <span className="text-5xl">🔑</span>
             <h1 className="text-xl font-bold dark:text-white">Elegí tu nueva contraseña</h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-full">
-              <TextField
+              <PasswordField
                 label="Nueva contraseña"
-                type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 helperText="Mínimo 8 caracteres, 1 mayúscula y 1 número"
