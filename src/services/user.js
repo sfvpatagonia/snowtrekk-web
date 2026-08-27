@@ -249,8 +249,20 @@ async function getMe() {
       credentials: "include",
     });
     const data = await response.json();
+
+    // 401 means no active Trecker session, which is expected for
+    // anonymous visitors — not an error worth logging.
+    if (response.status === 401) {
+      return { ok: false, status: 401 };
+    }
+
+    if (!response.ok) {
+      console.error("getMe failed:", response.status, data?.message);
+    }
+
     return data;
   } catch (error) {
+    console.error("Network error:", error);
     return { ok: false, message: "Network error" };
   }
 }
