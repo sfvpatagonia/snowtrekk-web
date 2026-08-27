@@ -6,6 +6,7 @@ import { Badge } from "@mui/material";
 import { Link } from "react-router-dom";
 import { io } from "socket.io-client";
 import { changeTheme } from "@/redux/themeSlice";
+import defaultAvatar from "@/assets/bonfire.png";
 
 export default function HeaderMobile({ setOpenCart, setOpenGuide }) {
   const socketRef = useRef(null);
@@ -88,10 +89,15 @@ const URL = import.meta.env.VITE_API_URL.replace("/api", "");
               {user.id ? (
                 <Link
                   to="/my-profile"
-                  className="text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in"
                 >
-                  {/* <img src={user.profilePic} alt="Profile" /> */}
-                  My profile
+                  <img
+                    src={user.image || defaultAvatar}
+                    alt=""
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  {user.name}
                 </Link>
               ) : (
                 <Link

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import logo from "@/assets/logoST.png"; // LOGO PROVISORIO
+import defaultAvatar from "@/assets/bonfire.png";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { changeTheme } from "@/redux/themeSlice";
@@ -176,9 +177,14 @@ const Header = () => {
         {user.id ? (
           <Link
             to="/my-profile"
-            className="text-[#f3f3f3] transition-all duration-300 text-[1.15em] relative cursor-pointer hover:text-[var(--color-500)]"
+            className="flex items-center gap-2 text-[#f3f3f3] transition-all duration-300 text-[1.15em] relative cursor-pointer hover:text-[var(--color-500)]"
           >
-            My profile
+            <img
+              src={user.image || defaultAvatar}
+              alt=""
+              className="w-9 h-9 rounded-full object-cover"
+            />
+            {user.name}
           </Link>
         ) : (
           <Link
