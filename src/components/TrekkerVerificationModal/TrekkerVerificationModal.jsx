@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { TextField } from "@mui/material";
 import BasicModal from "@/components/basicModal/BasicModal";
+import PasswordField from "@/components/PasswordField/PasswordField";
 import { addUser } from "@/redux/userSlice";
 import userService from "@/services/user";
 
@@ -79,9 +80,8 @@ function TrekkerVerificationModal({ open, setOpen, onSuccess }) {
             onChange={handleChange}
             disabled={loading}
           />
-          <TextField
+          <PasswordField
             label="Contraseña"
-            type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}

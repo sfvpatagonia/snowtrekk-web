@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { TextField } from "@mui/material";
+import PasswordField from "@/components/PasswordField/PasswordField";
 import { useTrekkerPasswordLogin } from "@/hooks/useTrekkerPasswordLogin";
 
 function TrekkerLogin() {
@@ -30,9 +31,8 @@ function TrekkerLogin() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
             />
-            <TextField
+            <PasswordField
               label="Contraseña"
-              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}

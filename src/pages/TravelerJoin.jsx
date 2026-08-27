@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import { TextField, Checkbox, FormControlLabel } from "@mui/material";
+import PasswordField from "@/components/PasswordField/PasswordField";
 import userService from "../services/user";
 import { useDebouncedCheckEmail } from "@/hooks/useDebouncedCheckEmail";
 import { useTrekkerPasswordLogin } from "@/hooks/useTrekkerPasswordLogin";
@@ -12,6 +14,7 @@ const isEmailValid = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 function TravelerJoin() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const userId = useSelector((state) => state.user.id);
   const [email, setEmail] = useState("");
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [error, setError] = useState("");
@@ -31,6 +34,12 @@ function TravelerJoin() {
   // going through the magic-link flow again.
   const isTrekkerLogin = recognized && verified;
   const busy = isTrekkerLogin ? loginLoading : loading;
+
+  // Already logged in (e.g. navigated here mid-session) — nothing to join,
+  // send them back in.
+  useEffect(() => {
+    if (userId) navigate("/explore");
+  }, [userId, navigate]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -70,6 +79,8 @@ function TravelerJoin() {
     }
   };
 
+  if (userId) return null;
+
   return (
     <>
       <Header />
@@ -106,13 +117,20 @@ function TravelerJoin() {
               />
 
               {isTrekkerLogin ? (
-                <TextField
-                  label="Contraseña"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loginLoading}
-                />
+                <>
+                  <PasswordField
+                    label="Contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loginLoading}
+                  />
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-green-700 dark:text-green-500 self-end"
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </Link>
+                </>
               ) : (
                 <FormControlLabel
                   control={

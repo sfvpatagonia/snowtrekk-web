@@ -184,8 +184,8 @@ function App() {
             }
           /> */}
         </Routes>
+        <SnowtrekAIChat />
       </Router>
-      <SnowtrekAIChat />
     </ThemeProvider>
   );
 }
