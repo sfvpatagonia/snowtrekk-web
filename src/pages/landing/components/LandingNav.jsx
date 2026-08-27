@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '@/assets/logoST.png';
+import defaultAvatar from '@/assets/bonfire.png';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import DrawerGuide from '@/components/DrawerGuide.jsx';
@@ -84,8 +85,13 @@ export default function LandingNav({ regionData }) {
         {/* CTA + mobile toggle */}
         <div className="flex items-center gap-3">
           {user.id ? (
-            <Link to="/my-profile" className="button hidden sm:flex">
-              My profile
+            <Link to="/my-profile" className="button hidden sm:flex items-center gap-2">
+              <img
+                src={user.image || defaultAvatar}
+                alt=""
+                className="w-9 h-9 rounded-full object-cover"
+              />
+              {user.name}
             </Link>
           ) : (
             <Link to="/join" className="button hidden sm:flex">
@@ -124,8 +130,17 @@ export default function LandingNav({ regionData }) {
           </Link>
           {/* "Publicidad" hidden — no advertising page exists yet, /contact 404s */}
           {user.id ? (
-            <Link to="/my-profile" className="button w-full" onClick={() => setMobileOpen(false)}>
-              My profile
+            <Link
+              to="/my-profile"
+              className="button w-full flex items-center gap-2"
+              onClick={() => setMobileOpen(false)}
+            >
+              <img
+                src={user.image || defaultAvatar}
+                alt=""
+                className="w-8 h-8 rounded-full object-cover"
+              />
+              {user.name}
             </Link>
           ) : (
             <Link to="/join" className="button w-full" onClick={() => setMobileOpen(false)}>
