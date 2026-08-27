@@ -8,6 +8,7 @@ import userService from "../services/user";
 // cookie server-side, so this just asks the backend and syncs redux.
 export default function SilentAuth() {
   const hadPersistedUser = !!useSelector((state) => state.user.id);
+  const persistedImage = useSelector((state) => state.user.image);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -17,7 +18,11 @@ export default function SilentAuth() {
       if (cancelled) return;
 
       if (me.ok) {
-        dispatch(addUser(me.body));
+        // getMe's Image lookup can race with a profile-photo upload and
+        // report null for an instant even though a photo exists — don't
+        // let that transient null erase an image we already had for this
+        // same session.
+        dispatch(addUser({ ...me.body, image: me.body.image ?? persistedImage }));
       } else if (hadPersistedUser) {
         // redux-persist kept a stale user in localStorage from a session
         // that's no longer valid server-side — clear it so the app
