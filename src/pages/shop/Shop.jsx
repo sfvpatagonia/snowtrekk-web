@@ -7,17 +7,15 @@ import InformationCard from "./components/InformationCard";
 import CategorySlider from "./components/CategorySlider";
 import ServiceCard from "@/components/ServiceCard";
 import shopServices from "@/services/shop";
-import { useSelector } from "react-redux";
 
 export default function Shop() {
   const [currentShop, setCurrentShop] = useState(null);
   const [loading, setLoading] = useState(true);
   const [services, setServices] = useState([]);
-  const [products, setProducts] = useState([]);
+  const [, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { id } = useParams();
-  const user = useSelector((state) => state.user);
 
   const getCategories = (shopFound) => {
     const uniqueCategories = new Set();
@@ -31,7 +29,7 @@ export default function Shop() {
 
   useEffect(() => {
     shopServices
-      .getShopById(id, user.token)
+      .getPublicShopById(id)
       .then((response) => {
         if (response.ok) {
           const shopFound = response.body.shop;
@@ -48,7 +46,7 @@ export default function Shop() {
         console.error("Network error:", error);
         setLoading(false);
       });
-  }, []);
+  }, [id]);
 
   if (loading) {
     return <LoadingComponent />;

@@ -113,7 +113,6 @@ function App() {
             <Route path="sales" element={<SalesTab />} />
             <Route path="/shop/:id/chat/:idOrder" Component={ShopChat} />
             <Route path="/user/:id/chat/:idOrder" Component={UserChat} />
-            <Route path="/shop/:id" Component={Shop} />
             <Route path="/user/:id" Component={UserPage} />
           </Route>
 
@@ -126,6 +125,8 @@ function App() {
             path="/destination/:destination"
             Component={DestinationGuide}
           />
+
+          <Route path="/shop/:id" Component={Shop} />
 
           {/* geograficos */}
           <Route path="/country/:country" Component={CountryGuide} />

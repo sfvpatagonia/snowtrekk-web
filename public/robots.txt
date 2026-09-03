@@ -9,7 +9,7 @@ Disallow: /my-profile
 Disallow: /my-shop
 Disallow: /checkout
 Disallow: /explore
-Disallow: /shop/
+Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
 Allow: /
@@ -22,7 +22,7 @@ Disallow: /my-profile
 Disallow: /my-shop
 Disallow: /checkout
 Disallow: /explore
-Disallow: /shop/
+Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
 Allow: /
@@ -34,7 +34,7 @@ Disallow: /my-profile
 Disallow: /my-shop
 Disallow: /checkout
 Disallow: /explore
-Disallow: /shop/
+Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
 Allow: /
@@ -46,7 +46,7 @@ Disallow: /my-profile
 Disallow: /my-shop
 Disallow: /checkout
 Disallow: /explore
-Disallow: /shop/
+Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
 Allow: /
@@ -58,7 +58,7 @@ Disallow: /my-profile
 Disallow: /my-shop
 Disallow: /checkout
 Disallow: /explore
-Disallow: /shop/
+Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
 Allow: /
@@ -70,7 +70,7 @@ Disallow: /my-profile
 Disallow: /my-shop
 Disallow: /checkout
 Disallow: /explore
-Disallow: /shop/
+Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
 Allow: /
@@ -82,7 +82,7 @@ Disallow: /my-profile
 Disallow: /my-shop
 Disallow: /checkout
 Disallow: /explore
-Disallow: /shop/
+Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
 Allow: /
@@ -94,7 +94,7 @@ Disallow: /my-profile
 Disallow: /my-shop
 Disallow: /checkout
 Disallow: /explore
-Disallow: /shop/
+Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
 Allow: /

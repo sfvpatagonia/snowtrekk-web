@@ -60,6 +60,23 @@ async function getShopById(shopId, token) {
   }
 }
 
+// Public shop detail view - no auth required, backend returns a
+// public-safe field set (see shop.controller.js getPublicShopById)
+async function getPublicShopById(shopId) {
+  try {
+    const response = await fetch(`${apiUrl}/shop/public/${shopId}`, {
+      method: "GET",
+    });
+
+    const responseData = await response.json();
+
+    return responseData;
+  } catch (error) {
+    console.log(error);
+    return { ok: false, message: "Network error" };
+  }
+}
+
 async function updateShop(shopId, data, token) {
   try {
     const response = await fetch(`${apiUrl}/shop/${shopId}`, {
@@ -272,6 +289,7 @@ export default {
   createShop,
   getShopsByUserId,
   getShopById,
+  getPublicShopById,
   updateShop,
   advertiseService,
   changePassword,
