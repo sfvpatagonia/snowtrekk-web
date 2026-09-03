@@ -1,0 +1,102 @@
+# Snowtrekk MVP Web — crawl policy
+# Public content (destinations, activities, services, guides) is open to crawl.
+# Gated/internal app routes and the JSON API are not useful to crawlers and are excluded.
+
+User-agent: *
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+# AI agents / answer engines — explicitly allowed over the same public content
+User-agent: GPTBot
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+User-agent: ChatGPT-User
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+User-agent: ClaudeBot
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+User-agent: Claude-User
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+User-agent: PerplexityBot
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+User-agent: Google-Extended
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+User-agent: CCBot
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+Sitemap: https://__DOMAIN__/sitemap.xml
