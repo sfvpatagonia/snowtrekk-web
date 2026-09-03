@@ -1,6 +1,11 @@
 # Snowtrekk MVP Web — crawl policy
 # Public content (destinations, activities, services, guides) is open to crawl.
 # Gated/internal app routes and the JSON API are not useful to crawlers and are excluded.
+#
+# Content-Signal (https://contentsignals.org/) declares usage preferences for
+# already-crawled content, on every group below: content may be used for
+# search indexing (search=yes) and live AI answers/citation (ai-input=yes),
+# but not for training AI models (ai-train=no).
 
 User-agent: *
 Disallow: /admin
@@ -12,6 +17,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 # AI agents / answer engines — explicitly allowed over the same public content
@@ -25,6 +31,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 User-agent: ChatGPT-User
@@ -37,6 +44,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 User-agent: ClaudeBot
@@ -49,6 +57,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 User-agent: Claude-User
@@ -61,6 +70,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 User-agent: PerplexityBot
@@ -73,6 +83,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 User-agent: Google-Extended
@@ -85,6 +96,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 User-agent: CCBot
@@ -97,6 +109,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 User-agent: anthropic-ai
@@ -109,6 +122,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 User-agent: OAI-SearchBot
@@ -121,6 +135,7 @@ Disallow: /explore
 Disallow: /shop/*/chat
 Disallow: /user/
 Disallow: /business/dashboard
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 Sitemap: https://www.snowtrekk.com/sitemap.xml
