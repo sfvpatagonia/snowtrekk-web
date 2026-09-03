@@ -99,4 +99,28 @@ Disallow: /user/
 Disallow: /business/dashboard
 Allow: /
 
-Sitemap: https://__DOMAIN__/sitemap.xml
+User-agent: anthropic-ai
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/*/chat
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+User-agent: OAI-SearchBot
+Disallow: /admin
+Disallow: /api/
+Disallow: /my-profile
+Disallow: /my-shop
+Disallow: /checkout
+Disallow: /explore
+Disallow: /shop/*/chat
+Disallow: /user/
+Disallow: /business/dashboard
+Allow: /
+
+Sitemap: https://www.snowtrekk.com/sitemap.xml
