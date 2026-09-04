@@ -128,6 +128,10 @@ const Header = () => {
 
     prefersDark.addEventListener("change", handleChange);
     return () => prefersDark.removeEventListener("change", handleChange);
+    // runs once on mount to seed the theme from the OS preference and keep listening
+    // for OS-level changes; including `darkMode` would re-run this effect as soon as
+    // it's set and immediately tear down the change listener
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

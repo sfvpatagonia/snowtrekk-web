@@ -23,10 +23,11 @@ export default function UploadImage({ currentImages, setEditData }) {
       };
       reader.readAsArrayBuffer(file);
     });
-  }, []);
+  }, [setEditData]);
 
-  const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
-    useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+  });
 
   const handleUnselect = (url) => {
     setPreviewUrl((prev) => prev.filter((image) => image.url !== url));
@@ -51,7 +52,7 @@ export default function UploadImage({ currentImages, setEditData }) {
         ) : (
           <div className="flex flex-col flex-1 items-center justify-center p-2 cursor-pointer">
             <FileUploadIcon className="text-main-600" fontSize="large" />
-            <p>Drag 'n' drop some files here, or click to select files</p>
+            <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
           </div>
         )}
       </div>

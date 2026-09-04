@@ -1,5 +1,4 @@
 import styles from "./filterVideosShortMobile.module.css";
-import logo from "@/assets/logoST.png";
 import LiveTvIcon from "@mui/icons-material/LiveTv";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
@@ -8,7 +7,7 @@ import SnowshoeingIcon from "@mui/icons-material/Snowshoeing";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-const FilterVideosShortMobile = ({ videoMetaData, setVideoMetaData }) => {
+const FilterVideosShortMobile = ({ videoMetaData }) => {
   const [isOpen, setIsOpen] = useState("");
 
   const activities = [

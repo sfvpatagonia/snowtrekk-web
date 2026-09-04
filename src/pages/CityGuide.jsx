@@ -34,7 +34,7 @@ const CityGuide = () => {
         console.log(error);
         navigate("/not-found");
       });
-  }, []);
+  }, [city, navigate]);
 
   useEffect(() => {
     if (!currentCity) return;
@@ -47,7 +47,7 @@ const CityGuide = () => {
       setLoading(false);
     };
     fetchData();
-  }, [currentCity]);
+  }, [currentCity, city]);
 
   const handleActivitySelection = (activityId) => {
     setSelectedActivities((prev) =>

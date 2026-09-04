@@ -58,7 +58,7 @@ const DestinationGuide = () => {
         console.log(error);
         navigate("/not-found");
       });
-  }, []);
+  }, [destination, navigate]);
 
   // ================= FETCH DE DATOS ======================
   useEffect(() => {
@@ -89,7 +89,7 @@ const DestinationGuide = () => {
     };
 
     fetchData();
-  }, [currentDestination]);
+  }, [currentDestination, destination]);
 
   // ================= SCROLL SPY ROBUSTO =================
   useEffect(
@@ -157,7 +157,6 @@ const DestinationGuide = () => {
             const ratio = visible / rect.height;
 
             if (DEBUG_SCROLLSPY) {
-              // eslint-disable-next-line no-console
               console.log(`scrollspy check ${key}`, {
                 top: rect.top,
                 bottom: rect.bottom,
@@ -195,9 +194,9 @@ const DestinationGuide = () => {
         if (observer) observer.disconnect();
         if (DEBUG_SCROLLSPY) console.log("Unmounting scrollspy");
       };
-      // NOTE: intencionalmente no añadimos 'activeTab' a deps para que el observer no se reinstale constantemente
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // NOTE: intencionalmente no añadimos 'activeTab' a deps para que el observer no se reinstale constantemente
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       /* solo al montar */
     ],
@@ -313,7 +312,7 @@ const DestinationGuide = () => {
               <Reveal>
                 <div className="flex flex-col w-full bg-main-100 dark:bg-main-900 text-main-0 dark:text-main-1000 p-3 rounded shadow">
                   <h2 className="text-left text-2xl font-bold py-4 text-main-600 dark:text-main-400">
-                    Our Community's Choice
+                    Our Community&apos;s Choice
                   </h2>
                   <div className="flex w-full gap-2">
                     <div className="flex flex-col w-74  h-auto">

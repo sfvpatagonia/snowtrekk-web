@@ -24,6 +24,10 @@ const ActivitiesFilter = ({
     ) {
       handleActivitySelection("beddb246-fd1e-11ee-b212-d8fb5ec87fe9");
     }
+    // handleActivitySelection toggles selection and is redefined every render in the
+    // parent (not memoized); including it (or activities) here would re-fire on every
+    // render and flip the selection on/off in a loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialActivityId]);
 
   const handleChange = (event) => {

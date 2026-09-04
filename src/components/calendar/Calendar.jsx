@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { DayCalendarSkeleton } from "@mui/x-date-pickers";
 
-const Calendar = ({ selectedDate, setSelectedDate, availableDates }) => {
+const Calendar = ({ setSelectedDate, availableDates }) => {
 
   const availableDays = new Set(
     availableDates.flatMap((a) =>

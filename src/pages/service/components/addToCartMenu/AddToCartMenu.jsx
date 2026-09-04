@@ -30,7 +30,7 @@ export default function AddToCartMenu({ item }) {
     const uniqueSchedules = [...new Set(daySchedules)].sort();
 
     setSchedules(uniqueSchedules);
-  }, [selectedDate]);
+  }, [selectedDate, item.Availabilities]);
 
   useLayoutEffect(() => {
     const handleResize = () => {

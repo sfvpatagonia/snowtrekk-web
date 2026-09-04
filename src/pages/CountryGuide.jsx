@@ -33,7 +33,7 @@ const CountryGuide = () => {
         console.log(error);
         navigate("/not-found");
       });
-  }, []);
+  }, [country, navigate]);
 
   useEffect(() => {
     if (currentCountry === null) return;
@@ -46,7 +46,7 @@ const CountryGuide = () => {
       setLoading(false);
     };
     fetchData();
-  }, [currentCountry]);
+  }, [currentCountry, country]);
 
   const handleActivitySelection = (activityId) => {
     setSelectedActivities((prev) =>

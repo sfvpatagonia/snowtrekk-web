@@ -20,7 +20,7 @@ export default function AboutUs() {
           {/* CONTENT */}
           <section className="flex flex-col gap-6 text-sm leading-relaxed">
             <p className="font-semibold">
-              It's about having unique experiences.
+              It&apos;s about having unique experiences.
             </p>
             <p>
               <strong>Snowtrekk</strong> was born from the shared dream of a
@@ -43,7 +43,7 @@ export default function AboutUs() {
               activity into an unforgettable memory, guaranteeing quality,
               safety, and an authentic connection to the place. We believe in
               the transformative power of outdoor experiences and in the people
-              who make them possible. That's why we created a marketplace and a
+              who make them possible. That&apos;s why we created a marketplace and a
               SaaS platform designed to help these providers grow with
               technology, strengthening their communities and protecting the
               environment that gives us so many emotions.
@@ -64,7 +64,7 @@ export default function AboutUs() {
             </p>
             <p className="font-semibold">
               Impact today, future for all. Growth with purpose, stories that
-              endure. We cherish today's adventures for tomorrow's generations.
+              endure. We cherish today&apos;s adventures for tomorrow&apos;s generations.
             </p>
           </section>
         </main>

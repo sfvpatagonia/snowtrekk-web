@@ -14,7 +14,7 @@ function News() {
   const [isVideoLoaded, setIsVideoLoaded] = useState(true);
   const [news, setNews] = useState([]);
   const [onFront, setOnFront] = useState(0);
-  const [playing, setPlaying] = useState(true);
+  const [playing] = useState(true);
 
   const snowtrekkFixedContent = {
     id: 0,
@@ -40,6 +40,9 @@ function News() {
       setNews(gettedNews);
       setIsNewsLoaded(true);
     });
+    // runs once on mount; snowtrekkFixedContent is a fresh object literal every
+    // render, so including it would refetch on every render instead of once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -92,7 +95,7 @@ function News() {
                     {news[onFront] &&
                       Object.entries(news[onFront].tags).flatMap(
                         ([key, values]) => {
-                          return values.map((value, index) => (
+                          return values.map((value) => (
                             <Link
                               key={value.id}
                               to={`/${key}/${value.id}`}

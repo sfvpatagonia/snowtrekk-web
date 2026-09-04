@@ -4,12 +4,11 @@ import videoService from "@/services/video";
 import PlaceCard from "./PlaceCard";
 import LoadingComponent from "@/components/LoadingComponent";
 import { Link } from "react-router-dom";
-import logo from "@/assets/logoST.png";
 
 export default function BannerVideos() {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
-  const [playing, setPlaying] = useState(true);
+  const [playing] = useState(true);
   const [loading, setLoading] = useState(true);
   // const [videoLoading, setVideoLoading] = useState(false);
 

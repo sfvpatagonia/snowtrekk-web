@@ -2,7 +2,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import styles from "./orderItemsBy.module.css";
 import { useState } from "react";
 
-export default function OrderItemsBy({ setItems }) {
+export default function OrderItemsBy() {
   const [value, setValue] = useState("Most Recently");
 
   return (

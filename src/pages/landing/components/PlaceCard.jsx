@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import placeholder from "@/assets/logoST.png";
 
 export default function PlaceCard({ place, changeVideo }) {

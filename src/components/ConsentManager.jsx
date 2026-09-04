@@ -4,6 +4,9 @@ import { useEffect } from "react";
 import { setConsentFromCookie } from "../redux/cookieSlice";
 
 export default function ConsentManager() {
+  const dispatch = useDispatch();
+  const showBanner = useSelector((state) => state.cookies.showBanner);
+
   useEffect(() => {
     const cookies = document.cookie.split("; ");
     const found = cookies.find((row) =>
@@ -16,9 +19,7 @@ export default function ConsentManager() {
     } else {
       dispatch(setConsentFromCookie(null));
     }
-  }, []);
-  const dispatch = useDispatch();
-  const showBanner = useSelector((state) => state.cookies.showBanner);
+  }, [dispatch]);
 
   if (!showBanner) return null;
 

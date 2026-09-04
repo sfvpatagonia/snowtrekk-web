@@ -30,7 +30,7 @@ export default function UserPage() {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [id, user.token]);
 
 
   if (loading) {
@@ -63,6 +63,7 @@ export default function UserPage() {
                   {userVisited.shops.map((shop) => {
                     return (
                       <Link
+                        key={shop.id}
                         to={`shop/${shop.id}`}
                         className="duration-200 ease-in hover:text-green-700 dark:hover:text-green-500"
                       >

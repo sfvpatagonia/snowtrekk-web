@@ -28,7 +28,7 @@ function BusinessDashboard() {
       }
       setLoading(false);
     });
-  }, [user.id]);
+  }, [user.id, user.token]);
 
   const handleLogout = async () => {
     await userService.logout();

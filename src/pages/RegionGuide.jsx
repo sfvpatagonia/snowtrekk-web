@@ -42,7 +42,7 @@ const Region = () => {
         navigate("/not-found");
       }
     }
-  }, [statusRegions]);
+  }, [statusRegions, regions, region, navigate]);
 
   useEffect(() => {
     if (!currentRegion) return;
@@ -57,7 +57,7 @@ const Region = () => {
       setLoading(false);
     };
     fetchData();
-  }, [currentRegion]);
+  }, [currentRegion, region]);
 
   const handleActivitySelection = (activityId) => {
     setSelectedActivities((prev) =>
@@ -161,34 +161,32 @@ const Region = () => {
             )}
 
             {sortArray(filteredAreas, currentRegion.name).map(
-              (area, index) =>
+              (area) =>
                 area.Cities.length > 0 &&
                 area.Cities.some(
                   (city) =>
                     city.destinationCity.length > 0 &&
                     city.destinationCity.some((dest) => dest.clients.length > 0)
                 ) && (
-                  <div className="flex flex-col">
+                  <div className="flex flex-col" key={area.id}>
                     <ConditionalAccordion
                       condition={area.name !== currentRegion.name}
                       redirectTo={`/area/${area.id}`}
                       place="area"
                       name={area.name}
-                      key={index}
                     >
                       {sortArray(area.Cities, area.name).map(
-                        (city, index) =>
+                        (city) =>
                           city.destinationCity.length > 0 &&
                           city.destinationCity.some(
                             (dc) => dc.clients.length > 0
                           ) && (
-                            <div className="flex flex-col">
+                            <div className="flex flex-col" key={city.id}>
                               <ConditionalAccordion
                                 condition={city.name !== area.name}
                                 redirectTo={`/city/${city.id}`}
                                 place="city"
                                 name={city.name}
-                                key={index}
                               >
                                 {sortArray(city.destinationCity, city.name).map(
                                   (destination, index) =>

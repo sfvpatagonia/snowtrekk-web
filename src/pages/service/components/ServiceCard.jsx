@@ -32,7 +32,7 @@ const ServiceCard = ({ service }) => {
           }
         });
     }
-  }, []);
+  }, [service.id, user.token]);
 
   const handleClick = () => {
     favoritesFunctions.setFavorite(service.id, user.token).then((data) => {

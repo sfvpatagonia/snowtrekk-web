@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from "./filterDestination.module.css";
 
 const guideData = [
@@ -146,15 +146,15 @@ const FilterDestination = () => {
     setSelectedActivity(activity);
   };
 
-  // const handleViewDestination = () => {
-  //   console.log("Información Seleccionada:", {
-  //     country: selectedCountry,
-  //     province: selectedProvince,
-  //     city: selectedCity,
-  //     destination: selectedDestination,
-  //     activity: selectedActivity,
-  //   });
-  // };
+  const handleViewDestination = () => {
+    console.log("Información Seleccionada:", {
+      country: selectedCountry,
+      province: selectedProvince,
+      city: selectedCity,
+      destination: selectedDestination,
+      activity: selectedActivity,
+    });
+  };
 
   const uniqueCountries = [
     ...new Set(guideData.map((item) => item.location.country)),
@@ -171,7 +171,7 @@ const FilterDestination = () => {
   ];
 
   const [minPrice, setMinPrice] = useState(2000);
-  const [maxPrice, setMaxPrice] = useState(10000);
+  const [maxPrice] = useState(10000);
 
   return (
     <>

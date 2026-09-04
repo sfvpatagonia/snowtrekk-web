@@ -78,7 +78,7 @@ export default function ShopChat() {
   /* ─────────────── Configurar Socket una vez cargada la orden ─────────────── */
   useEffect(() => {
     if (!idOrder || !user?.token) return;
-  }, [user?.token]);
+  }, [idOrder, user?.token]);
 
   /* ─────────────── Función para enviar mensaje ─────────────── */
   const sendMessage = (text) => {

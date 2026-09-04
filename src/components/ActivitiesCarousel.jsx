@@ -11,6 +11,10 @@ const ActivitiesCarousel = ({
     if (initialActivityId) {
       handleActivitySelection(initialActivityId);
     }
+    // handleActivitySelection toggles selection and is redefined every render in the
+    // parent (not memoized); including it here would re-fire on every render and
+    // flip the selection on/off in a loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialActivityId]);
 
   return (

@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import styles from "./recommendations.module.css";
-import { useSelector } from "react-redux";
 import ServiceCard from "../serviceCard/ServiceCard";
-import logo from "@/assets/ski.png";
 import exampleRecomedations from "@/utils/services.json";
 
 export default function Recommendations() {
-  const user = useSelector((state) => state.user);
   const [recommendations, setRecommendations] = useState([]);
 
   //   const exampleRecomedations = [

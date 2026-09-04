@@ -34,7 +34,7 @@ const AreaGuide = () => {
         console.log(error);
         navigate("/not-found");
       });
-  }, []);
+  }, [area, navigate]);
 
   useEffect(() => {
     if (!currentArea) return;
@@ -47,7 +47,7 @@ const AreaGuide = () => {
       setLoading(false);
     };
     fetchData();
-  }, [currentArea]);
+  }, [currentArea, area]);
 
   const handleActivitySelection = (activityId) => {
     setSelectedActivities((prev) =>

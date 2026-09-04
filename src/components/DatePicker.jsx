@@ -3,7 +3,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker as DP } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 
-export default function DatePicker({ selectedDate, setSelectedDate,availableDates }) {
+export default function DatePicker({ setSelectedDate, availableDates }) {
   const defaultValue = dayjs(new Date());
 
     const availableDays = new Set(

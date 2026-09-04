@@ -33,7 +33,7 @@ const ActivityGuide = () => {
         navigate("/not-found");
       }
     }
-  }, [statusActivities]);
+  }, [statusActivities, activities, activity, navigate]);
 
   useEffect(() => {
     if (!currentActivity) return;
@@ -43,7 +43,7 @@ const ActivityGuide = () => {
       })
       .finally(() => setLoading(false));
     setLoading(false);
-  }, [currentActivity]);
+  }, [currentActivity, activity]);
 
   if (loading) {
     return <LoadingComponent />;
@@ -69,8 +69,12 @@ const ActivityGuide = () => {
                 Looks Like There Are No One Here Yet!
               </h3>
             ) : (
-              leads.map((client, index) => (
-                <ClientLeadCard client={client} index={client.id} />
+              leads.map((client) => (
+                <ClientLeadCard
+                  key={client.id}
+                  client={client}
+                  index={client.id}
+                />
               ))
             )}
           </div>

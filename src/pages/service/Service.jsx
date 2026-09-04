@@ -37,7 +37,7 @@ const Service = () => {
 
     //Get molde
     //Get Schedule
-  }, []);
+  }, [id, navigate, user.token]);
 
   if (loading) {
     return <LoadingComponent />;

@@ -3,7 +3,6 @@ import BasicModal from "@/components/basicModal/BasicModal";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/cartSlice";
-import { format } from "date-fns";
 
 const REQUIRED_FIELDS = [
   "name",
@@ -38,7 +37,7 @@ export default function ParticipantsModal({ open, setOpen, length, service }) {
   }, [open, length]);
 
   const handleSubmit = () => {
-    const hasEmptyFields = participants.some((participant, i) =>
+    const hasEmptyFields = participants.some((participant) =>
       REQUIRED_FIELDS.some(
         (field) => !participant[field] || participant[field].trim() === "",
       ),

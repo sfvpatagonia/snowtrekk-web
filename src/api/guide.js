@@ -4,7 +4,7 @@ export const getCountriesGuide = async () => {
   try {
     const response = await axios.get(`/country/guide/`);
     return response.data;
-  } catch {
+  } catch (error) {
     console.error(error.response);
     console.error(error.request);
     console.error(error.message);

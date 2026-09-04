@@ -9,11 +9,7 @@ import { Link } from "react-router-dom";
 import FilterList from "../filterList/FilterList";
 import FilterSelect from "../filterSelect/FilterSelect";
 
-const FilterVideosShort = ({
-  videoMetaData,
-  setVideoMetaData,
-  windowWidth,
-}) => {
+const FilterVideosShort = ({ videoMetaData, windowWidth }) => {
   const activities = [
     "Arborismo",
     "Arquería y Paintball",

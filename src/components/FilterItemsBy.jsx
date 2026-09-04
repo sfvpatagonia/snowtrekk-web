@@ -14,6 +14,9 @@ export default function FilterItemsBy({ title, options, filterBy }) {
 
   useEffect(() => {
     filterBy(filter);
+    // filterBy is redefined every render in the parent (not memoized) and itself
+    // triggers a parent re-render; including it here would create an update loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;

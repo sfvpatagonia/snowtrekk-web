@@ -22,7 +22,7 @@ export default function DestinationsGrid({ setDestinationOnSpotlight }) {
         setDestinations([]);
         setDestinationOnSpotlight(null);
       });
-  }, []);
+  }, [setDestinationOnSpotlight]);
 
   return (
     <section className="flex flex-col gap-2 py-6">

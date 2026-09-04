@@ -34,6 +34,7 @@ export default function VisitorTracker({ country, language }) {
       language: language || navigator.language?.split("-")[0] || undefined,
       referrer: document.referrer || undefined,
       landingPage: window.location.pathname,
+      deviceType: getDeviceType(navigator.userAgent),
       ...getUtmParams(),
     };
 
@@ -44,7 +45,7 @@ export default function VisitorTracker({ country, language }) {
     })
       .then(() => sessionStorage.setItem(SESSION_KEY, "1"))
       .catch(() => {});
-  }, []);
+  }, [country, language]);
 
   return null;
 }

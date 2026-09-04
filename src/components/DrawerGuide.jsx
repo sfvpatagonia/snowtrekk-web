@@ -216,7 +216,7 @@ export default function GuideDrawer({ open, setOpen }) {
       );
       dispatch(setSelectedCountry(region.countryIds[0]));
     }
-  }, [guide]);
+  }, [guide, destinations, cities, areas, regions, dispatch]);
 
   // =======================
   // RENDER

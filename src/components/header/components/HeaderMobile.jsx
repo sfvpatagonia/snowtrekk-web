@@ -16,8 +16,6 @@ export default function HeaderMobile({ setOpenCart, setOpenGuide }) {
   const dispatch = useDispatch();
   const darkMode = useSelector((state) => state.theme.darkMode);
 
-  const [open, setOpen] = useState(false);
-
   const user = useSelector((state) => state.user);
   const cart = useSelector((state) => state.cart);
 

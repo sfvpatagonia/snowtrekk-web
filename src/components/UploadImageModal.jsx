@@ -39,6 +39,11 @@ const UploadImageModal = ({
       onDrop,
     });
 
+  const handleDelete = (id) => {
+    setImagesLoaded((prev) => prev.filter((img) => img.id !== id));
+    setDetailModal(false);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setUploading(true);
@@ -71,6 +76,7 @@ const UploadImageModal = ({
               <div className="flex overflow-x-auto min-w-[600px] max-h-[600px] gap-2">
                 {imagesLoaded.map((img) => (
                   <img
+                    key={img.id}
                     src={img.url}
                     alt="Preview"
                     className="object-contain w-full max-w-full cursor-pointer"
@@ -87,7 +93,7 @@ const UploadImageModal = ({
       </BasicModal>
       <BasicModal open={detailModal} setOpen={setDetailModal}>
         <div className="relative bg-main-100 dark:bg-main-900 p-4 rounded-lg max-h-[600px] min-w-[600px] flex flex-col gap-2 justify-end">
-          <button className={`button`} onClick={() => handleDelete(preview.id)}>
+          <button className={`button`} onClick={() => handleDelete(detailModal.id)}>
             Delete
           </button>
           <img
@@ -107,6 +113,7 @@ const UploadImageModal = ({
               <div className="flex lg:flex-col w-[600px] p-4 justify-center items-center gap-2 flex-wrap">
                 {previewUrl.map((preview) => (
                   <img
+                    key={preview.url}
                     src={preview.url}
                     alt="Preview"
                     className="object-contain h-auto w-1/3 lg:w-full cursor-pointer hover:opacity-80"
@@ -128,7 +135,7 @@ const UploadImageModal = ({
                     className="text-main-600 dark:text-main-400"
                   />
                   <p className="text-main-0 dark:text-main-1000 pt-4">
-                    Drag 'n' drop some files here, or click to select files
+                    Drag &apos;n&apos; drop some files here, or click to select files
                   </p>
                 </div>
               )}

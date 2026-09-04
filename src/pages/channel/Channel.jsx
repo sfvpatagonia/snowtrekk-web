@@ -3,7 +3,6 @@ import Footer from "@/components/footer/Footer";
 import styles from "./channel.module.css";
 import Advertise from "@/components/advertise/Advertise";
 import FilterVideos from "@/components/filterVideos/FilterVideos";
-import Ads from "@/components/Ads/Ads";
 import VideoPlayer from "@/components/videoPlayer/VideoPlayer";
 import { Link } from "react-router-dom";
 import PublicIcon from "@mui/icons-material/Public";
