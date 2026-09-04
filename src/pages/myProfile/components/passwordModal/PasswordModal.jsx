@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 import { TextField } from "@mui/material";
 import styles from "./passwordModal.module.css";
 import BasicModal from "@/components/basicModal/BasicModal";
 import userService from "@/services/user";
 
 export default function PasswordModal({ open, setOpen }) {
-  const shop = useSelector((state) => state.shop);
   const [formData, setFormData] = useState({
     actualPassword: "",
     newPassword: "",

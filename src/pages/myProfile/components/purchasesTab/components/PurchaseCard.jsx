@@ -56,7 +56,7 @@ export default function PurchaseCard({ purchase }) {
                 order.products.map((product, index) => (
                   <div className="flex flex-col w-full gap-2" key={index}>
                     <div className="flex w-full gap-2">
-                      <Link to={`/service/${service.id}`}>
+                      <Link to={`/service/${product.id}`}>
                         <p className="text-main-0 dark:text-main-1000 hover:text-green-600 duration-200 ease-in">
                           {product.name}
                         </p>
@@ -91,8 +91,8 @@ export default function PurchaseCard({ purchase }) {
                     </div>
                     <div className="flex w-full gap-2 text-sm">
                       <p>
-                        {service.OrderService.quantity} x U$D{" "}
-                        {service.OrderService.purchasedPrice}
+                        {product.OrderService.quantity} x U$D{" "}
+                        {product.OrderService.purchasedPrice}
                       </p>
                       <div
                         className="flex-1  border-main-0 dark:border-main-1000 border-dashed border-b"
@@ -100,8 +100,8 @@ export default function PurchaseCard({ purchase }) {
                       ></div>
                       <p >
                         U$D{" "}
-                        {service.OrderService.quantity *
-                          service.OrderService.purchasedPrice}
+                        {product.OrderService.quantity *
+                          product.OrderService.purchasedPrice}
                       </p>
                     </div>
                   </div>

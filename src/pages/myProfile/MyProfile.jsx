@@ -40,7 +40,7 @@ export default function MyProfile() {
         .catch((error) => setError(error))
         .finally(() => setLoading(false));
     }
-  }, []);
+  }, [user.id, user.token, dispatch]);
 
   const renderTab = () => {
     switch (activeTab) {

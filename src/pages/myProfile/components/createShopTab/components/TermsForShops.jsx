@@ -10,7 +10,7 @@ export default function TermsForShops() {
         Effective Date: {getTodayDate()}
       </p>
       <p className="mt-4 flex-w-full">
-        By transitioning from a regular user to a store user ("Store Owner") on
+        By transitioning from a regular user to a store user (&quot;Store Owner&quot;) on
         our platform, you agree to the following terms and conditions. These
         terms apply in addition to our general Terms of Service and Privacy
         Policy. Please read them carefully.

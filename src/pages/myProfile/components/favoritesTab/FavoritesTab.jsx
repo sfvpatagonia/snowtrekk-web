@@ -22,7 +22,7 @@ export default function FavoritesTab() {
         }
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [user.token]);
 
   return (
     <main className="flex flex-col flex-1 items-center gap-2 max-w-full overflow-hidden py-4">

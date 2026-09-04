@@ -52,7 +52,7 @@ export default function NewShopForm() {
         }
       });
     }
-  }, []);
+  }, [hasShop, user.id, user.token]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -80,7 +80,6 @@ export default function NewShopForm() {
       city,
       postalCode,
       address,
-      website,
     } = newShop;
 
     if (

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import favoritesFunctions from "@/services/favorites";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
 
 export default function FavoritesCard({ favorite }) {
   const user = useSelector((state) => state.user);

@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import defaultImg from "@/assets/bonfire.png";
 import { formatDateMMMMdYYYY } from "@/utils/dateParser";
 import EditUserModal from "../editUserModal/EditUserModal";

@@ -22,7 +22,7 @@ export default function ReviewsTab() {
         }
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [user.token]);
 
 
   return (

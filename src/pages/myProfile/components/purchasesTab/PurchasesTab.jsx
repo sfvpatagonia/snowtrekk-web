@@ -3,7 +3,6 @@ import PurchaseCard from "./components/PurchaseCard";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import purchaseFunctions from "@/services/purchase";
-import LoadingComponent from "@/components/LoadingComponent";
 import { Skeleton } from "@mui/material";
 
 export default function PurchasesTab() {
@@ -27,7 +26,7 @@ export default function PurchasesTab() {
           setLoading(false);
         });
     }
-  }, []);
+  }, [user.id, user.token]);
 
   // if (loading) {
   //   return (
