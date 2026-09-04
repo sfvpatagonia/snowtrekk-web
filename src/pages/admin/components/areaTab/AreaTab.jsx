@@ -79,7 +79,7 @@ const AreaTab = ({ darkMode, active, data }) => {
         })
         .finally(() => setLoading(false));
     }
-  }, [shouldFetch]);
+  }, [shouldFetch, active, setAreas]);
 
   const handleVisibility = (id) => {
     const index = areas.findIndex((area) => area.id === id);

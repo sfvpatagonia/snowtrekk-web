@@ -115,7 +115,9 @@ export default function StoreApplicationsPanel({ setError, setMessage }) {
 
   useEffect(() => {
     fetchApplications();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // runs once on mount; fetchApplications is redefined every render, so
+  // including it would refetch on every render instead of just on mount
 
   const handleVerify = async (application) => {
     const data = await storeApplicationsService.verifyApplication(

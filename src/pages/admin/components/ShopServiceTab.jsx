@@ -6,19 +6,18 @@ import { DataGrid } from "@mui/x-data-grid";
 import admin from "@/services/admin";
 import { useSelector } from "react-redux";
 
-export default function ShopServiceTab({ darkMode, active }) {
+export default function ShopServiceTab({ darkMode }) {
   const user = useSelector((state) => state.user);
   const PAGE_SIZE = Math.floor((window.innerHeight - 250) / 35);
   const [totalRows, setTotalRows] = useState(0);
   const [page, setPage] = useState(0);
   const [offset, setOffset] = useState(0);
   const [shouldFetch, setShouldFetch] = useState(true);
-  const [choiceModal, setChoiceModal] = useState(null);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [visibleServices, setVisibleServices] = useState({});
-  const [services, setServices] = useState([]);
+  const [, setServices] = useState([]);
 
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({
     id: true,
@@ -49,10 +48,16 @@ export default function ShopServiceTab({ darkMode, active }) {
         .finally(() => setLoading(false));
       setShouldFetch(false);
     }
-  }, [shouldFetch]);
+  }, [shouldFetch, offset, PAGE_SIZE, totalRows, user.token]);
 
   const refreshData = () => {
     setShouldFetch(true);
+  };
+
+  const handlePageChange = (newPage) => {
+    setOffset(newPage * PAGE_SIZE);
+    setPage(newPage);
+    refreshData();
   };
 
   const handleChangeAdvertise = (id) => {

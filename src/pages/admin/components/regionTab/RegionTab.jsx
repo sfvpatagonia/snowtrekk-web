@@ -9,6 +9,7 @@ import AdminConfirmationModal from "../adminConfirmationModal/AdminConfirmationM
 import AdminErrorModal from "../adminErrorModal/AdminErrorModal";
 import AdminChoiceModal from "../AdminChoiceModal";
 import changeVisibility from "@/services/changeVisibility";
+import deleteLocation from "@/services/deleteLocation";
 
 const RegionTabs = ({ darkMode, active, data }) => {
   const [regions, setRegions, areas, setAreas] = data;
@@ -44,7 +45,6 @@ const RegionTabs = ({ darkMode, active, data }) => {
         return (
           <div
             aria-describedby={rowId}
-            variant="contained"
             onClick={(e) => {
               setPopoverArea(e.currentTarget);
               setPopoverAreaOpen(rowId);
@@ -117,7 +117,6 @@ const RegionTabs = ({ darkMode, active, data }) => {
         return (
           <div
             aria-describedby={rowId}
-            variant="contained"
             onClick={(e) => {
               setPopoverCountry(e.currentTarget);
               setPopoverCountryOpen(rowId);
@@ -229,7 +228,7 @@ const RegionTabs = ({ darkMode, active, data }) => {
         })
         .finally(() => setLoading(false));
     }
-  }, [shouldFetch]);
+  }, [shouldFetch, active, setRegions]);
 
   const handleCountryClick = useCallback(
     (countryName) => {

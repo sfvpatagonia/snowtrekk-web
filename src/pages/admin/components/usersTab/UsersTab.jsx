@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./usersTab.module.css";
-import AdminHugeTable from "../adminHugeTable/AdminHugeTable";
 import AdminChoiceModal from "../AdminChoiceModal";
 import AdminErrorModal from "../adminErrorModal/AdminErrorModal";
 import AdminConfirmationModal from "../adminConfirmationModal/AdminConfirmationModal";
@@ -15,7 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Tooltip from "@mui/material/Tooltip";
 import CheckIcon from "@mui/icons-material/Check";
 
-export default function UsersTab({ darkMode, active }) {
+export default function UsersTab({ darkMode }) {
   const user = useSelector((state) => state.user);
   const PAGE_SIZE = Math.floor((window.innerHeight - 250) / 35);
   const [totalRows, setTotalRows] = useState(0);
@@ -55,10 +54,16 @@ export default function UsersTab({ darkMode, active }) {
         .finally(() => setLoading(false));
       setShouldFetch(false);
     }
-  }, [shouldFetch]);
+  }, [shouldFetch, offset, PAGE_SIZE, totalRows, user.token]);
 
   const refreshData = () => {
     setShouldFetch(true);
+  };
+
+  const handlePageChange = (newPage) => {
+    setOffset(newPage * PAGE_SIZE);
+    setPage(newPage);
+    refreshData();
   };
 
   const handleDelteUser = (id) => {

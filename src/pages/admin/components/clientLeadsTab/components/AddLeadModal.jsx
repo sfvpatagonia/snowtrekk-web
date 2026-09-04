@@ -7,7 +7,6 @@ import {
   FormControl,
   TextField,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import admin from "@/services/admin";
@@ -153,9 +152,7 @@ const AddLeadModal = ({
     });
     languagesEntities.get().then((data) => setLanguages(data.body.languages));
     setLoading(false);
-  }, []);
-
-  const dispatch = useDispatch();
+  }, [setActivities, setDestinations]);
 
   // useEffect(() => {
   //   if (destinationStatus === "idle") {

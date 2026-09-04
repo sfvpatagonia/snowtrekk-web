@@ -17,7 +17,6 @@ const AddRegionModal = ({
   setMessage,
   editData,
   setEditData,
-  setRegions,
 }) => {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -32,7 +31,7 @@ const AddRegionModal = ({
     if (areas.length === 0) {
       admin.getAreas().then((data) => setAreas(data.body.areas));
     }
-  }, []);
+  }, [areas.length, setAreas]);
   const onSubmit = (e) => {
     e.preventDefault();
 

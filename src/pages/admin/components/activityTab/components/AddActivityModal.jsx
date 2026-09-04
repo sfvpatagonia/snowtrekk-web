@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Checkbox, CircularProgress, TextField } from "@mui/material";
+import { Checkbox, TextField } from "@mui/material";
 import BasicModal from "@/components/basicModal/BasicModal";
 import newActivity from "@/services/newActivity";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
@@ -52,7 +52,6 @@ const AddActivityModal = ({
           setOpen(false);
           return setError(data.message);
         }
-        let images = [];
         setImages({ id: editData.id, type: "activities" }, formData)
           .then((data) => {
             if (!data.ok) {

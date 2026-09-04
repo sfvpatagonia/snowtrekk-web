@@ -11,7 +11,7 @@ import {
 import admin from "@/services/admin";
 
 const SendEmailModal = ({ open, onClose, clients, setConfirm, setError }) => {
-  const [selectedClients, setSelectedClients] = useState(clients);
+  const [, setSelectedClients] = useState(clients);
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
 

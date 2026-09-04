@@ -30,7 +30,7 @@ const AddNewsModal = ({
   countries,
   activities,
 }) => {
-  const [tags, setTags] = useState({
+  const [tags] = useState({
     country: countries,
     region: regions,
     area: areas,

@@ -10,7 +10,7 @@ import deleteNews from "@/services/deleteNews";
 import { useSelector } from "react-redux";
 import changeVisibility from "@/services/changeVisibility";
 
-const NewsTab = ({ darkMode, active }) => {
+const NewsTab = ({ darkMode }) => {
   const PAGE_SIZE = Math.floor((window.innerHeight - 200) / 37.5);
   const [news, setNews] = useState([]);
   const [addModal, setAddModal] = useState(false);

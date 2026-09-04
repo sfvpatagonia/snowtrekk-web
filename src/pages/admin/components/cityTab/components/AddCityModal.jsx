@@ -38,7 +38,7 @@ const AddCityModal = ({
     if (areas.length === 0) {
       admin.getAreas().then((data) => setAreas(data.body.areas));
     }
-  }, []);
+  }, [areas.length, setAreas]);
   const handleSubmit = async (event) => {
     event.preventDefault();
 

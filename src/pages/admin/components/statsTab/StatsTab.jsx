@@ -37,7 +37,7 @@ export default function StatsTab({ active }) {
       }
       setLoading(false);
     });
-  }, [active]);
+  }, [active, user.token]);
 
   if (loading) {
     return <p className="text-main-0 dark:text-main-1000">Loading stats...</p>;

@@ -49,6 +49,8 @@ const VideosTab = ({ active }) => {
       fetchVideos();
       fetchDestinations();
     }
+    // fetchVideos/fetchDestinations are redefined every render; only react to `active`
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
   // ==========================

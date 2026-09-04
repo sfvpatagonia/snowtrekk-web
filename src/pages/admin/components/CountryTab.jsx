@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { useLocation } from "react-router-dom";
 import BasicModal from "@/components/basicModal/BasicModal";
@@ -86,7 +86,7 @@ const CountryTab = ({ darkMode, active, data }) => {
 
       setLoading(false);
     }
-  }, [refresh]);
+  }, [refresh, active, setCountries]);
 
   const editField = (e) => {
     if (e.colDef.field === "description") {
@@ -123,12 +123,36 @@ const CountryTab = ({ darkMode, active, data }) => {
     }
   };
 
+  const handleSubmit = useCallback(
+    (e) => {
+      e && e.preventDefault();
+
+      if (editData.prevValue === editData.value) {
+        return setError(
+          `The new ${editData.title} must be different than the previous one`
+        );
+      }
+
+      if (editData.prevValue !== editData.value) {
+        setCountryField(editData).then((data) => {
+          if (!data.ok) {
+            return setError(data.message);
+          }
+          setOpenEditModal(false);
+          setMessage(data.message);
+        });
+        setRefresh((refresh) => !refresh);
+      }
+    },
+    [editData]
+  );
+
   useEffect(() => {
     if (shouldSubmit && editData !== null) {
       handleSubmit();
       setShouldSubmit(false); // Reset the flag after submit
     }
-  }, [shouldSubmit, editData]);
+  }, [shouldSubmit, editData, handleSubmit]);
 
   const initialState =
     filterValue !== ""
@@ -173,26 +197,6 @@ const CountryTab = ({ darkMode, active, data }) => {
             },
           },
         };
-  const handleSubmit = (e) => {
-    e && e.preventDefault();
-
-    if (editData.prevValue === editData.value) {
-      return setError(
-        `The new ${editData.title} must be different than the previous one`
-      );
-    }
-
-    if (editData.prevValue !== editData.value) {
-      setCountryField(editData).then((data) => {
-        if (!data.ok) {
-          return setError(data.message);
-        }
-        setOpenEditModal(false);
-        setMessage(data.message);
-      });
-      setRefresh((refresh) => !refresh);
-    }
-  };
   const handleChange = (e) => {
     setEditData((prev) => ({
       ...prev,

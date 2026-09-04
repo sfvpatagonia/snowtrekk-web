@@ -31,7 +31,7 @@ const ShopsTab = ({ darkMode }) => {
       setShops(data.body.shops);
       setLoading(false);
     });
-  }, []);
+  }, [user.token]);
 
   const handleEdit = (id) => {
     setSelectedShop(shops.find((shop) => shop.id === id));

@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import deleteLead from "@/services/deleteLead";
 import { Popover, Skeleton, TextField } from "@mui/material";
@@ -23,6 +24,7 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
     setActivities,
   } = data;
   dayjs.extend(relativeTime);
+  const navigate = useNavigate();
   const popRef = useRef();
   const PAGE_SIZE = Math.floor((window.innerHeight - 250) / 35);
   const [totalRows, setTotalRows] = useState(0);
@@ -45,7 +47,7 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [cachedLeads, setCachedLeads] = useState({});
 
-  const [columnVisibilityModel, setColumnVisibilityModel] = useState({
+  const [columnVisibilityModel] = useState({
     id: false,
     x: false,
     facebook: false,
@@ -60,6 +62,20 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
   });
 
   const loadingdGrid = new Array(PAGE_SIZE + 2).fill(<Skeleton height={37} />);
+
+  const handleDestinationClick = useCallback(
+    (destinationName) => {
+      navigate(`/admin?tab=destination&value=${destinationName}`);
+    },
+    [navigate]
+  );
+
+  const handleActivityClick = useCallback(
+    (activityName) => {
+      navigate(`/admin?tab=activity&value=${activityName}`);
+    },
+    [navigate]
+  );
 
   const columns = [
     //{ field: "id", headerName: "ID", width: 150 },
@@ -106,7 +122,6 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
           <>
             <div
               aria-describedby={rowId}
-              variant="contained"
               onClick={(e) => {
                 setPopover(e.currentTarget);
                 setPopoverOpen(rowId);
@@ -149,7 +164,7 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
                           color: darkMode ? "cyan" : "blue",
                           textDecoration: "underline",
                         }}
-                        onClick={() => handleCityClick(destination.name)}
+                        onClick={() => handleDestinationClick(destination.name)}
                         key={index}
                       >
                         {destination.name}
@@ -177,7 +192,6 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
           <>
             <div
               aria-describedby={rowId}
-              variant="contained"
               onClick={(e) => {
                 setPopover(e.currentTarget);
                 setPopoverOpen(rowId);
@@ -220,7 +234,7 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
                           color: darkMode ? "cyan" : "blue",
                           textDecoration: "underline",
                         }}
-                        onClick={() => handleCityClick(activity.name)}
+                        onClick={() => handleActivityClick(activity.name)}
                         key={index}
                       >
                         {activity.name}
@@ -248,7 +262,6 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
           <>
             <div
               aria-describedby={rowId}
-              variant="contained"
               onClick={(e) => {
                 setPopover(e.currentTarget);
                 setPopoverOpen(`${rowId}-languages`);
@@ -350,7 +363,16 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
       setLoading(false);
       setShouldFetch(false);
     });
-  }, [active, offset, shouldFetch, searchQuery]);
+  }, [
+    active,
+    offset,
+    shouldFetch,
+    searchQuery,
+    PAGE_SIZE,
+    setLeads,
+    totalRows,
+    visibleLeads,
+  ]);
 
   const refreshData = () => {
     setShouldFetch(true);

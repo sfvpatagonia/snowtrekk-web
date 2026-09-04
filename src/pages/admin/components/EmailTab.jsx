@@ -38,7 +38,7 @@ export default function EmailTab({ darkMode, active }) {
         .finally(() => setLoading(false));
       setShouldFetch(false);
     }
-  }, [active]);
+  }, [active, shouldFetch]);
   const handleDelete = (id) => {
     setChoiceModal(id);
   };

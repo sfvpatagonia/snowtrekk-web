@@ -111,7 +111,7 @@ const AddAreaModal = ({
     if (countries.length === 0) {
       admin.getCountries().then((data) => setCountries(data.body.countries));
     }
-  }, []);
+  }, [countries.length, setCountries]);
 
   const onClose = () => {
     setArea(initialData);

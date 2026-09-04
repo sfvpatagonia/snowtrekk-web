@@ -26,7 +26,6 @@ const DestinationTab = ({ darkMode, active, data }) => {
     regions,
     setRegions,
   ] = data;
-  const gridRef = useRef();
   const popRef = useRef();
   const navigate = useNavigate();
   const PAGE_SIZE = Math.floor((window.innerHeight - 200) / 37.5);
@@ -56,7 +55,7 @@ const DestinationTab = ({ darkMode, active, data }) => {
         })
         .finally(() => setLoading(false));
     }
-  }, [shouldFetch]);
+  }, [shouldFetch, active, setDestinations]);
 
   const handleVisibility = (id) => {
     const index = destinations.findIndex((area) => area.id === id);
@@ -101,7 +100,6 @@ const DestinationTab = ({ darkMode, active, data }) => {
           <>
             <div
               aria-describedby={rowId}
-              variant="contained"
               onClick={(e) => {
                 setPopover(e.currentTarget);
                 setPopoverOpen(rowId);
@@ -171,6 +169,9 @@ const DestinationTab = ({ darkMode, active, data }) => {
               textDecoration: "underline",
             }
           }
+          onClick={() =>
+            params.row.Area && handleAreaClick(params.row.Area.name)
+          }
         >
           {params.row.Area ? params.row.Area.name : "---"}
         </div>
@@ -187,6 +188,9 @@ const DestinationTab = ({ darkMode, active, data }) => {
               color: darkMode ? "cyan" : "blue",
               textDecoration: "underline",
             }
+          }
+          onClick={() =>
+            params.row.Region && handleRegionClick(params.row.Region.name)
           }
         >
           {params.row.Region ? params.row.Region.name : "---"}

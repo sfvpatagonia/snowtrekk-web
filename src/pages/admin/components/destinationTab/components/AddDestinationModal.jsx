@@ -149,7 +149,14 @@ const AddDestinationModal = ({
     if (regions.length === 0) {
       admin.getRegions().then((data) => setRegions(data.body.regions));
     }
-  }, []);
+  }, [
+    areas.length,
+    cities.length,
+    regions.length,
+    setAreas,
+    setCities,
+    setRegions,
+  ]);
 
   const onClose = () => {
     setDestination(initialState);

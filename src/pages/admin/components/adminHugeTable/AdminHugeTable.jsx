@@ -84,6 +84,7 @@ export default function AdminHugeTable({
       getActions: (params) => {
         return [
           <GridActionsCellItem
+            key="edit"
             icon={
               <EditIcon
                 fontSize={16}
@@ -97,6 +98,7 @@ export default function AdminHugeTable({
             color="inherit"
           />,
           <GridActionsCellItem
+            key="visible"
             icon={
               !params.row.isVisible ? (
                 <VisibilityOffIcon fontSize={16} color="disabled" />
@@ -111,6 +113,7 @@ export default function AdminHugeTable({
             disabled={!handleVisibility}
           />,
           <GridActionsCellItem
+            key="delete"
             icon={<DeleteIcon fontSize={16} color="error" />}
             label="Delete"
             onClick={() => handleDelete(params.id)}
