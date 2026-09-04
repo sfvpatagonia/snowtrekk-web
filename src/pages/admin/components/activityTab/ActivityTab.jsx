@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import AdminConfirmationModal from "../adminConfirmationModal/AdminConfirmationModal";
 import AdminErrorModal from "../adminErrorModal/AdminErrorModal";
@@ -9,12 +9,12 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import admin from "@/services/admin";
 import AdminTable from "../adminTable/AdminTable";
 import AdminChoiceModal from "../AdminChoiceModal";
+import changeVisibility from "@/services/changeVisibility";
 import { useSelector } from "react-redux";
 
 const ActivityTab = ({ darkMode, active }) => {
   dayjs.extend(relativeTime);
 
-  const gridRef = useRef();
   const PAGE_SIZE = Math.floor((window.innerHeight - 250) / 36);
   const [activities, setActivities] = useState([]);
   const [addModal, setAddModal] = useState(false);
@@ -49,13 +49,6 @@ const ActivityTab = ({ darkMode, active }) => {
     },
   ];
 
-  const handleChange = (e) => {
-    setEditData((prev) => ({
-      ...prev,
-      value: e.target.value,
-    }));
-  };
-
   useEffect(() => {
     if (active && shouldFetch) {
       setLoading(true);
@@ -74,18 +67,18 @@ const ActivityTab = ({ darkMode, active }) => {
         })
         .finally(() => setLoading(false));
     }
-  }, [shouldFetch]);
+  }, [shouldFetch, active]);
 
   const handleVisibility = (id) => {
-    const index = destinations.findIndex((area) => area.id === id);
-    changeVisibility({ id, field: "isVisible", type: "destination" }).then(
+    const index = activities.findIndex((activity) => activity.id === id);
+    changeVisibility({ id, field: "isVisible", type: "activities" }).then(
       (data) => {
         if (!data.ok) {
           return setError(data.message);
         }
         setMessage(data.message);
-        destinations[index].isVisible = !destinations[index].isVisible;
-        setDestinations([...destinations]);
+        activities[index].isVisible = !activities[index].isVisible;
+        setActivities([...activities]);
       },
     );
   };

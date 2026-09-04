@@ -1,22 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const safeGetStoredConsent = () => {
-  if (typeof document === "undefined") return null;
-
-  const cookies = document.cookie.split("; ");
-  const found = cookies.find((row) =>
-    row.startsWith("snowtrekk_cookie_consent="),
-  );
-
-  if (!found) return null;
-
-  try {
-    return JSON.parse(decodeURIComponent(found.split("=")[1]));
-  } catch {
-    return null;
-  }
-};
-
 const setCookie = (value, days = 365) => {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);

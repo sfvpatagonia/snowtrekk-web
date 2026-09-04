@@ -1,25 +1,5 @@
-import React, { useState } from "react";
 import styles from "./ads.module.css";
-import Advertise from "../advertise/Advertise";
 import AdCard from "../adCard/AdCard";
-
-const ads = [
-  {
-    id: 1,
-    title: "Ad 1",
-    url: "https://www.youtube.com/embed/9g3--WYH8SY",
-  },
-  {
-    id: 2,
-    title: "Ad 2",
-    url: "https://www.youtube.com/embed/9g3--WYH8SY",
-  },
-  {
-    id: 3,
-    title: "Ad 3",
-    url: "https://www.youtube.com/embed/9g3--WYH8SY",
-  },
-];
 
 const Ads = () => {
   return (

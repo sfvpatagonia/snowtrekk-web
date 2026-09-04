@@ -1,4 +1,4 @@
-import  { useEffect, useRef, useState, useCallback } from "react";
+import  { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { Skeleton } from "@mui/material";
@@ -14,22 +14,8 @@ import changeVisibility from "@/services/changeVisibility";
 import deleteLocation from "@/services/deleteLocation";
 
 const CityTab = ({ darkMode, active, data }) => {
-  const [
-    leads,
-    setLeads,
-    countries,
-    setCountries,
-    areas,
-    setAreas,
-    cities,
-    setCities,
-    destinations,
-    setDestinations,
-    activities,
-    setActivities,
-  ] = data;
+  const [, , , , areas, setAreas, cities, setCities] = data;
   dayjs.extend(relativeTime);
-  const gridRef = useRef();
   const navigate = useNavigate();
   const PAGE_SIZE = Math.floor((window.innerHeight - 250) / 35);
   const location = useLocation();
@@ -39,7 +25,6 @@ const CityTab = ({ darkMode, active, data }) => {
   const [editData, setEditData] = useState(null);
   const [addModal, setAddModal] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(true);
-  const [shouldSubmit, setShouldSubmit] = useState(false);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -151,14 +136,7 @@ const CityTab = ({ darkMode, active, data }) => {
         })
         .finally(() => setLoading(false));
     }
-  }, [shouldFetch]);
-
-  useEffect(() => {
-    if (shouldSubmit && editData !== null) {
-      handleSubmit();
-      setShouldSubmit(false); // Reset the flag after submit
-    }
-  }, [shouldSubmit, editData]);
+  }, [shouldFetch, active, setCities]);
 
   return (
     <div className="flex flex-col gap-4 items-end w-full overflow-auto py-4">

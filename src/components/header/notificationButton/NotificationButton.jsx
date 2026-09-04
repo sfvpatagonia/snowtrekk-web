@@ -29,15 +29,6 @@ export default function NotificationButton() {
     const socket = socketRef.current;
 
     socket.on("unreadTotals", ({ shopChat = [], userChat = [] }) => {
-      const totalAsUser = shopChat.reduce(
-        (acc, r) => acc + Number(r.unread || 0),
-        0,
-      );
-      const totalAsShop = userChat.reduce(
-        (acc, r) => acc + Number(r.unread || 0),
-        0,
-      );
-
       setUnreadUserMessages(userChat);
       setUnreadShopMessages(shopChat);
     });

@@ -10,9 +10,9 @@ import AdCard from "../adCard/AdCard";
 import styles from "./advertise.module.css";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
-const Advertise = ({ videoMetaData }) => {
+const Advertise = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = (e) => {
@@ -38,13 +38,6 @@ const Advertise = ({ videoMetaData }) => {
     //   price: "69.99",
     // },
   ];
-  const scroll = (direction) => {
-    if (direction === 'left') {
-      carouselRef.current.scrollLeft -= 200; // ajusta este valor según sea necesario
-    } else {
-      carouselRef.current.scrollLeft += 200; // ajusta este valor según sea necesario
-    }
-  };
   return (
     <div className={styles.container}>
       <ArrowBackIosIcon onClick={() => carouselRef.current.scrollLeft -= 200} />
