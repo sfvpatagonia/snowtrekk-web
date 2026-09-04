@@ -7,9 +7,9 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export default function FAQForm({ service, setService, styles, setFaq }) {
+export default function FAQForm({ service, setService, setFaq }) {
   const [newFAQ, setNewFAQ] = useState({ question: "", answer: "" });
 
   const handleAddFAQ = (event) => {

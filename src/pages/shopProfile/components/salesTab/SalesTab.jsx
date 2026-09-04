@@ -23,7 +23,6 @@ export default function SalesTab() {
   const [currentMonthSold, setCurrentMonthSold] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [shopId, setShopId] = useState(null);
   const [supportOpen, setSupportOpen] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);

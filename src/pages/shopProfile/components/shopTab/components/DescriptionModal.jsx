@@ -16,7 +16,7 @@ export default function DescriptionModal({
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     setFormData(value);
   };
 
@@ -32,7 +32,7 @@ export default function DescriptionModal({
           setError(data.message);
         }
       })
-      .catch((error) => setError("An error occurred"))
+      .catch(() => setError("An error occurred"))
       .finally(() => setLoading(false));
   };
 

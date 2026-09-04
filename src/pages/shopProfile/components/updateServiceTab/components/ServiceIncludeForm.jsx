@@ -9,7 +9,6 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import languagesEntities from "@/services/languagesEntities";
-import { use } from "react";
 
 export default function ServiceIncludeForm({
   newService,
@@ -32,6 +31,10 @@ export default function ServiceIncludeForm({
       includes: "",
       notIncludes: "",
     }));
+    // runs once on mount to seed includes/notIncludes from newService, then clears
+    // those fields; including them (or the setters) as deps would re-fire right after
+    // that clear and stomp the already-collected includes/notIncludes lists with ""
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAddToList = (event, name) => {

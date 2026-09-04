@@ -28,7 +28,7 @@ export default function BillingTab() {
       })
       .catch((error) => setError(error))
       .finally(() => setLoading(false));
-  }, []);
+  }, [shopRedux.id, user.token]);
 
   return (
     <main className="flex flex-col flex-1 items-center gap-4 max-w-full overflow-hidden py-4  ">

@@ -105,7 +105,7 @@ export default function ServiceTable({
   const handleAdvertise = (service) => {
     shopService
       .advertiseService(shop.id, service, user.token)
-      .then((data) => {
+      .then(() => {
         setConfirmationModal({
           open: true,
           message: "A Snowtrekk representative will contact you soon.",

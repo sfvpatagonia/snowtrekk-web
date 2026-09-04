@@ -27,7 +27,7 @@ export default function ServiceImageForm({
       };
       reader.readAsArrayBuffer(file);
     });
-  }, []);
+  }, [setImages]);
 
   const handleUnselect = (indexToRemove) => {
     setPreviewUrl((prev) => prev.filter((_, i) => i !== indexToRemove));
@@ -35,8 +35,9 @@ export default function ServiceImageForm({
     setDetailModal(null);
   };
 
-  const { acceptedFiles, getRootProps, getInputProps, isDragActive } =
-    useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+  });
 
   const handleImagesToDelete = (imageId) => {
     setImagesToDelete((prev) => {
@@ -92,7 +93,7 @@ export default function ServiceImageForm({
             <div className="flex flex-col items-center flex-1 justify-center p-2 cursor-pointer">
               <FileUploadIcon color="primary" fontSize="large" />
               <p className="text-lg text-main-0">
-                Drag 'n' drop some files here, or click to select files
+                Drag &apos;n&apos; drop some files here, or click to select files
               </p>
             </div>
           )}

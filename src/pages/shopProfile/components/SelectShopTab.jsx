@@ -27,7 +27,7 @@ export default function SelectShopTab() {
         setError(`An error occurred: ${error}, please try again later.`)
       )
       .finally(() => setLoading(false));
-  }, []);
+  }, [user.id, user.token]);
 
   return (
     <div className="flex flex-col flex-1 items-center overflow-hidden py-4 gap-2 max-w-full">

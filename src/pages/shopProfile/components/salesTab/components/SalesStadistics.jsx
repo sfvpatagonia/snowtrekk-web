@@ -8,7 +8,6 @@ export default function SalesStadistics({
   mostFrequentActivities,
   mostViewedService,
   bestScoredService,
-  topProducts,
   monthlySales,
   bestMonth,
   currentMonthSales,

@@ -37,7 +37,7 @@ export default function ShopTab({ updateQuery }) {
       })
       .catch((error) => setError(error))
       .finally(() => setLoading(false));
-  }, [isUpdated]);
+  }, [isUpdated, shopRedux.id, user.token]);
 
   if (loading) {
     return (

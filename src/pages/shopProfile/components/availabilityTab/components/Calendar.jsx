@@ -135,7 +135,10 @@ export default function Calendar({ weekDays, currentService }) {
     ];
 
     setAvailability(mergedAvailability);
-  }, [weekDays, calendarDays]);
+    // `availability` is intentionally omitted: mergedAvailability is derived from it,
+    // so including it would create an update loop (new array reference every run)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weekDays, calendarDays, currentMonth, currentYear]);
 
   useEffect(() => {
     if (!currentService) return;
@@ -178,7 +181,7 @@ export default function Calendar({ weekDays, currentService }) {
     }
 
     setCalendarDays(days);
-  }, [currentMonth]);
+  }, [currentMonth, currentYear]);
 
   const nextMonth = () => {
     if (currentMonth === 11) {

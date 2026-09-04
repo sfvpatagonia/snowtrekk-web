@@ -30,7 +30,7 @@ export default function UpdateServiceTab() {
   const [imagesToDelete, setImagesToDelete] = useState([]);
   const [confirmModal, setConfirmModal] = useState(false);
   const [error, setError] = useState(null);
-  const [idToUpdateService, setIdToUpdateService] = useState(null);
+  const [, setIdToUpdateService] = useState(null);
 
   const validateFields = (service, images) => {
     if (!service.name || service.name.trim() === "") {
@@ -112,7 +112,7 @@ export default function UpdateServiceTab() {
     return () => {
       dispatch(selectCurrentService(""));
     };
-  }, []);
+  }, [shop.id, shop.currentServiceId, user.token, navigate, dispatch]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -163,7 +163,6 @@ export default function UpdateServiceTab() {
 
   const updateQuery = (newQuery) => {
     navigate(`/my-shop?tab=${newQuery}`);
-    setActiveTab(newQuery);
   };
 
   if (loading) {

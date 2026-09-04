@@ -32,7 +32,7 @@ export default function PoliciesModal({ open, policy, setOpen, idShop }) {
           setError(data.message);
         }
       })
-      .catch((error) => setError("An error occurred"))
+      .catch(() => setError("An error occurred"))
       .finally(() => setLoading(false));
   };
 

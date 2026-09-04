@@ -43,7 +43,7 @@ export default function ServicesTab() {
         navigate("/join");
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [navigate, shop.id, user.token]);
 
   useEffect(() => {
     if (services.length !== 0) {
@@ -51,7 +51,7 @@ export default function ServicesTab() {
         services.filter((service) => service.name.includes(query))
       );
     }
-  }, [query]);
+  }, [query, services]);
 
   const filterByCategory = (categories) => {
     if (categories.length === 0 && query === "") {

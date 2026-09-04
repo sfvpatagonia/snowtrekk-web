@@ -37,11 +37,10 @@ export default function AvailabilityTab() {
     return () => {
       dispatch(selectCurrentService(null));
     };
-  }, []);
+  }, [idService, navigate, user.token, dispatch]);
 
   const updateQuery = (newQuery) => {
     navigate(`/my-shop?tab=${newQuery}`);
-    setActiveTab(newQuery);
   };
 
   if (loading) {

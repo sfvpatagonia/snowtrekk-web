@@ -93,7 +93,7 @@ export default function ImageModal({ open, handleClose, image, shopId }) {
               </div>
             ) : (
               <div className="flex flex-1 flex-col justify-center items-center cursor-pointer p-2">
-                <p>Drag 'n' drop some files here, or click to select files</p>
+                <p>Drag &apos;n&apos; drop some files here, or click to select files</p>
               </div>
             )}
           </div>

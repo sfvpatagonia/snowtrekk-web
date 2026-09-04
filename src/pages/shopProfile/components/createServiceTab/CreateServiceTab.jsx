@@ -52,7 +52,7 @@ export default function CreateServiceTab() {
   const [error, setError] = useState(null);
   const [idNewService, setIdNewService] = useState(null);
 
-  const validateFields = (service, images, includes, notIncludes) => {
+  const validateFields = (service, images) => {
     if (!service.name || service.name.trim() === "") {
       return "The service name is required.";
     }
@@ -122,18 +122,13 @@ export default function CreateServiceTab() {
     //     }
     //   });
     // }
-  }, []);
+  }, [shop.id, user.token]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
 
-    const validationError = validateFields(
-      newService,
-      images,
-      includes,
-      notIncludes
-    );
+    const validationError = validateFields(newService, images);
     if (validationError) {
       setError(validationError);
       setLoading(false);
@@ -183,7 +178,7 @@ export default function CreateServiceTab() {
         </h1>
         <p className="text-left text-sm">
           Please create your new services using the form below. Fill out the
-          required fields to define the details of your service, and don't
+          required fields to define the details of your service, and don&apos;t
           forget to add the items that are included or not included.
         </p>
         <p className="text-red-600 text-lg text-left">{error}</p>
