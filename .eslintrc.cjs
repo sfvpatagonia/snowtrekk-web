@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2020: true },
+  env: { browser: true, es2020: true, node: true },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -16,5 +16,10 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'react/prop-types': 'off',
+    // MUI's renderOption pattern destructures `key` out of `props` solely to keep it
+    // out of the `...rest` spread (React forbids spreading `key`); the var itself is
+    // never read. ignoreRestSiblings covers that pattern without needing `_`-prefixing.
+    'no-unused-vars': ['error', { ignoreRestSiblings: true }],
   },
 }
