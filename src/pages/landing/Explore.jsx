@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Footer from "@/components/footer/Footer";
-import BannerVideos from "./components/BannerVideos";
+import MomentsCarousel from "./components/MomentsCarousel";
 import ActivitiesGuide from "./components/ActivitiesGuide";
 import service from "@/services/service";
 import ServiceCard from "@/components/ServiceCard";
@@ -38,7 +38,7 @@ const Explore = () => {
               Take a look at this amazing videos
             </h2>
           </div>
-          <BannerVideos />
+          <MomentsCarousel />
           <Reveal>
             <section className="flex flex-col gap-6 py-6">
               <h2 className="text-center text-2xl font-bold text-main-600 dark:text-main-400 uppercase">
