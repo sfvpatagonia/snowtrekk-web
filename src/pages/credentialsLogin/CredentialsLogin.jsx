@@ -97,6 +97,12 @@ function CredentialsLogin({ allowedRole }) {
             </button>
           </form>
 
+          <p className="pb-4 text-sm">
+            <Link to="/forgot-password" className="text-green-700 dark:text-green-500">
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </p>
+
           {allowedRole === "business" && (
             <p className="py-4 text-sm">
               ¿Todavía no activaste tu cuenta?{" "}
