@@ -4,6 +4,7 @@ import AdminConfirmationModal from "./adminConfirmationModal/AdminConfirmationMo
 import AdminErrorModal from "./adminErrorModal/AdminErrorModal";
 import AdminTable from "./adminTable/AdminTable";
 import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import suggestion from "@/services/suggestions";
 
 const CONTACT_PREFIX = "[footer_contact]";
@@ -27,6 +28,7 @@ const escapeCsvValue = (value) => {
 };
 
 export default function SuggestionsTab({ darkMode, active }) {
+  const token = useSelector((state) => state.user?.token);
   const [suggestions, setSuggestions] = useState([]);
   const PAGE_SIZE = Math.floor((window.innerHeight - 200) / 37.5);
   const [error, setError] = useState(null);
@@ -71,7 +73,7 @@ export default function SuggestionsTab({ darkMode, active }) {
     if (shouldFetch) {
       setLoading(true);
       suggestion
-        .getSuggestions()
+        .getSuggestions(token)
         .then((data) => {
           if (data.ok) {
             setSuggestions(data.suggestions);
@@ -82,7 +84,7 @@ export default function SuggestionsTab({ darkMode, active }) {
         .finally(() => setLoading(false));
       setShouldFetch(false);
     }
-  }, [shouldFetch, active]);
+  }, [shouldFetch, active, token]);
 
   const handleDelete = (id) => {
     setChoiceModal(id);
@@ -179,7 +181,7 @@ export default function SuggestionsTab({ darkMode, active }) {
         setOpen={() => setChoiceModal(null)}
         message={"Are you sure you want to delete this suggestion?"}
         actionFunction={() =>
-          suggestion.deleteSuggestion(choiceModal).then((data) => {
+          suggestion.deleteSuggestion(choiceModal, token).then((data) => {
             if (data.ok) {
               setMessage(data.message);
               setSuggestions(
