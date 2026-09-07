@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import videoService from "@/services/video";
 import getDestinations from "@/services/getDestinations";
+import AdminErrorModal from "../adminErrorModal/AdminErrorModal";
 import { useSelector } from "react-redux";
 import {
   Autocomplete,
@@ -33,6 +34,7 @@ const VideosTab = ({ active }) => {
     order: "",
   });
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   const [formData, setFormData] = useState({
     idDestination: "",
@@ -111,7 +113,13 @@ const VideosTab = ({ active }) => {
   // ==========================
   const handleCreateVideo = () => {
     setModalType("create");
-    setFormData({ idDestination: "", description: "", videoFile: null });
+    setFormData({
+      idDestination: "",
+      description: "",
+      videoFile: null,
+      videoOrder: 0,
+      destinationOrder: 0,
+    });
     setErrors({});
     setShowModal(true);
   };
@@ -170,32 +178,45 @@ const VideosTab = ({ active }) => {
     submitData.append("destinationOrder", formData.destinationOrder);
     if (formData.videoFile) submitData.append("video", formData.videoFile);
 
-    let data;
-    if (modalType === "create") {
-      data = await videoService.createVideo(submitData, user.token);
-      setVideos(sortVideosByOrder([data.video, ...videos]));
-    } else {
-      data = await videoService.updateVideo(
-        selectedVideo.id,
-        submitData,
-        user.token,
-      );
+    try {
+      let data;
+      if (modalType === "create") {
+        data = await videoService.createVideo(submitData, user.token);
+        if (!data.ok) throw new Error(data.message || "Failed to create video");
+        setVideos(sortVideosByOrder([data.video, ...videos]));
+      } else {
+        data = await videoService.updateVideo(
+          selectedVideo.id,
+          submitData,
+          user.token,
+        );
+        if (!data.ok) throw new Error(data.message || "Failed to update video");
 
-      const updated = videos.map((video) =>
-        video.id === selectedVideo.id ? data.video : video,
-      );
+        const updated = videos.map((video) =>
+          video.id === selectedVideo.id ? data.video : video,
+        );
 
-      setVideos(sortVideosByOrder(updated));
+        setVideos(sortVideosByOrder(updated));
+      }
+
+      setShowModal(false);
+    } catch (error) {
+      setSubmitError(error.message || "An unexpected error occurred");
+    } finally {
+      setSubmitting(false);
     }
-
-    setShowModal(false);
-    setSubmitting(false);
   };
 
   // ==========================
   // ✅ AGRUPADO FINAL
   // ==========================
   const groupedVideos = groupByDestination(videos);
+  const carouselVideoCount = useMemo(
+    () =>
+      videos.filter((v) => v.destinationOrder !== 0 && v.videoOrder !== 0)
+        .length,
+    [videos],
+  );
   const handleSelectChange = (selectedOption) => {
     console.log("Selected destination:", selectedOption);
     setFormData({
@@ -263,8 +284,13 @@ const VideosTab = ({ active }) => {
   return (
     <div className="flex flex-col gap-6 py-5 text-main-0 dark:text-main-1000">
       {/* HEADER */}
-      <div className="flex justify-between border-b border-main-600 dark:border-main-400 pb-4">
-        <h2 className="text-2xl font-bold">Videos Management</h2>
+      <div className="flex justify-between items-center border-b border-main-600 dark:border-main-400 pb-4">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-bold">Videos Management</h2>
+          <p className="text-sm opacity-70">
+            {carouselVideoCount} videos en el carrusel
+          </p>
+        </div>
         <button className="button" onClick={handleCreateVideo}>
           + Create Video
         </button>
@@ -528,27 +554,56 @@ const VideosTab = ({ active }) => {
                     />
                   </div>
 
-                  <div className="flex flex-col gap-0.5">
-                    <TextField
-                      type="number"
-                      id="videoOrder"
-                      name="videoOrder"
-                      label="Order"
-                      disabled={submitting}
-                      value={formData.videoOrder}
-                      onChange={handleInputChange}
-                      className={
-                        errors.videoOrder
-                          ? "border-red-600 dark:border-red-400"
-                          : ""
-                      }
-                    />
-                    {errors.videoOrder && (
-                      <span className="text-red-600 text-sm">
-                        {errors.videoOrder}
-                      </span>
-                    )}
+                  <div className="flex gap-2">
+                    <div className="flex flex-col gap-0.5">
+                      <TextField
+                        type="number"
+                        id="videoOrder"
+                        name="videoOrder"
+                        label="Video Order"
+                        disabled={submitting}
+                        value={formData.videoOrder}
+                        onChange={handleInputChange}
+                        className={
+                          errors.videoOrder
+                            ? "border-red-600 dark:border-red-400"
+                            : ""
+                        }
+                      />
+                      {errors.videoOrder && (
+                        <span className="text-red-600 text-sm">
+                          {errors.videoOrder}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-0.5">
+                      <TextField
+                        type="number"
+                        id="destinationOrder"
+                        name="destinationOrder"
+                        label="Destination Order"
+                        disabled={submitting}
+                        value={formData.destinationOrder}
+                        onChange={handleInputChange}
+                        className={
+                          errors.destinationOrder
+                            ? "border-red-600 dark:border-red-400"
+                            : ""
+                        }
+                      />
+                      {errors.destinationOrder && (
+                        <span className="text-red-600 text-sm">
+                          {errors.destinationOrder}
+                        </span>
+                      )}
+                    </div>
                   </div>
+                  <p className="text-xs opacity-70">
+                    0 = no aparece en el carrusel. Podés cambiarlo de 0 a
+                    cualquier número (o volver a 0) las veces que quieras,
+                    siempre desde este mismo formulario.
+                  </p>
 
                   <div className="flex flex-col gap-0.5">
                     <label htmlFor="videoFile">
@@ -622,6 +677,12 @@ const VideosTab = ({ active }) => {
           </div>
         </Modal>
       )}
+
+      <AdminErrorModal
+        open={submitError !== null}
+        setOpen={() => setSubmitError(null)}
+        error={submitError}
+      />
     </div>
   );
 };

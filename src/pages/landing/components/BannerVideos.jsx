@@ -23,8 +23,13 @@ export default function BannerVideos() {
       .getAllVideos(null)
       .then((result) => {
         if (result.ok && Array.isArray(result.videos)) {
+          // ✅ 0 = excluido del carrusel público (sigue visible en el admin)
+          const visible = result.videos.filter(
+            (video) => video.destinationOrder !== 0 && video.videoOrder !== 0,
+          );
+
           // ✅ ORDEN GLOBAL: DESTINO → VIDEO
-          const ordered = [...result.videos].sort((a, b) => {
+          const ordered = [...visible].sort((a, b) => {
             if (a.destinationOrder !== b.destinationOrder) {
               return a.destinationOrder - b.destinationOrder;
             }
