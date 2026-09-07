@@ -5,6 +5,7 @@ import Footer from "@/components/footer/Footer";
 import { addUser } from "@/redux/userSlice";
 import { useDispatch } from "react-redux";
 import { TextField } from "@mui/material";
+import PasswordField from "@/components/PasswordField/PasswordField";
 import userService from "@/services/user";
 
 const ROLE_CONFIG = {
@@ -82,9 +83,8 @@ function CredentialsLogin({ allowedRole }) {
               onChange={handleChange}
               disabled={loading}
             />
-            <TextField
+            <PasswordField
               label="Password"
-              type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
