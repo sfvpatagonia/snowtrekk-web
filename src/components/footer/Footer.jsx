@@ -55,7 +55,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="flex flex-col bg-[#444] z-10">
+    <footer className="flex flex-col bg-[#444]">
       <Suggestion />
 
       <div className="flex flex-col sm:flex-row w-full gap-12 sm:gap-0 max-w-7xl mx-auto justify-evenly p-16">

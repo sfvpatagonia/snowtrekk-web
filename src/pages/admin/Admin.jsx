@@ -391,7 +391,7 @@ const Admin = () => {
             </li>
           </ul>
         </aside>
-        <div className="max-w-full py-0 px-4 overflow-x-auto bg-main-100 dark:bg-main-900">
+        <div className="max-w-full min-h-0 py-0 px-4 overflow-x-auto overflow-y-auto bg-main-100 dark:bg-main-900">
           {renderTab()}
         </div>
       </div>
