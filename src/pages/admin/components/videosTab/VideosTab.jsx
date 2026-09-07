@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import videoService from "@/services/video";
 import getDestinations from "@/services/getDestinations";
 import AdminErrorModal from "../adminErrorModal/AdminErrorModal";
+import AdminConfirmationModal from "../adminConfirmationModal/AdminConfirmationModal";
 import { useSelector } from "react-redux";
 import {
   Autocomplete,
@@ -35,6 +36,7 @@ const VideosTab = ({ active }) => {
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [message, setMessage] = useState("");
 
   const [formData, setFormData] = useState({
     idDestination: "",
@@ -252,7 +254,7 @@ const VideosTab = ({ active }) => {
     try {
       const data = await videoService.reorderDestinations(
         selectedDestination.id,
-        selectedDestination.order,
+        Number(selectedDestination.order),
         user.token,
       );
 
@@ -261,9 +263,12 @@ const VideosTab = ({ active }) => {
         setVideos(ordered);
         setSelectedDestination({ id: "", order: "" });
         setShowInput(false);
+        setMessage(data.message || "Destination order updated");
+      } else {
+        setSubmitError(data.message || "Failed to update destination order");
       }
     } catch (error) {
-      console.log(error);
+      setSubmitError(error.message || "An unexpected error occurred");
     }
   };
 
@@ -335,7 +340,7 @@ const VideosTab = ({ active }) => {
                       className="button text-xs"
                       onClick={handleChangeDestinationOrder}
                     >
-                      Change
+                      Save
                     </button>
                     <button
                       className="button text-sm"
@@ -681,6 +686,12 @@ const VideosTab = ({ active }) => {
         open={submitError !== null}
         setOpen={() => setSubmitError(null)}
         error={submitError}
+      />
+
+      <AdminConfirmationModal
+        open={message !== ""}
+        setOpen={() => setMessage("")}
+        message={message}
       />
     </div>
   );
