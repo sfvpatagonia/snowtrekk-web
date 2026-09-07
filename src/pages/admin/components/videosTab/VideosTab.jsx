@@ -212,9 +212,7 @@ const VideosTab = ({ active }) => {
   // ==========================
   const groupedVideos = groupByDestination(videos);
   const carouselVideoCount = useMemo(
-    () =>
-      videos.filter((v) => v.destinationOrder !== 0 && v.videoOrder !== 0)
-        .length,
+    () => videos.filter((v) => v.videoOrder !== 0).length,
     [videos],
   );
   const handleSelectChange = (selectedOption) => {
@@ -450,7 +448,7 @@ const VideosTab = ({ active }) => {
                     </p>
                     <p>
                       <strong>Destination:</strong>{" "}
-                      {selectedVideo.Destination.name}
+                      {selectedVideo.Destination?.name ?? "Sin destino asignado"}
                     </p>
                     <p>
                       <strong>Order:</strong> {selectedVideo.videoOrder}
@@ -600,9 +598,10 @@ const VideosTab = ({ active }) => {
                     </div>
                   </div>
                   <p className="text-xs opacity-70">
-                    0 = no aparece en el carrusel. Podés cambiarlo de 0 a
-                    cualquier número (o volver a 0) las veces que quieras,
-                    siempre desde este mismo formulario.
+                    0 en Video Order = no aparece en el carrusel. Destination
+                    Order solo define el orden entre destinos. Podés
+                    cambiarlo de 0 a cualquier número (o volver a 0) las
+                    veces que quieras, siempre desde este mismo formulario.
                   </p>
 
                   <div className="flex flex-col gap-0.5">

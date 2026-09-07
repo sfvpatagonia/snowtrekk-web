@@ -23,9 +23,10 @@ export default function BannerVideos() {
       .getAllVideos(null)
       .then((result) => {
         if (result.ok && Array.isArray(result.videos)) {
-          // ✅ 0 = excluido del carrusel público (sigue visible en el admin)
+          // ✅ videoOrder 0 = excluido del carrusel público (sigue visible en el admin)
+          // destinationOrder sigue usándose solo como criterio de orden entre destinos
           const visible = result.videos.filter(
-            (video) => video.destinationOrder !== 0 && video.videoOrder !== 0,
+            (video) => video.videoOrder !== 0,
           );
 
           // ✅ ORDEN GLOBAL: DESTINO → VIDEO
@@ -120,6 +121,9 @@ export default function BannerVideos() {
   // }, [uniqueDestinations]);
 
   if (loading) return <LoadingComponent />;
+
+  // ✅ Safety net: every video excluded (videoOrder = 0) or none exist yet
+  if (flatVideos.length === 0) return null;
 
   return (
     <div
