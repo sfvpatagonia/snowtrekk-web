@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Footer from "@/components/footer/Footer";
 import Header from "@/components/header/Header";
 import CountryTab from "./components/CountryTab";
 import ClientLeadsTab from "./components/clientLeadsTab/ClientLeadsTab";
@@ -395,7 +394,6 @@ const Admin = () => {
           {renderTab()}
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
