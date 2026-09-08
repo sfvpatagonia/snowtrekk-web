@@ -1,62 +1,34 @@
+import api from "@/api/axios";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
-async function createShop(data, token) {
+async function createShop(data) {
   try {
-    const response = await fetch(`${apiUrl}/shop`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: data,
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.post(`/shop`, data);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function getShopsByUserId(userId, token) {
+async function getShopsByUserId(userId) {
   try {
-    const response = await fetch(`${apiUrl}/shop/user/${userId}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.get(`/shop/user/${userId}`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function getShopById(shopId, token) {
+async function getShopById(shopId) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${shopId}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.get(`/shop/${shopId}`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
@@ -77,210 +49,105 @@ async function getPublicShopById(shopId) {
   }
 }
 
-async function updateShop(shopId, data, token) {
+async function updateShop(shopId, data) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${shopId}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.put(`/shop/${shopId}`, data);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function advertiseService(shopId, service, token) {
+async function advertiseService(shopId, service) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${shopId}/advertise-service`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ service }),
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.post(`/shop/${shopId}/advertise-service`, { service });
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function changePassword(shopId, data, token) {
+async function changePassword(shopId, data) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${shopId}/password`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.put(`/shop/${shopId}/password`, data);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function changeShopImage(shopId, image, token) {
+async function changeShopImage(shopId, image) {
   try {
     const formData = new FormData();
     formData.append("image", image);
-    const response = await fetch(`${apiUrl}/shop/${shopId}/image`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.post(`/shop/${shopId}/image`, formData);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function addUserToShop(shopId, newUser, token) {
+async function addUserToShop(shopId, newUser) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${shopId}/user/${newUser}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.post(`/shop/${shopId}/user/${newUser}`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function removeUserFromShop(shopId, userId, token) {
+async function removeUserFromShop(shopId, userId) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${shopId}/user/${userId}`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.delete(`/shop/${shopId}/user/${userId}`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function makeAdmin(shopId, userId, token) {
+async function makeAdmin(shopId, userId) {
   try {
-    const response = await fetch(
-      `${apiUrl}/shop/${shopId}/user/${userId}/admin`,
-      {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/shop/${shopId}/user/${userId}/admin`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function removeAdmin(shopId, userId, token) {
+async function removeAdmin(shopId, userId) {
   try {
-    const response = await fetch(
-      `${apiUrl}/shop/${shopId}/user/${userId}/operator`,
-      {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/shop/${shopId}/user/${userId}/operator`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function changePolicy(shopId, policies, token) {
+async function changePolicy(shopId, policies) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${shopId}/policy`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(policies),
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.post(`/shop/${shopId}/policy`, policies);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function changeDescription(shopId, description, token) {
+async function changeDescription(shopId, description) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${shopId}/description`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ description }),
-    });
-
-    const responseData = await response.json();
-
-    return responseData;
+    const response = await api.post(`/shop/${shopId}/description`, { description });
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 

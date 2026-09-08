@@ -1,3 +1,5 @@
+import api from "@/api/axios";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 async function getActivities() {
@@ -50,23 +52,13 @@ async function newActivity(activity) {
   }
 }
 
-async function updateActivity(activity, token) {
+async function updateActivity(activity) {
   try {
-    const response = await fetch(`${apiUrl}/activities/${activity.id}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(activity),
-    });
-    const data = await response.json();
-
-    return data;
+    const response = await api.put(`/activities/${activity.id}`, activity);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 

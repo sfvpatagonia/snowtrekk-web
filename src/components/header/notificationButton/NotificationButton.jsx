@@ -17,13 +17,14 @@ export default function NotificationButton() {
 
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:1337/api";
-    if (!user?.token) return;
+    if (!user?.id) return;
 
+    // No auth.token payload — session is cookie-only now. withCredentials
+    // lets the httpOnly session_token cookie ride along cross-origin so
+    // authSocket's cookie fallback (see authSocket.js) can pick it up.
     const URL = apiUrl.replace("/api", "");
     socketRef.current = io(URL, {
-      auth: {
-        token: user.token, // authSocket leerÃ¡ este token
-      },
+      withCredentials: true,
     });
 
     const socket = socketRef.current;
@@ -32,7 +33,7 @@ export default function NotificationButton() {
       setUnreadUserMessages(userChat);
       setUnreadShopMessages(shopChat);
     });
-  }, [user.token]);
+  }, [user.id]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

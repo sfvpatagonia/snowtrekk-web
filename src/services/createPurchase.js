@@ -1,21 +1,12 @@
 // src/services/createPurchase.js
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "@/api/axios";
 
-export default async function createPurchase(fullobject, token) {
+export default async function createPurchase(fullobject) {
   try {
-    const response = await fetch(`${apiUrl}/order/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,       // ← aquí
-      },
-      body: JSON.stringify(fullobject),
-    });
-
-    const data = await response.json();
-    return data;
+    const response = await api.post(`/order/`, fullobject);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }

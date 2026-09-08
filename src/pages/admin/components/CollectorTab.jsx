@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { getCollectorPendingPlaces, approveCollectorPlace, rejectCollectorPlace, updateCollectorPlace } from "@/services/admin";
-import { useSelector } from "react-redux";
 
 const CollectorTab = ({ darkMode, active }) => {
   const [places, setPlaces] = useState([]);
@@ -17,16 +16,15 @@ const CollectorTab = ({ darkMode, active }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const token = useSelector((state) => state.user?.token);
 
   useEffect(() => {
-    if (!active || !token) return;
+    if (!active) return;
 
     const loadPendingPlaces = async () => {
       setLoading(true);
       setError(null);
 
-      const result = await getCollectorPendingPlaces(token);
+      const result = await getCollectorPendingPlaces();
       if (!result.ok) {
         setError(result.message || "Failed to load pending collector places");
       } else {
@@ -36,11 +34,10 @@ const CollectorTab = ({ darkMode, active }) => {
     };
 
     loadPendingPlaces();
-  }, [active, token]);
+  }, [active]);
 
   const handleApprove = async (id) => {
-    if (!token) return;
-    const result = await approveCollectorPlace(id, token);
+    const result = await approveCollectorPlace(id);
     if (result.ok) {
       setPlaces((current) => current.filter((place) => place.id !== id));
     } else {
@@ -49,9 +46,8 @@ const CollectorTab = ({ darkMode, active }) => {
   };
 
   const handleReject = async (id) => {
-    if (!token) return;
     const reason = window.prompt("Reason for rejection (optional):", "");
-    const result = await rejectCollectorPlace(id, reason || null, token);
+    const result = await rejectCollectorPlace(id, reason || null);
     if (result.ok) {
       setPlaces((current) => current.filter((place) => place.id !== id));
     } else {
@@ -92,8 +88,6 @@ const CollectorTab = ({ darkMode, active }) => {
   };
 
   const handleSaveEdit = async (id) => {
-    if (!token) return;
-
     const payload = {
       name: editForm.name,
       description: editForm.description,
@@ -105,7 +99,7 @@ const CollectorTab = ({ darkMode, active }) => {
       price: editForm.price ? Number(editForm.price) : undefined,
     };
 
-    const result = await updateCollectorPlace(id, payload, token);
+    const result = await updateCollectorPlace(id, payload);
     if (result.ok) {
       setPlaces((current) =>
         current.map((place) => (place.id === id ? { ...place, ...result.body.shop } : place)),

@@ -1,3 +1,5 @@
+import api from "@/api/axios";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 async function getCountries() {
@@ -159,209 +161,122 @@ async function sendEmail(body) {
   }
 }
 
-async function getAllServices(limit, offset, token) {
+async function getAllServices(limit, offset) {
   try {
-    const response = await fetch(
-      `${apiUrl}/admin/services/admin?limit=${limit}&offset=${offset}/`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
+    const response = await api.get(
+      `/admin/services/admin?limit=${limit}&offset=${offset}/`,
     );
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function changeAdvertise(id, token) {
+async function changeAdvertise(id) {
   try {
-    const response = await fetch(
-      `${apiUrl}/admin/services/${id}/change-advertise`,
-      {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/admin/services/${id}/change-advertise`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
-async function getShops(token) {
+async function getShops() {
   try {
-    const response = await fetch(`${apiUrl}/shop/`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/shop/`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function getCollectorPendingPlaces(token) {
+async function getCollectorPendingPlaces() {
   try {
-    const response = await fetch(`${apiUrl}/collector/pending`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/collector/pending`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function approveCollectorPlace(id, token) {
+async function approveCollectorPlace(id) {
   try {
-    const response = await fetch(`${apiUrl}/collector/approve/${id}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.post(`/collector/approve/${id}`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function rejectCollectorPlace(id, reason, token) {
+async function rejectCollectorPlace(id, reason) {
   try {
-    const response = await fetch(`${apiUrl}/collector/reject/${id}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ reason }),
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.post(`/collector/reject/${id}`, { reason });
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function updateCollectorPlace(id, payload, token) {
+async function updateCollectorPlace(id, payload) {
   try {
-    const response = await fetch(`${apiUrl}/collector/edit/${id}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/collector/edit/${id}`, payload);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function deleteLocation({ id, type }, token) {
+async function getCollectorSsoUrl() {
   try {
-    const response = await fetch(`${apiUrl}/${type}/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/collector/sso-url`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function updateBasicInfoShop(shop, token) {
+async function deleteLocation({ id, type }) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${shop.id}/info`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(shop),
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.delete(`/${type}/${id}`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
-async function updateBillingInfoShop(id, billingInfo, token) {
+
+async function updateBasicInfoShop(shop) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${id}/billing`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(billingInfo),
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/shop/${shop.id}/info`, shop);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
-async function updateBillingPriceShop(id, billingPrice, token) {
+async function updateBillingInfoShop(id, billingInfo) {
   try {
-    const response = await fetch(`${apiUrl}/shop/${id}/price`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(billingPrice),
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/shop/${id}/billing`, billingInfo);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
+  }
+}
+async function updateBillingPriceShop(id, billingPrice) {
+  try {
+    const response = await api.put(`/shop/${id}/price`, billingPrice);
+    return response.data;
+  } catch (error) {
+    console.error("Network error:", error);
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
@@ -382,6 +297,7 @@ export default {
   approveCollectorPlace,
   rejectCollectorPlace,
   updateCollectorPlace,
+  getCollectorSsoUrl,
   deleteLocation,
   updateBasicInfoShop,
   updateBillingInfoShop,
@@ -405,6 +321,7 @@ export {
   approveCollectorPlace,
   rejectCollectorPlace,
   updateCollectorPlace,
+  getCollectorSsoUrl,
   deleteLocation,
   updateBasicInfoShop,
   updateBillingInfoShop,

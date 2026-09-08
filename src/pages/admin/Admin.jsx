@@ -11,6 +11,7 @@ import ActivityTab from "./components/activityTab/ActivityTab";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/redux/userSlice";
 import userService from "@/services/user";
+import { getCollectorSsoUrl } from "@/services/admin";
 import NewsTab from "./components/newsTab/NewsTab";
 import SuggestionsTab from "./components/SuggestionsTab";
 import EmailTab from "./components/EmailTab";
@@ -29,6 +30,8 @@ const Admin = () => {
   const query = new URLSearchParams(location.search);
   const tab = query.get("tab") || "clients";
   const darkMode = useSelector((state) => state.theme.darkMode);
+  const token = useSelector((state) => state.user?.token);
+  const [collectorSsoError, setCollectorSsoError] = useState(null);
   const [leads, setLeads] = useState([]);
   const [countries, setCountries] = useState([]);
   const [areas, setAreas] = useState([]);
@@ -320,6 +323,23 @@ const Admin = () => {
     navigate("/");
   };
 
+  // Opens the standalone Collector app (localhost:1340 in dev) already
+  // logged in, via a short-lived SSO token minted server-side — see
+  // getCollectorSsoUrl in services/admin.js and GET /api/collector/sso-url.
+  // Unrelated to the "Collector" tab above, which manages this DB's own
+  // pending shop approvals.
+  const handleOpenCollector = async () => {
+    setCollectorSsoError(null);
+    const result = await getCollectorSsoUrl(token);
+
+    if (!result.ok) {
+      setCollectorSsoError(result.message || "Failed to open Collector");
+      return;
+    }
+
+    window.open(result.url, "_blank");
+  };
+
   return (
     <div>
       <Header />
@@ -359,6 +379,12 @@ const Admin = () => {
             <li className={`button `} onClick={() => setTab("collector")}>
               Collector
             </li>
+            <li className={`button `} onClick={handleOpenCollector}>
+              Open Collector app
+            </li>
+            {collectorSsoError && (
+              <li className="text-xs text-red-500">{collectorSsoError}</li>
+            )}
             <li className={`button `} onClick={() => setTab("services")}>
               Services
             </li>

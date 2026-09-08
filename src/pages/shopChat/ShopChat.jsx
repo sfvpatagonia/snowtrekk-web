@@ -23,10 +23,10 @@ export default function ShopChat() {
 
   /* ───────────────── Obtener datos de la orden ───────────────── */
   useEffect(() => {
-    if (!user?.token) return;
+    if (!user?.id) return;
     const URL = import.meta.env.VITE_API_URL.replace("/api", "");
     order
-      .getOrderByOrderNumber(idOrder, user.token)
+      .getOrderByOrderNumber(idOrder)
       .then((data) => {
         if (data.ok) setCurrentOrder(data.body.order);
 
@@ -35,10 +35,11 @@ export default function ShopChat() {
       .then((order) => {
         // Conectar al socket una vez que tenemos la ordenif (socketRef.current) socketRef.current.disconnect();
 
+        // No auth.token payload — session is cookie-only now. withCredentials
+        // lets the httpOnly session_token cookie ride along cross-origin so
+        // authSocket's cookie fallback (see authSocket.js) can pick it up.
         socketRef.current = io(URL, {
-          auth: {
-            token: user.token, // authSocket leerá este token
-          },
+          withCredentials: true,
         });
 
         const socket = socketRef.current;
@@ -73,12 +74,7 @@ export default function ShopChat() {
       .finally(() => setLoading(false));
 
     // Evitamos múltiples conexiones
-  }, [idOrder, user?.token]);
-
-  /* ─────────────── Configurar Socket una vez cargada la orden ─────────────── */
-  useEffect(() => {
-    if (!idOrder || !user?.token) return;
-  }, [idOrder, user?.token]);
+  }, [idOrder, user?.id]);
 
   /* ─────────────── Función para enviar mensaje ─────────────── */
   const sendMessage = (text) => {
