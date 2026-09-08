@@ -96,10 +96,11 @@ function App() {
             <Route path="/business/dashboard" Component={BusinessDashboard} />
           </Route>
 
+          <Route path="/explore" Component={Explore} />
+
           <Route element={<ProtectedRoute />}>
             <Route path="/my-profile" Component={MyProfile} />
             <Route path="/checkout" Component={CheckoutPage} />
-            <Route path="/explore" Component={Explore} />
 
             <Route path="/my-shop" Component={ShopProfile} />
             <Route

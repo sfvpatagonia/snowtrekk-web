@@ -87,33 +87,41 @@ const ShopBilling = ({ shop, setShop, setMessage, setError }) => {
       <div className="grid w-1/2 grid-cols-2 gap-6 text-black dark:text-white">
         {newBillingPrice ? (
           <>
-            <TextField
-              select
-              label="Subscription Status"
-              name="status"
-              fullWidth
-              value={newBillingPrice.status}
-              disabled={loading}
-              onChange={handlePrice}
-              InputProps={{ className: "bg-main-50 dark:bg-main-950" }}
-              SelectProps={{
-                renderValue: (value) => {
-                  return (
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <span className="capitalize">{value}</span>
-                    </Box>
-                  );
-                },
-              }}
-            >
-              {["active", "inactive", "pending", "suspended"].map((status) => (
-                <MenuItem key={status} value={status}>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <span className="capitalize">{status}</span>
-                  </Box>
-                </MenuItem>
-              ))}
-            </TextField>
+            <div>
+              <TextField
+                select
+                label="Subscription Status"
+                name="status"
+                fullWidth
+                value={newBillingPrice.status}
+                disabled={loading}
+                onChange={handlePrice}
+                InputProps={{ className: "bg-main-50 dark:bg-main-950" }}
+                SelectProps={{
+                  renderValue: (value) => {
+                    return (
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <span className="capitalize">{value}</span>
+                      </Box>
+                    );
+                  },
+                }}
+              >
+                {["active", "inactive", "pending", "suspended"].map(
+                  (status) => (
+                    <MenuItem key={status} value={status}>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        <span className="capitalize">{status}</span>
+                      </Box>
+                    </MenuItem>
+                  ),
+                )}
+              </TextField>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Estado del shop (controla si aparece públicamente): "active" =
+                visible en el sitio, cualquier otro valor lo oculta.
+              </p>
+            </div>
 
             <TextField
               label="Subscription Plan"

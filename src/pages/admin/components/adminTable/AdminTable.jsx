@@ -75,7 +75,7 @@ export default function AdminTable({
       width: 100,
       cellClassName: "actions",
       getActions: (params) => {
-        return [
+        const actions = [
           <GridActionsCellItem
             key="edit"
             icon={
@@ -90,28 +90,39 @@ export default function AdminTable({
             disabled={!handleEdit}
             color="inherit"
           />,
-          <GridActionsCellItem
-            key="visible"
-            icon={
-              !params.row.isVisible ? (
-                <VisibilityOffIcon fontSize={16} color="disabled" />
-              ) : (
-                <VisibilityIcon fontSize={16} color="info" />
-              )
-            }
-            label="Visible"
-            className="textPrimary"
-            onClick={() => handleVisibility(params.id)}
-            color="inherit"
-            disabled={!handleVisibility}
-          />,
-          <GridActionsCellItem
-            key="delete"
-            icon={<DeleteIcon fontSize={16} color="error" />}
-            label="Delete"
-            onClick={() => handleDelete(params.id)}
-          />,
         ];
+
+        if (handleVisibility) {
+          actions.push(
+            <GridActionsCellItem
+              key="visible"
+              icon={
+                !params.row.isVisible ? (
+                  <VisibilityOffIcon fontSize={16} color="disabled" />
+                ) : (
+                  <VisibilityIcon fontSize={16} color="info" />
+                )
+              }
+              label="Visible"
+              className="textPrimary"
+              onClick={() => handleVisibility(params.id)}
+              color="inherit"
+            />,
+          );
+        }
+
+        if (handleDelete) {
+          actions.push(
+            <GridActionsCellItem
+              key="delete"
+              icon={<DeleteIcon fontSize={16} color="error" />}
+              label="Delete"
+              onClick={() => handleDelete(params.id)}
+            />,
+          );
+        }
+
+        return actions;
       },
     });
     return fields;
