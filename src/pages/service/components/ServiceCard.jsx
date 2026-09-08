@@ -23,19 +23,20 @@ const ServiceCard = ({ service }) => {
   };
 
   useEffect(() => {
-    if (user.token) {
-      favoritesFunctions
-        .checkIsFavorite(service.id, user.token)
-        .then((data) => {
-          if (data.ok) {
-            setIsFavorite(data.body.isFavorite);
-          }
-        });
-    }
-  }, [service.id, user.token]);
+    // Anonymous visitors have no session, so the backend would just 401 this
+    // — skip the call and leave the star unfilled rather than firing a
+    // request that can only fail.
+    if (!user.id) return;
+
+    favoritesFunctions.checkIsFavorite(service.id).then((data) => {
+      if (data.ok) {
+        setIsFavorite(data.body.isFavorite);
+      }
+    });
+  }, [service.id, user.id]);
 
   const handleClick = () => {
-    favoritesFunctions.setFavorite(service.id, user.token).then((data) => {
+    favoritesFunctions.setFavorite(service.id).then((data) => {
       if (data.ok) {
         setIsFavorite(data.isFavorite);
       }
