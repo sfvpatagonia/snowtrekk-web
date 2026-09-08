@@ -1,22 +1,12 @@
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "@/api/axios";
 
-async function contactAdmin(body,token) {  
+async function contactAdmin(body) {
   try {
-    const response = await fetch(`${apiUrl}/shop/send-email/`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(body),
-    });
-
-    const data = await response.json();
-    return data;
+    const response = await api.post(`/shop/send-email/`, body);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 

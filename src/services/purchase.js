@@ -1,19 +1,12 @@
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "@/api/axios";
 
-async function getMyPurchases(token) {
+async function getMyPurchases() {
   try {
-    const response = await fetch(`${apiUrl}/purchase/my-purchases`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/purchase/my-purchases`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 

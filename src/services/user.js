@@ -1,19 +1,13 @@
+import api from "@/api/axios";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
-async function getUser(id, token) {
+async function getUser(id) {
   try {
-    const response = await fetch(`${apiUrl}/user/${id}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/user/${id}`);
+    return response.data;
   } catch (error) {
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 async function getCurrentUser() {
@@ -94,77 +88,42 @@ async function changePassword(passwords) {
   }
 }
 
-async function getAllUsers(limit, offset, token) {
+async function getAllUsers(limit, offset) {
   try {
-    const response = await fetch(
-      `${apiUrl}/user?limit=${limit}&offset=${offset}/`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/user?limit=${limit}&offset=${offset}/`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function deleteUser(id, token) {
+async function deleteUser(id) {
   try {
-    const response = await fetch(`${apiUrl}/user/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.delete(`/user/${id}`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
-async function blockUser(id, token) {
+async function blockUser(id) {
   try {
-    const response = await fetch(`${apiUrl}/user/${id}/block`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/user/${id}/block`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function makeAdmin(id, token) {
+async function makeAdmin(id) {
   try {
-    const response = await fetch(`${apiUrl}/user/${id}/admin`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/user/${id}/admin`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
@@ -186,21 +145,14 @@ async function logIn(credentials) {
   }
 }
 
-async function verifyTokenRequest(token) {
+async function verifyTokenRequest() {
   try {
-    const response = await fetch(`${apiUrl}/user/verify`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (response.ok) {
-      return await response.json();
-    } else {
-      return { status: response.status, message: response.data.message };
-    }
+    const response = await api.get(`/user/verify`);
+    return response.data;
   } catch (error) {
+    if (error.response) {
+      return { status: error.response.status, message: error.response.data?.message };
+    }
     console.log(error);
   }
 }

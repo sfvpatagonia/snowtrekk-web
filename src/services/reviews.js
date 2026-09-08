@@ -1,40 +1,22 @@
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "@/api/axios";
 
-async function getMyReviews(token) {
+async function getMyReviews() {
   try {
-    const response = await fetch(`${apiUrl}/review/my-reviews`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/review/my-reviews`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function createReview(idService, data, token) {
+async function createReview(idService, data) {
   try {
-    const response = await fetch(`${apiUrl}/review/services/${idService}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const review = await response.json();
-    return review;
+    const response = await api.post(`/review/services/${idService}`, data);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 

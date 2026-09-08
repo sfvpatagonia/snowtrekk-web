@@ -1,37 +1,19 @@
-﻿const apiUrl = import.meta.env.VITE_API_URL;
+﻿import api from "@/api/axios";
 
-async function getSuggestions(token) {
+async function getSuggestions() {
   try {
-    const response = await fetch(`${apiUrl}/suggestion/`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-
-    return data;
+    const response = await api.get(`/suggestion/`);
+    return response.data;
   } catch (error) {
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
-async function deleteSuggestion(id, token) {
+async function deleteSuggestion(id) {
   try {
-    const response = await fetch(`${apiUrl}/suggestion/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-
-    return data;
+    const response = await api.delete(`/suggestion/${id}`);
+    return response.data;
   } catch (error) {
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 

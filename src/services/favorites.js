@@ -1,52 +1,28 @@
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "@/api/axios";
 
-async function getFavorites(token) {
+async function getFavorites() {
   try {
-    const response = await fetch(`${apiUrl}/favorites/`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/favorites/`);
+    return response.data;
   } catch (error) {
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function checkIsFavorite(idService, token) {
+async function checkIsFavorite(idService) {
   try {
-    const response = await fetch(`${apiUrl}/favorites/check/${idService}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/favorites/check/${idService}`);
+    return response.data;
   } catch (error) {
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
-async function setFavorite(idService, token) {
+async function setFavorite(idService) {
   try {
-    const response = await fetch(`${apiUrl}/favorites/${idService}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.post(`/favorites/${idService}`);
+    return response.data;
   } catch (error) {
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 

@@ -1,167 +1,94 @@
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "@/api/axios";
 
 // Obtener todos los videos
-async function getAllVideos(token) {
+async function getAllVideos() {
   try {
-    const response = await fetch(`${apiUrl}/video/`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/video/`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
 // Obtener video por ID
-async function getVideoById(id, token) {
+async function getVideoById(id) {
   try {
-    const response = await fetch(`${apiUrl}/video/${id}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/video/${id}`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
 // Obtener videos por destino
-async function getVideosByDestination(idDestination, token) {
+async function getVideosByDestination(idDestination) {
   try {
-    const response = await fetch(
-      `${apiUrl}/video/destination/${idDestination}`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/video/destination/${idDestination}`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
 // Obtener videos paginados
-async function getVideosPaginated(
-  page = 1,
-  limit = 2,
-  idDestination = null,
-  token
-) {
+async function getVideosPaginated(page = 1, limit = 2, idDestination = null) {
   try {
-    let url = `${apiUrl}/video/paginated?page=${page}&limit=${limit}`;
+    let url = `/video/paginated?page=${page}&limit=${limit}`;
     if (idDestination) {
       url += `&idDestination=${idDestination}`;
     }
 
-    const response = await fetch(url, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(url);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
 // Crear video
-async function createVideo(formData, token) {
+async function createVideo(formData) {
   try {
-    const response = await fetch(`${apiUrl}/video/`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData, // FormData no necesita Content-Type
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.post(`/video/`, formData);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
 // Actualizar video
-async function updateVideo(id, formData, token) {
+async function updateVideo(id, formData) {
   try {
-    const response = await fetch(`${apiUrl}/video/${id}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData, // FormData no necesita Content-Type
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/video/${id}`, formData);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
 // Eliminar video
-async function deleteVideo(id, token) {
+async function deleteVideo(id) {
   try {
-    const response = await fetch(`${apiUrl}/video/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.delete(`/video/${id}`);
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function reorderDestinations(destinationId, newOrder, token) {
+async function reorderDestinations(destinationId, newOrder) {
   try {
-    const response = await fetch(`${apiUrl}/video/reorder`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ destinationId, newOrder }),
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/video/reorder`, { destinationId, newOrder });
+    return response.data;
   } catch (error) {
     console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 

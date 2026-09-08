@@ -1,21 +1,14 @@
+import api from "@/api/axios";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
-async function createService(newService, token) {
+async function createService(newService) {
   try {
-    const response = await fetch(`${apiUrl}/admin/services/`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: newService,
-    });
-
-    const data = await response.json();
-    return data;
+    const response = await api.post(`/admin/services/`, newService);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
@@ -33,115 +26,68 @@ async function getFeaturedServices() {
   }
 }
 
-async function getServices(idShop, token) {
+async function getServices(idShop) {
   try {
-    const response = await fetch(`${apiUrl}/admin/services?idShop=${idShop}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/admin/services?idShop=${idShop}`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function getServiceById(idService, token) {
+async function getServiceById(idService) {
   try {
-    const response = await fetch(`${apiUrl}/admin/services/${idService}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/admin/services/${idService}`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function changeAvailability(idService, body, token) {
+async function changeAvailability(idService, body) {
   try {
-    const response = await fetch(
-      `${apiUrl}/admin/services/${idService}/changeAvailability`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      },
+    const response = await api.post(
+      `/admin/services/${idService}/changeAvailability`,
+      body,
     );
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.log("error222", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function toggleServiceVisibility(idService, token) {
+async function toggleServiceVisibility(idService) {
   try {
-    const response = await fetch(
-      `${apiUrl}/admin/services/${idService}/toggleVisibility`,
-      {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
+    const response = await api.put(
+      `/admin/services/${idService}/toggleVisibility`,
     );
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function deleteService(idService, token) {
+async function deleteService(idService) {
   try {
-    const response = await fetch(`${apiUrl}/admin/services/${idService}`, {
-      method: "DELETE",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    const response = await api.delete(`/admin/services/${idService}`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function updateService(idService, updatedService, token) {
+async function updateService(idService, updatedService) {
   try {
-    const response = await fetch(`${apiUrl}/admin/services/${idService}`, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: updatedService,
-    });
-
-    const data = await response.json();
-    return data;
+    const response = await api.put(`/admin/services/${idService}`, updatedService);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
@@ -162,66 +108,40 @@ async function getServicesByDestinationId(idDestination) {
   }
 }
 
-async function leaveAQuestion(idService, question, token) {
+async function leaveAQuestion(idService, question) {
   try {
-    const response = await fetch(
-      `${apiUrl}/admin/services/${idService}/question`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(question),
-      },
+    const response = await api.post(
+      `/admin/services/${idService}/question`,
+      question,
     );
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
-async function leaveAnAnswer(idService, question, answer, token) {
+async function leaveAnAnswer(idService, question, answer) {
   try {
-    const response = await fetch(
-      `${apiUrl}/admin/services/${idService}/question/${question}/answer`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(answer),
-      },
+    const response = await api.post(
+      `/admin/services/${idService}/question/${question}/answer`,
+      answer,
     );
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 
-async function deleteQuestion(idService, idQuestion, token) {
+async function deleteQuestion(idService, idQuestion) {
   try {
-    const response = await fetch(
-      `${apiUrl}/admin/services/${idService}/question/${idQuestion}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
+    const response = await api.delete(
+      `/admin/services/${idService}/question/${idQuestion}`,
     );
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
 

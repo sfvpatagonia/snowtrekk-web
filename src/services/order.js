@@ -1,22 +1,12 @@
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "@/api/axios";
 
-const getOrderByOrderNumber = async (orderNumber, token) => {
+const getOrderByOrderNumber = async (orderNumber) => {
   try {
-    const response = await fetch(
-      `${apiUrl}/order/order-number/${orderNumber}`,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/order/order-number/${orderNumber}`);
+    return response.data;
   } catch (error) {
     console.log(error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 };
 
