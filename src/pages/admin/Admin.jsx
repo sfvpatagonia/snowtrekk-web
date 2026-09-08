@@ -377,10 +377,10 @@ const Admin = () => {
               Shops
             </li>
             <li className={`button `} onClick={() => setTab("collector")}>
-              Collector
+              Aprobaciones
             </li>
             <li className={`button `} onClick={handleOpenCollector}>
-              Open Collector app
+              Collector
             </li>
             {collectorSsoError && (
               <li className="text-xs text-red-500">{collectorSsoError}</li>
