@@ -118,7 +118,7 @@ const ShopBilling = ({ shop, setShop, setMessage, setError }) => {
                 )}
               </TextField>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Estado del shop (controla si aparece públicamente): "active" =
+                Estado del shop (controla si aparece públicamente): `active` =
                 visible en el sitio, cualquier otro valor lo oculta.
               </p>
             </div>
