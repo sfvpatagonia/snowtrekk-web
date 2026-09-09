@@ -9,6 +9,7 @@ import userService from "@/services/user";
 import { useSelector } from "react-redux";
 import BlockIcon from "@mui/icons-material/Block";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Tooltip from "@mui/material/Tooltip";
@@ -99,6 +100,21 @@ export default function UsersTab({ darkMode }) {
   const handleAdminUser = (id) => {
     userService
       .makeAdmin(id, user.token)
+      .then((data) => {
+        if (data.ok) {
+          setMessage(data.message);
+          setUsers(users.filter((user) => user.id !== id));
+        } else {
+          setError(data.message);
+        }
+        setChoiceModal({ id: null, type: null });
+      })
+      .finally(() => refreshData());
+  };
+
+  const handleSuperAdminUser = (id) => {
+    userService
+      .makeSuperAdmin(id, user.token)
       .then((data) => {
         if (data.ok) {
           setMessage(data.message);
@@ -208,6 +224,20 @@ export default function UsersTab({ darkMode }) {
                 </IconButton>
               </Tooltip>
             ))}
+          {user.isSuperAdmin && params.row.isAdmin && !params.row.isSuperAdmin && (
+            <Tooltip title="Promote to Super Admin" arrow>
+              <IconButton
+                onClick={() => {
+                  setChoiceModal({
+                    id: params.row.id,
+                    type: "makeSuperAdmin",
+                  });
+                }}
+              >
+                <VerifiedUserIcon color="primary" />
+              </IconButton>
+            </Tooltip>
+          )}
           {user.isSuperAdmin && (
             <Tooltip title="Delete User" arrow>
               <IconButton
@@ -294,6 +324,8 @@ export default function UsersTab({ darkMode }) {
             ? "Are you sure you want to make this user an admin?"
             : choiceModal.type === "removeAdmin"
             ? "Are you sure you want to remove this user's admin privileges?"
+            : choiceModal.type === "makeSuperAdmin"
+            ? "Are you sure you want to make this user a super admin?"
             : choiceModal.type === "deleteUser"
             ? "Are you sure you want to delete this user?"
             : null
@@ -307,6 +339,8 @@ export default function UsersTab({ darkMode }) {
             handleAdminUser(choiceModal.id);
           } else if (choiceModal.type === "removeAdmin") {
             handleAdminUser(choiceModal.id);
+          } else if (choiceModal.type === "makeSuperAdmin") {
+            handleSuperAdminUser(choiceModal.id);
           } else if (choiceModal.type === "deleteUser") {
             handleDelteUser(choiceModal.id);
           }

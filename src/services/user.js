@@ -127,6 +127,16 @@ async function makeAdmin(id) {
   }
 }
 
+async function makeSuperAdmin(id) {
+  try {
+    const response = await api.put(`/user/${id}/superadmin`);
+    return response.data;
+  } catch (error) {
+    console.error("Network error:", error);
+    return error.response?.data || { ok: false, message: "Network error" };
+  }
+}
+
 async function logIn(credentials) {
   try {
     const response = await fetch(`${apiUrl}/user/login`, {
@@ -320,6 +330,7 @@ export default {
   deleteUser,
   blockUser,
   makeAdmin,
+  makeSuperAdmin,
   changeUserImage,
   getCurrentUser,
   logIn,
