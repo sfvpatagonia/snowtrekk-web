@@ -41,11 +41,11 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [popover, setPopover] = useState(null);
   const [selectedClients, setSelectedClients] = useState([]);
-  const [visibleLeads, setVisibleLeads] = useState({});
   const [openEmailModal, setOpenEmailModal] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [cachedLeads, setCachedLeads] = useState({});
+  const fetchedOffsetsRef = useRef(new Set());
+  const cachedLeadsRef = useRef([]);
 
   const [columnVisibilityModel] = useState({
     id: false,
@@ -334,13 +334,12 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
   useEffect(() => {
     if (!active || !shouldFetch || searchQuery !== "") return;
 
-    setLoading(true);
-
-    if (visibleLeads[offset]) {
-      // Ya tenemos los datos cacheados para esta página
-      setLoading(false);
+    if (fetchedOffsetsRef.current.has(offset)) {
+      setShouldFetch(false);
       return;
     }
+
+    setLoading(true);
 
     admin.getLeads(PAGE_SIZE, offset).then((data) => {
       if (!data.ok) {
@@ -353,26 +352,18 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
         setTotalRows(data.body.total);
       }
 
-      setLeads((prev) => [...prev, ...data.body.leads]);
-      setVisibleLeads((prev) => {
-        const updated = { ...prev, [offset]: data.body.leads };
-        setCachedLeads(updated); // Guardamos para restaurar después si se borra la búsqueda
-        return updated;
+      fetchedOffsetsRef.current.add(offset);
+      setLeads((prev) => {
+        const existingIds = new Set(prev.map((lead) => lead.id));
+        const newLeads = data.body.leads.filter(
+          (lead) => !existingIds.has(lead.id)
+        );
+        return [...prev, ...newLeads];
       });
-
       setLoading(false);
       setShouldFetch(false);
     });
-  }, [
-    active,
-    offset,
-    shouldFetch,
-    searchQuery,
-    PAGE_SIZE,
-    setLeads,
-    totalRows,
-    visibleLeads,
-  ]);
+  }, [active, offset, shouldFetch, searchQuery, PAGE_SIZE, setLeads, totalRows]);
 
   const refreshData = () => {
     setShouldFetch(true);
@@ -411,18 +402,20 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
           sx={{ flex: 1, minWidth: "430px" }}
           onChange={(e) => {
             const value = e.target.value;
+            if (searchQuery === "" && value !== "") {
+              // arrancando una búsqueda: guardamos el listado actual para restaurarlo después
+              cachedLeadsRef.current = leads;
+            }
             setSearchQuery(value);
             setOffset(0); // volver a la primera página
 
             if (value === "") {
               // restaurar paginación
-              setVisibleLeads(cachedLeads);
-              setLeads(Object.values(cachedLeads).flat());
+              setLeads(cachedLeadsRef.current);
             } else {
               // buscar
               admin.searchLeads(value, PAGE_SIZE, 0).then((res) => {
                 if (res.ok) {
-                  setVisibleLeads({ 0: res.body.leads });
                   setLeads(res.body.leads);
                 }
               });
@@ -445,7 +438,7 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
           loadingdGrid.map((loading, index) => <div key={index}>{loading}</div>)
         ) : (
           <AdminHugeTable
-            rows={visibleLeads[offset] || []}
+            rows={leads.slice(offset, offset + PAGE_SIZE)}
             totalRows={totalRows}
             columns={columns}
             pageSize={PAGE_SIZE}
@@ -467,7 +460,6 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
         <AddLeadModal
           open={addModal}
           setOpen={setAddModal}
-          refreshData={refreshData}
           setError={setError}
           setMessage={setMessage}
           leads={leads}

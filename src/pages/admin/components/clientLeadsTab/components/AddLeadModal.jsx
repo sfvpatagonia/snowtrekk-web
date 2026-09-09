@@ -58,9 +58,6 @@ const AddLeadModal = ({
   const onSubmit = (e) => {
     e.preventDefault();
 
-    if (lead.name === "") {
-      return setError("Complete the area name field");
-    }
     if (lead.email === "") {
       return setError("Complete the email field");
     }
