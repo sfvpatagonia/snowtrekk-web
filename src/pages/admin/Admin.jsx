@@ -346,37 +346,70 @@ const Admin = () => {
       <div className="grid grid-cols-[1fr_7fr] max-h-[calc(100vh-60px)] h-[calc(100vh-60px)] justify-start">
         <aside className="flex flex-col py-12 px-4 border-r-2 border-main-500 bg-main-100 dark:bg-main-900">
           <ul className="flex flex-col gap-4 pt-2 px-4 text-sm">
-            <li className={`button`} onClick={() => setTab("stats")}>
+            <li
+              className={`button ${tab === "stats" ? "active" : ""}`}
+              onClick={() => setTab("stats")}
+            >
               Stats
             </li>
-            <li className={`button`} onClick={() => setTab("users")}>
+            <li
+              className={`button ${tab === "users" ? "active" : ""}`}
+              onClick={() => setTab("users")}
+            >
               Users
             </li>
-            <li className={`button `} onClick={() => setTab("clients")}>
+            <li
+              className={`button ${tab === "clients" ? "active" : ""}`}
+              onClick={() => setTab("clients")}
+            >
               Client Leads
             </li>
-            <li className={`button `} onClick={() => setTab("country")}>
+            <li
+              className={`button ${tab === "country" ? "active" : ""}`}
+              onClick={() => setTab("country")}
+            >
               Countries
             </li>
-            <li className={`button`} onClick={() => setTab("area")}>
+            <li
+              className={`button ${tab === "area" ? "active" : ""}`}
+              onClick={() => setTab("area")}
+            >
               Areas
             </li>
-            <li className={`button`} onClick={() => setTab("region")}>
+            <li
+              className={`button ${tab === "region" ? "active" : ""}`}
+              onClick={() => setTab("region")}
+            >
               Regions
             </li>
-            <li className={`button `} onClick={() => setTab("city")}>
+            <li
+              className={`button ${tab === "city" ? "active" : ""}`}
+              onClick={() => setTab("city")}
+            >
               Cities
             </li>
-            <li className={`button `} onClick={() => setTab("destination")}>
+            <li
+              className={`button ${tab === "destination" ? "active" : ""}`}
+              onClick={() => setTab("destination")}
+            >
               Destinations
             </li>
-            <li className={`button `} onClick={() => setTab("activity")}>
+            <li
+              className={`button ${tab === "activity" ? "active" : ""}`}
+              onClick={() => setTab("activity")}
+            >
               Activities
             </li>
-            <li className={`button `} onClick={() => setTab("shops")}>
+            <li
+              className={`button ${tab === "shops" ? "active" : ""}`}
+              onClick={() => setTab("shops")}
+            >
               Shops
             </li>
-            <li className={`button `} onClick={() => setTab("collector")}>
+            <li
+              className={`button ${tab === "collector" ? "active" : ""}`}
+              onClick={() => setTab("collector")}
+            >
               Aprobaciones
             </li>
             <li className={`button `} onClick={handleOpenCollector}>
@@ -385,24 +418,42 @@ const Admin = () => {
             {collectorSsoError && (
               <li className="text-xs text-red-500">{collectorSsoError}</li>
             )}
-            <li className={`button `} onClick={() => setTab("services")}>
+            <li
+              className={`button ${tab === "services" ? "active" : ""}`}
+              onClick={() => setTab("services")}
+            >
               Services
             </li>
-            <li className={`button`} onClick={() => setTab("news")}>
+            <li
+              className={`button ${tab === "news" ? "active" : ""}`}
+              onClick={() => setTab("news")}
+            >
               News
             </li>
-            <li className={`button `} onClick={() => setTab("emails")}>
+            <li
+              className={`button ${tab === "emails" ? "active" : ""}`}
+              onClick={() => setTab("emails")}
+            >
               Emails
             </li>
-            <li className={`button `} onClick={() => setTab("suggestions")}>
+            <li
+              className={`button ${tab === "suggestions" ? "active" : ""}`}
+              onClick={() => setTab("suggestions")}
+            >
               Suggestions
             </li>
             <li>
-              <div className={`button `} onClick={() => setTab("videos")}>
+              <div
+                className={`button ${tab === "videos" ? "active" : ""}`}
+                onClick={() => setTab("videos")}
+              >
                 Videos
               </div>
             </li>
-            <li className={`button`} onClick={() => setTab("trackmap")}>
+            <li
+              className={`button ${tab === "trackmap" ? "active" : ""}`}
+              onClick={() => setTab("trackmap")}
+            >
               Mapa
             </li>
             <li>
