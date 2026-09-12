@@ -81,15 +81,27 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
     //{ field: "id", headerName: "ID", width: 150 },
     {
       field: "companyName",
+      renderCell: (params) => (
+        <span title={params.value || ""}>{params.value}</span>
+      ),
     },
     {
       field: "responsableName",
+      renderCell: (params) => (
+        <span title={params.value || ""}>{params.value}</span>
+      ),
     },
     {
       field: "email",
+      renderCell: (params) => (
+        <span title={params.value || ""}>{params.value}</span>
+      ),
     },
     {
       field: "website",
+      renderCell: (params) => (
+        <span title={params.value || ""}>{params.value}</span>
+      ),
     },
     {
       field: "facebook",
