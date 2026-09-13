@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Footer from "@/components/footer/Footer";
 import MomentsCarousel from "./components/MomentsCarousel";
 import DestinationPills from "./components/DestinationPills";
@@ -15,18 +16,25 @@ const Explore = () => {
   const [services, setServices] = useState([]);
   const [destinationOnSpotlight, setDestinationOnSpotlight] = useState(null);
   const { regionData } = useGeoRegion();
+  const [searchParams] = useSearchParams();
+  const destino = searchParams.get("destino");
 
   useEffect(() => {
-    service
-      .getFeaturedServices()
+    const request = destino
+      ? service.getServicesByDestinationId(destino)
+      : service.getFeaturedServices();
+
+    request
       .then((data) => {
+        // getServicesByDestination 404s (no `body`) when a destination has
+        // zero services — same empty-state shape as a genuinely empty list.
         const featuredServices = data?.body?.services;
         setServices(Array.isArray(featuredServices) ? featuredServices : []);
       })
       .catch(() => {
         setServices([]);
       });
-  }, []);
+  }, [destino]);
 
   return (
     <>
