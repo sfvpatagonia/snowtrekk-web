@@ -1,11 +1,26 @@
-﻿import { useEffect } from "react";
+﻿import { useEffect, useMemo } from "react";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import PlaceCard from "./PlaceCard";
 import { getFeaturedDestination } from "../../../services/destinations";
 import Reveal from "../../../components/RevealWrapper";
 
 export default function DestinationsGrid({ setDestinationOnSpotlight }) {
   const [destinations, setDestinations] = useState([]);
+  const [searchParams] = useSearchParams();
+  const destino = searchParams.get("destino");
+
+  // Same accent (green-700) MomentsCarousel already uses to mark the
+  // active thumbnail — reused here instead of inventing a new "selected" color.
+  const orderedDestinations = useMemo(() => {
+    if (!destino) return destinations;
+    const index = destinations.findIndex((d) => d.id === destino);
+    if (index === -1) return destinations;
+    const reordered = [...destinations];
+    const [selected] = reordered.splice(index, 1);
+    reordered.unshift(selected);
+    return reordered;
+  }, [destinations, destino]);
 
   useEffect(() => {
     getFeaturedDestination()
@@ -36,8 +51,11 @@ export default function DestinationsGrid({ setDestinationOnSpotlight }) {
       </div>
 
       <div className="flex flex-wrap justify-center sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 pt-2 pb-12 px-2 sm:px-20 mx-auto">
-        {destinations.map((destination, index) => (
-          <Reveal key={index}>
+        {orderedDestinations.map((destination) => (
+          <Reveal
+            key={destination.id}
+            classname={destination.id === destino ? "ring-2 ring-green-700 rounded-lg" : undefined}
+          >
             <PlaceCard place={destination} />
           </Reveal>
         ))}
