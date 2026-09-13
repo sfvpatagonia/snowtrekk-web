@@ -34,7 +34,13 @@ export default function MyProfile() {
         .getCurrentUser()
         .then((data) => {
           if (data.ok) {
-            dispatch(addUser({ ...data.body.user, token: user.token }));
+            dispatch(
+              addUser({
+                ...data.body.user,
+                token: user.token,
+                image: data.body.user.Images?.[0]?.url || null,
+              }),
+            );
           }
         })
         .catch((error) => setError(error))
