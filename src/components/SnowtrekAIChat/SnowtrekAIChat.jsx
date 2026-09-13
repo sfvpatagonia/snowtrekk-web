@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./SnowtrekAIChat.module.css";
 import { sendSnowtrekAiMessage } from "../../services/snowtrekAiClient";
 import { useRequireTrekker } from "@/hooks/useRequireTrekker";
@@ -68,6 +69,7 @@ function ResultGroups({ results }) {
 
 function SnowtrekAIChat() {
   const { guardAction, verificationModal } = useRequireTrekker();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
@@ -171,6 +173,11 @@ function SnowtrekAIChat() {
     }
   };
 
+  // Only fires on click — the chat never navigates on its own.
+  const handleExplore = (destinationId) => {
+    navigate(`/explore?destino=${destinationId}`);
+  };
+
   const panelStyle = panelPosition
     ? {
         left: `${panelPosition.left}px`,
@@ -209,6 +216,15 @@ function SnowtrekAIChat() {
                 <div className={`${styles.bubble} ${message.role === "user" ? styles.userBubble : styles.assistantBubble}`}>
                   <div>{message.text}</div>
                   <ResultGroups results={message.results} />
+                  {message.results?.destinations?.length === 1 ? (
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={() => handleExplore(message.results.destinations[0].id)}
+                    >
+                      Explorar {message.results.destinations[0].name} →
+                    </button>
+                  ) : null}
                 </div>
               </div>
             ))}
