@@ -3,7 +3,9 @@ import logo from "@/assets/logoST.png"; // LOGO PROVISORIO
 import defaultAvatar from "@/assets/bonfire.png";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { changeTheme } from "@/redux/themeSlice";
+import LanguageSelector from "./components/LanguageSelector.jsx";
 // icons
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
@@ -30,6 +32,7 @@ import {
 } from "@/redux/guideSlice.js";
 
 const Header = () => {
+  const { t } = useTranslation();
   const user = useSelector((state) => state.user);
   const cart = useSelector((state) => state.cart);
   const location = useLocation();
@@ -155,14 +158,14 @@ const Header = () => {
             className="text-[#f3f3f3] transition-all duration-300 text-[1.15em] relative cursor-pointer hover:text-[var(--color-500)]"
             onClick={() => setOpenGuide(true)}
           >
-            Search
+            {t("nav.search")}
           </li>
           <li>
             <Link
               to="/news"
               className="text-[#f3f3f3] transition-all duration-300 text-[1.15em] relative cursor-pointer hover:text-[var(--color-500)]"
             >
-              News
+              {t("nav.news")}
             </Link>
           </li>
           {/* <li>
@@ -195,9 +198,11 @@ const Header = () => {
             to="/join"
             className="text-[#f3f3f3] transition-all duration-300 text-[1.15em] relative cursor-pointer hover:text-[var(--color-500)]"
           >
-            Sumate
+            {t("nav.join")}
           </Link>
         )}
+
+        <LanguageSelector className="text-[#f3f3f3] text-[1.15em]" />
 
         <button
           onClick={toggleDarkMode}

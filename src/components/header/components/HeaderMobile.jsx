@@ -5,10 +5,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Badge } from "@mui/material";
 import { Link } from "react-router-dom";
 import { io } from "socket.io-client";
+import { useTranslation } from "react-i18next";
 import { changeTheme } from "@/redux/themeSlice";
 import defaultAvatar from "@/assets/bonfire.png";
+import LanguageSelector from "./LanguageSelector.jsx";
 
 export default function HeaderMobile({ setOpenCart, setOpenGuide }) {
+  const { t } = useTranslation();
   const socketRef = useRef(null);
   const [unreadShopMessages, setUnreadShopMessages] = useState([]);
   const [unreadUserMessages, setUnreadUserMessages] = useState([]);
@@ -72,7 +75,7 @@ const URL = import.meta.env.VITE_API_URL.replace("/api", "");
                 }}
                 className="text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in"
               >
-                Search
+                {t("nav.search")}
               </Link>
             </li>
             <li className="flex gap-2 w-full border-t border-main-600 dark:border-main-400 first:border-0 p-2">
@@ -80,7 +83,7 @@ const URL = import.meta.env.VITE_API_URL.replace("/api", "");
                 to="/news"
                 className="text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in"
               >
-                News
+                {t("nav.news")}
               </Link>
             </li>
             <li className="flex gap-2 w-full border-t border-main-600 dark:border-main-400 first:border-0 p-2">
@@ -103,7 +106,7 @@ const URL = import.meta.env.VITE_API_URL.replace("/api", "");
                   onClick={() => setMenuOpen(false)}
                   className="text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in"
                 >
-                  Sumate
+                  {t("nav.join")}
                 </Link>
               )}
             </li>
@@ -112,8 +115,11 @@ const URL = import.meta.env.VITE_API_URL.replace("/api", "");
                 className="text-lg text-main-0 dark:text-main-1000 hover:text-main-600 dark:hover:text-main-400 duration-200 ease-in cursor-pointer"
                 onClick={toggleDarkMode}
               >
-                Change theme
+                {t("nav.changeTheme")}
               </button>
+            </li>
+            <li className="flex gap-2 w-full border-t border-main-600 dark:border-main-400 first:border-0 p-2">
+              <LanguageSelector className="text-lg text-main-0 dark:text-main-1000" />
             </li>
             <li className="flex gap-2 w-full border-t border-main-600 dark:border-main-400 first:border-0 p-2">
               <button
@@ -129,7 +135,7 @@ const URL = import.meta.env.VITE_API_URL.replace("/api", "");
                   }
                   color="primary"
                 >
-                  Cart
+                  {t("nav.cart")}
                 </Badge>
               </button>
             </li>
