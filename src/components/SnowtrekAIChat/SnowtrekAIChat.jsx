@@ -48,11 +48,13 @@ function ResultGroups({ results }) {
       .filter((group) => group.items.length > 0);
   }, [results]);
 
-  if (results && !groups.length) {
+  const categories = Array.isArray(results?.categories) ? results.categories : [];
+
+  if (results && !groups.length && !categories.length) {
     return <p className={styles.emptyResults}>No encontré resultados cargados para esta consulta.</p>;
   }
 
-  if (!groups.length) return null;
+  if (!groups.length && !categories.length) return null;
 
   return (
     <div className={styles.resultGroups}>
@@ -62,6 +64,18 @@ function ResultGroups({ results }) {
           {group.items.map((item, index) => (
             <ResultCard key={item?.id || `${group.key}-${index}`} item={item} />
           ))}
+        </section>
+      ))}
+      {categories.map((category, index) => (
+        <section key={`category-${category?.name || index}`}>
+          <p className={styles.groupTitle}>{category?.name}</p>
+          {category?.noServicesMessage ? (
+            <p className={styles.emptyResults}>{category.noServicesMessage}</p>
+          ) : (
+            (category?.items || []).slice(0, MAX_RESULTS_PER_GROUP).map((item, itemIndex) => (
+              <ResultCard key={item?.id || `category-${index}-${itemIndex}`} item={item} />
+            ))
+          )}
         </section>
       ))}
     </div>
