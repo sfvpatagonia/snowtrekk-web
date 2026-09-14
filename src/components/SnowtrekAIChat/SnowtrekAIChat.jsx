@@ -30,6 +30,7 @@ function ResultCard({ item }) {
           ))}
         </div>
       ) : null}
+      {item?.noServicesMessage ? <p className={styles.emptyResults}>{item.noServicesMessage}</p> : null}
     </div>
   );
 }

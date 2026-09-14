@@ -54,13 +54,19 @@ const Explore = () => {
               <h2 className="text-center text-2xl font-bold text-main-600 dark:text-main-400 uppercase">
                 Our most popular services
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 place-items-center bg-main-100 dark:bg-main-900 py-2 rounded">
-                {services.map((svc, index) => (
-                  <Reveal key={index} classname={"w-full flex justify-center self-start h-full"}>
-                    <ServiceCard key={svc.id} item={svc} />
-                  </Reveal>
-                ))}
-              </div>
+              {services.length ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 place-items-center bg-main-100 dark:bg-main-900 py-2 rounded">
+                  {services.map((svc, index) => (
+                    <Reveal key={index} classname={"w-full flex justify-center self-start h-full"}>
+                      <ServiceCard key={svc.id} item={svc} />
+                    </Reveal>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-center text-main-600 dark:text-main-400">
+                  Estamos actualizando los servicios de temporada
+                </p>
+              )}
             </section>
           </Reveal>
           <Reveal>
