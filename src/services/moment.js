@@ -1,9 +1,10 @@
 const apiUrl = import.meta.env.VITE_API_URL;
 
-// Obtener todos los moments activos
-async function getAllMoments() {
+// Obtener todos los moments activos, opcionalmente filtrados por destino
+async function getAllMoments(destino) {
   try {
-    const response = await fetch(`${apiUrl}/moments`, {
+    const url = destino ? `${apiUrl}/moments?destination=${destino}` : `${apiUrl}/moments`;
+    const response = await fetch(url, {
       method: "GET",
       credentials: "include",
     });

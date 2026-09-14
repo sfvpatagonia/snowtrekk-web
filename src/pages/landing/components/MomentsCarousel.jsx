@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import momentService from "@/services/moment";
 import BannerVideos from "./BannerVideos";
 import LoadingComponent from "@/components/LoadingComponent";
@@ -6,37 +7,62 @@ import LoadingComponent from "@/components/LoadingComponent";
 const CAPTION_PREVIEW_LENGTH = 140;
 
 export default function MomentsCarousel() {
-  // null = still loading, [] = confirmed empty/failed, array = loaded moments
+  // null = still loading, [] = confirmed empty (or failed, see hasError), array = loaded moments
   const [moments, setMoments] = useState(null);
+  const [hasError, setHasError] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expandedIds, setExpandedIds] = useState(new Set());
+  const [searchParams] = useSearchParams();
+  const destino = searchParams.get("destino");
 
   useEffect(() => {
     momentService
-      .getAllMoments()
+      .getAllMoments(destino)
       .then((result) => {
         if (result.ok && Array.isArray(result.moments)) {
           if (result.moments.length === 0) {
             console.info("MomentsCarousel: no active moments yet, using fallback carousel");
           }
           setMoments(result.moments);
+          setHasError(false);
         } else {
           console.warn("MomentsCarousel: failed to load moments, using fallback carousel", result.message);
           setMoments([]);
+          setHasError(true);
         }
       })
       .catch((error) => {
         console.warn("MomentsCarousel: failed to load moments, using fallback carousel", error);
         setMoments([]);
+        setHasError(true);
       });
-  }, []);
+  }, [destino]);
 
   // Still waiting on the fetch — show a loading state, not the old video,
   // so it never flashes in only to be swapped out a moment later.
   if (moments === null) return <LoadingComponent />;
 
-  // Fetch resolved empty or failed — never show a broken/empty screen.
-  if (moments.length === 0) return <BannerVideos />;
+  // A real fetch/backend error always falls back to the banner, regardless
+  // of destination selection — only a confirmed-empty result for a selected
+  // destination gets the "updating" message below.
+  if (hasError) return <BannerVideos />;
+
+  // Promo moments are destination-agnostic, so a destination with only promo
+  // moments (no real content of its own) still counts as "nothing to show".
+  const hasOwnContent = moments.some((moment) => moment.momentType !== "promo");
+
+  if (destino && !hasOwnContent) {
+    return (
+      <div className="flex items-center justify-center w-full aspect-video bg-main-100 dark:bg-main-900 border-b-4 border-main-400">
+        <p className="text-center font-bold text-main-600 dark:text-main-400">
+          Estamos actualizando el destino
+        </p>
+      </div>
+    );
+  }
+
+  // No destination selected and fetch resolved empty — today's existing fallback.
+  if (!destino && moments.length === 0) return <BannerVideos />;
 
   const currentMoment = moments[currentIndex];
   const isExpanded = expandedIds.has(currentMoment.id);
