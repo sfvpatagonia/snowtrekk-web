@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import momentService from "@/services/moment";
+import videoService from "@/services/video";
 import BannerVideos from "./BannerVideos";
 import LoadingComponent from "@/components/LoadingComponent";
 
@@ -10,9 +11,14 @@ export default function MomentsCarousel() {
   // null = still loading, [] = confirmed empty (or failed, see hasError), array = loaded moments
   const [moments, setMoments] = useState(null);
   const [hasError, setHasError] = useState(false);
+  // null = not checked yet / not applicable, true = legacy Video has content
+  // for this destination, false = confirmed none either.
+  const [videoFallback, setVideoFallback] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [expandedIds, setExpandedIds] = useState(new Set());
-  const [searchParams] = useSearchParams();
+  // Swaps the "updating" overlay to the clickable "keep browsing" CTA after 3s.
+  const [showCta, setShowCta] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const destino = searchParams.get("destino");
 
   useEffect(() => {
@@ -38,6 +44,47 @@ export default function MomentsCarousel() {
       });
   }, [destino]);
 
+  // Priority fix: before telling the user a destination has "nothing to
+  // show", check whether the legacy Video system has content for it — if it
+  // does, fall through to <BannerVideos/> instead of hiding real content.
+  // Only runs when Moments came back empty for a selected destination.
+  useEffect(() => {
+    if (!destino || !Array.isArray(moments)) {
+      setVideoFallback(null);
+      return;
+    }
+    const hasOwnContent = moments.some((moment) => moment.momentType !== "promo");
+    if (hasOwnContent) {
+      setVideoFallback(null);
+      return;
+    }
+    let cancelled = false;
+    videoService.getVideosByDestination(destino).then((result) => {
+      if (cancelled) return;
+      const hasVideos =
+        result.ok &&
+        Array.isArray(result.videos) &&
+        result.videos.some((video) => video.videoOrder !== 0);
+      setVideoFallback(hasVideos);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [destino, moments]);
+
+  // Overlay CTA timer — only armed for the branch where both Moments and the
+  // legacy Video system are confirmed empty for the selected destination.
+  useEffect(() => {
+    const hasOwnContent =
+      Array.isArray(moments) && moments.some((moment) => moment.momentType !== "promo");
+    if (!(destino && Array.isArray(moments) && !hasOwnContent && videoFallback === false)) {
+      setShowCta(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowCta(true), 3000);
+    return () => clearTimeout(timer);
+  }, [destino, moments, videoFallback]);
+
   // Still waiting on the fetch — show a loading state, not the old video,
   // so it never flashes in only to be swapped out a moment later.
   if (moments === null) return <LoadingComponent />;
@@ -52,11 +99,35 @@ export default function MomentsCarousel() {
   const hasOwnContent = moments.some((moment) => moment.momentType !== "promo");
 
   if (destino && !hasOwnContent) {
+    // Still checking the legacy Video system — reuse the existing loading
+    // state rather than flashing the "updating" message first.
+    if (videoFallback === null) return <LoadingComponent />;
+    if (videoFallback) return <BannerVideos />;
+
+    // Neither system has content for this destination — keep the default
+    // unfiltered banner playing in the background (BannerVideos never reads
+    // destino) with a small overlay instead of hiding it behind a full box.
     return (
-      <div className="flex items-center justify-center w-full aspect-video bg-main-100 dark:bg-main-900 border-b-4 border-main-400">
-        <p className="text-center font-bold text-main-600 dark:text-main-400">
-          Estamos actualizando el destino
-        </p>
+      <div className="relative w-full">
+        <BannerVideos />
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {showCta ? (
+            <button
+              onClick={() => {
+                const next = new URLSearchParams(searchParams);
+                next.delete("destino");
+                setSearchParams(next);
+              }}
+              className="pointer-events-auto px-4 py-2 rounded-lg bg-main-100/90 dark:bg-main-900/90 border border-main-400 font-bold text-main-600 dark:text-main-400 shadow-lg"
+            >
+              Hacé click acá para seguir navegando Snowtrekk
+            </button>
+          ) : (
+            <div className="px-4 py-2 rounded-lg bg-main-100/90 dark:bg-main-900/90 border border-main-400 font-bold text-main-600 dark:text-main-400 shadow-lg">
+              Estamos actualizando el destino
+            </div>
+          )}
+        </div>
       </div>
     );
   }
