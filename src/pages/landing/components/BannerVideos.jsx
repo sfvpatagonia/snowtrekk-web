@@ -21,6 +21,13 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CabinIcon from "@mui/icons-material/Cabin";
 import PersonPinCircleIcon from "@mui/icons-material/PersonPinCircle";
 
+// Rail stays a fixed small set regardless of how many Shops a destination
+// has — same size class as the "Todos" destination rail, so a Shop-heavy
+// destination (16 for Chamonix today) doesn't stretch the rail and push
+// "Our most popular services" down the page. Every Shop still has its
+// Service listed there regardless of whether it made the rail.
+const RAIL_SHOP_LIMIT = 4;
+
 // Same 14 Collector categories as CATEGORY_CONFIG in
 // scripts/import-collector-prospects.js — generic icon fallback since Shops
 // have no real photos yet.
@@ -219,6 +226,17 @@ export default function BannerVideos() {
     [groupedVideos],
   );
 
+  // isPreferred Shops first (stable sort — otherwise keep the backend's
+  // order as-is), capped so the rail doesn't stretch past a destination
+  // with many Shops and push the services section down the page.
+  const railShops = useMemo(
+    () =>
+      [...shops]
+        .sort((a, b) => Number(b.isPreferred) - Number(a.isPreferred))
+        .slice(0, RAIL_SHOP_LIMIT),
+    [shops],
+  );
+
   const changeVideo = (destinationId) => {
     const index = flatVideos.findIndex(
       (video) => video.destination.id === destinationId,
@@ -343,7 +361,7 @@ export default function BannerVideos() {
         "
       >
         {idDestination
-          ? shops.map((shop) => (
+          ? railShops.map((shop) => (
               <ShopRailCard key={shop.id} shop={shop} onSelect={handleShopClick} />
             ))
           : uniqueDestinations.map((destination) => (
