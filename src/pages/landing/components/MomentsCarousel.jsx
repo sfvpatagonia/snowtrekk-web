@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import momentService from "@/services/moment";
 import videoService from "@/services/video";
+import { getDestinationById } from "@/services/destinations";
 import BannerVideos from "./BannerVideos";
 import LoadingComponent from "@/components/LoadingComponent";
 
@@ -18,6 +19,8 @@ export default function MomentsCarousel() {
   const [expandedIds, setExpandedIds] = useState(new Set());
   // Swaps the "updating" overlay to the clickable "keep browsing" CTA after 3s.
   const [showCta, setShowCta] = useState(false);
+  // null = not loaded (or fetch failed) — overlay falls back to the generic message.
+  const [destinationName, setDestinationName] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const destino = searchParams.get("destino");
 
@@ -66,6 +69,27 @@ export default function MomentsCarousel() {
         Array.isArray(result.videos) &&
         result.videos.some((video) => video.videoOrder !== 0);
       setVideoFallback(hasVideos);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [destino, moments]);
+
+  // Destination name for the "neither system has content" overlay — fetched
+  // independently of the CTA timer and videoFallback check below, so a
+  // slow/failed fetch never blocks either; falls back to the generic
+  // message (see render) until it resolves.
+  useEffect(() => {
+    const hasOwnContent =
+      Array.isArray(moments) && moments.some((moment) => moment.momentType !== "promo");
+    if (!destino || !Array.isArray(moments) || hasOwnContent) {
+      setDestinationName(null);
+      return;
+    }
+    let cancelled = false;
+    getDestinationById(destino).then((result) => {
+      if (cancelled) return;
+      setDestinationName(result.ok ? result.body?.destination?.name ?? null : null);
     });
     return () => {
       cancelled = true;
@@ -124,7 +148,9 @@ export default function MomentsCarousel() {
             </button>
           ) : (
             <div className="px-4 py-2 rounded-lg bg-main-100/90 dark:bg-main-900/90 border border-main-400 font-bold text-main-600 dark:text-main-400 shadow-lg">
-              Estamos actualizando el destino
+              {destinationName
+                ? `Estamos actualizando la información de ${destinationName}`
+                : "Estamos actualizando el destino"}
             </div>
           )}
         </div>
