@@ -49,6 +49,23 @@ async function getPublicShopById(shopId) {
   }
 }
 
+// Public Shops-by-destination list - no auth required (see
+// shop.controller.js getShopsByDestination), used by BannerVideos' side rail.
+async function getShopsByDestination(idDestination) {
+  try {
+    const response = await fetch(`${apiUrl}/shop/destination/${idDestination}`, {
+      method: "GET",
+    });
+
+    const responseData = await response.json();
+
+    return responseData;
+  } catch (error) {
+    console.log(error);
+    return { ok: false, message: "Network error" };
+  }
+}
+
 async function updateShop(shopId, data) {
   try {
     const response = await api.put(`/shop/${shopId}`, data);
@@ -157,6 +174,7 @@ export default {
   getShopsByUserId,
   getShopById,
   getPublicShopById,
+  getShopsByDestination,
   updateShop,
   advertiseService,
   changePassword,

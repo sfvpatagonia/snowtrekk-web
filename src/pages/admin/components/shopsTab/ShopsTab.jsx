@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Skeleton } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
 import AdminTable from "../adminTable/AdminTable";
 import admin from "@/services/admin";
+import changeVisibility from "@/services/changeVisibility";
 import { useSelector } from "react-redux";
 import ShopModal from "./components/ShopModal";
 import EditShopModal from "./components/EditShopModal";
@@ -38,6 +41,20 @@ const ShopsTab = ({ darkMode }) => {
     setOpen(true);
   };
 
+  const handleTogglePreferred = (id) => {
+    const index = shops.findIndex((shop) => shop.id === id);
+    changeVisibility({ id, field: "isPreferred", type: "shop" }).then(
+      (data) => {
+        if (!data.ok) {
+          return setError(data.message);
+        }
+        setMessage(data.message);
+        shops[index].isPreferred = !shops[index].isPreferred;
+        setShops([...shops]);
+      },
+    );
+  };
+
   const columns = [
     { field: "name" },
 
@@ -69,6 +86,22 @@ const ShopsTab = ({ darkMode }) => {
             <span>---</span>
           )}{" "}
         </div>
+      ),
+    },
+    {
+      field: "isPreferred",
+      custom: true,
+      renderCell: (params) => (
+        <button
+          onClick={() => handleTogglePreferred(params.row.id)}
+          title="Confirmed commercial agreement"
+        >
+          {params.row.isPreferred ? (
+            <StarIcon fontSize="small" style={{ color: "#f5b301" }} />
+          ) : (
+            <StarBorderIcon fontSize="small" color="disabled" />
+          )}
+        </button>
       ),
     },
     // {
