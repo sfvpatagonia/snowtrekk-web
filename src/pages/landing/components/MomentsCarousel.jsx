@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import momentService from "@/services/moment";
 import videoService from "@/services/video";
-import { getDestinationById } from "@/services/destinations";
 import BannerVideos from "./BannerVideos";
 import LoadingComponent from "@/components/LoadingComponent";
 
@@ -19,8 +18,6 @@ export default function MomentsCarousel() {
   const [expandedIds, setExpandedIds] = useState(new Set());
   // Swaps the "updating" overlay to the clickable "keep browsing" CTA after 3s.
   const [showCta, setShowCta] = useState(false);
-  // null = not loaded (or fetch failed) — overlay falls back to the generic message.
-  const [destinationName, setDestinationName] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const destino = searchParams.get("destino");
 
@@ -75,27 +72,6 @@ export default function MomentsCarousel() {
     };
   }, [destino, moments]);
 
-  // Destination name for the "neither system has content" overlay — fetched
-  // independently of the CTA timer and videoFallback check below, so a
-  // slow/failed fetch never blocks either; falls back to the generic
-  // message (see render) until it resolves.
-  useEffect(() => {
-    const hasOwnContent =
-      Array.isArray(moments) && moments.some((moment) => moment.momentType !== "promo");
-    if (!destino || !Array.isArray(moments) || hasOwnContent) {
-      setDestinationName(null);
-      return;
-    }
-    let cancelled = false;
-    getDestinationById(destino).then((result) => {
-      if (cancelled) return;
-      setDestinationName(result.ok ? result.body?.destination?.name ?? null : null);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [destino, moments]);
-
   // Overlay CTA timer — only armed for the branch where both Moments and the
   // legacy Video system are confirmed empty for the selected destination.
   useEffect(() => {
@@ -128,14 +104,15 @@ export default function MomentsCarousel() {
     if (videoFallback === null) return <LoadingComponent />;
     if (videoFallback) return <BannerVideos />;
 
-    // Neither system has content for this destination — keep the default
-    // unfiltered banner playing in the background (BannerVideos never reads
-    // destino) with a small overlay instead of hiding it behind a full box.
+    // Neither system has content for this destination — BannerVideos now
+    // falls back to another destination's video itself (no longer renders
+    // blank), so there's nothing to overlay for the first 3s; only the
+    // "keep browsing" CTA mounts, once the timer fires.
     return (
       <div className="relative w-full">
         <BannerVideos />
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          {showCta ? (
+        {showCta && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <button
               onClick={() => {
                 const next = new URLSearchParams(searchParams);
@@ -146,14 +123,8 @@ export default function MomentsCarousel() {
             >
               Hacé click acá para seguir navegando Snowtrekk
             </button>
-          ) : (
-            <div className="px-4 py-2 rounded-lg bg-main-100/90 dark:bg-main-900/90 border border-main-400 font-bold text-main-600 dark:text-main-400 shadow-lg">
-              {destinationName
-                ? `Estamos actualizando la información de ${destinationName}`
-                : "Estamos actualizando el destino"}
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     );
   }

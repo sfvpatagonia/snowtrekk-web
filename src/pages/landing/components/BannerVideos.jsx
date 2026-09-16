@@ -6,6 +6,8 @@ import PlaceCard from "./PlaceCard";
 import LoadingComponent from "@/components/LoadingComponent";
 import { Link, useSearchParams } from "react-router-dom";
 import StarIcon from "@mui/icons-material/Star";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import LocalPharmacyIcon from "@mui/icons-material/LocalPharmacy";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
@@ -53,6 +55,41 @@ const CATEGORY_ICONS = {
 // from PlaceCard rather than adapting it in place — the prop shapes diverge
 // (shop.Image is a single nullable object, not Destination's Images array)
 // and PlaceCard has other callers this shouldn't risk touching.
+// ✅ ORDEN GLOBAL: DESTINO → VIDEO, then grouped by destination. Shared by
+// the "Todos" fetch and the fallback-to-another-destination case below, so
+// both stay in sync with whatever destinationOrder puts first admin-side —
+// never hardcode a specific destination here.
+function groupVideosByDestination(videos) {
+  const ordered = [...videos].sort((a, b) => {
+    if (a.destinationOrder !== b.destinationOrder) {
+      return a.destinationOrder - b.destinationOrder;
+    }
+    return a.videoOrder - b.videoOrder;
+  });
+
+  return Object.values(
+    ordered.reduce((acc, video) => {
+      const destId = video.idDestination;
+
+      if (!acc[destId]) {
+        acc[destId] = {
+          destination: video.Destination,
+          videos: [],
+        };
+      }
+
+      acc[destId].videos.push({
+        id: video.id,
+        url: video.url,
+        description: video.description,
+        service: video.service || null,
+      });
+
+      return acc;
+    }, {}),
+  );
+}
+
 function ShopRailCard({ shop, onSelect }) {
   const Icon = CATEGORY_ICONS[shop.type] || StorefrontIcon;
   const imageUrl = shop.Image?.url;
@@ -93,6 +130,11 @@ export default function BannerVideos() {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const [playing] = useState(true);
+  // Autoplay stays muted-by-default (browser autoplay-with-sound policies
+  // would otherwise likely block playback outright with no prior user
+  // gesture) — the button below unmutes on click, which counts as that
+  // gesture.
+  const [isMuted, setIsMuted] = useState(true);
   const [loading, setLoading] = useState(true);
   // const [videoLoading, setVideoLoading] = useState(false);
 
@@ -108,19 +150,28 @@ export default function BannerVideos() {
   // 👉 estructura agrupada por destino
   const [groupedVideos, setGroupedVideos] = useState([]);
 
+  // True when the selected destination has no videos of its own and the
+  // player is showing a fallback video (from whichever destination sorts
+  // first admin-side) instead — suppresses the hero's name/description/
+  // "Go to destination" text, since showing them would misattribute the
+  // fallback video to the wrong destination (the exact bug fixed earlier
+  // this session).
+  const [isFallbackVideo, setIsFallbackVideo] = useState(false);
+
   // 👉 Shops for the side rail when a destination is selected
   const [shops, setShops] = useState([]);
 
   useEffect(() => {
     setLoading(true);
     setCurrentVideoIndex(0);
+    setIsFallbackVideo(false);
 
     const request = idDestination
       ? videoService.getVideosByDestination(idDestination)
       : videoService.getAllVideos(null);
 
     request
-      .then((result) => {
+      .then(async (result) => {
         if (!result.ok || !Array.isArray(result.videos)) {
           setGroupedVideos([]);
           return;
@@ -138,56 +189,46 @@ export default function BannerVideos() {
           const ordered = [...visible].sort(
             (a, b) => a.videoOrder - b.videoOrder,
           );
-          setGroupedVideos(
-            ordered.length
-              ? [
-                  {
-                    destination: ordered[0].Destination,
-                    videos: ordered.map((video) => ({
-                      id: video.id,
-                      url: video.url,
-                      description: video.description,
-                      service: video.service || null,
-                    })),
-                  },
-                ]
-              : [],
+
+          if (ordered.length) {
+            setGroupedVideos([
+              {
+                destination: ordered[0].Destination,
+                videos: ordered.map((video) => ({
+                  id: video.id,
+                  url: video.url,
+                  description: video.description,
+                  service: video.service || null,
+                })),
+              },
+            ]);
+            return;
+          }
+
+          // This destination has no videos of its own — rather than show
+          // nothing, fall back to whichever destination currently sorts
+          // first admin-side (same source + order as the "Todos" case,
+          // never a hardcoded destination). The hero suppresses this
+          // destination's identifying text while isFallbackVideo is true.
+          const fallback = await videoService.getAllVideos(null);
+          if (!fallback.ok || !Array.isArray(fallback.videos)) {
+            setGroupedVideos([]);
+            return;
+          }
+          const fallbackVisible = fallback.videos.filter(
+            (video) => video.videoOrder !== 0,
           );
+          const fallbackGrouped = groupVideosByDestination(fallbackVisible);
+          if (fallbackGrouped.length) {
+            setIsFallbackVideo(true);
+            setGroupedVideos([fallbackGrouped[0]]);
+          } else {
+            setGroupedVideos([]);
+          }
           return;
         }
 
-        // ✅ ORDEN GLOBAL: DESTINO → VIDEO
-        const ordered = [...visible].sort((a, b) => {
-          if (a.destinationOrder !== b.destinationOrder) {
-            return a.destinationOrder - b.destinationOrder;
-          }
-          return a.videoOrder - b.videoOrder;
-        });
-
-        // ✅ AGRUPAR POR DESTINO
-        const grouped = Object.values(
-          ordered.reduce((acc, video) => {
-            const destId = video.idDestination;
-
-            if (!acc[destId]) {
-              acc[destId] = {
-                destination: video.Destination,
-                videos: [],
-              };
-            }
-
-            acc[destId].videos.push({
-              id: video.id,
-              url: video.url,
-              description: video.description,
-              service: video.service || null,
-            });
-
-            return acc;
-          }, {}),
-        );
-
-        setGroupedVideos(grouped);
+        setGroupedVideos(groupVideosByDestination(visible));
       })
       .finally(() => setLoading(false));
   }, [idDestination]);
@@ -288,13 +329,27 @@ export default function BannerVideos() {
           url={currentVideo?.url}
           playing={playing}
           onEnded={nextVideo}
-          muted
+          muted={isMuted}
           width="100%"
           height="100%"
           // onStart={() => setVideoLoading(false)}
           // onReady={() => setVideoLoading(true)}
           controls
         />
+
+        <button
+          onClick={() => setIsMuted((prev) => !prev)}
+          className="absolute top-3 left-3 z-10 flex items-center gap-2 bg-black/70 hover:bg-black/90 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors"
+        >
+          {isMuted ? (
+            <>
+              <VolumeOffIcon fontSize="small" />
+              Activar sonido
+            </>
+          ) : (
+            <VolumeUpIcon fontSize="small" />
+          )}
+        </button>
         {/* {videoLoading && (
           <div className="absolute top-0 left-0 w-full aspect-video flex flex-col items-center justify-center bg-main-200 border-y-2 border-main-600 dark:border-main-400 ">
             <img src={logo} alt="Loading..." className="w-60 md:w-[600px]" />
@@ -323,33 +378,38 @@ export default function BannerVideos() {
           </button>
         </div>
 
-        <figcaption className=" flex justify-between w-full bg-main-100 dark:bg-main-900 items-center px-4">
-          <div className="flex flex-col items-start py-4 w-full">
-            <h1 className="text-2xl font-bold uppercase text-green-800 dark:text-green-200 ">
-              {currentVideo?.destination.name || ""}
-            </h1>
-            <div className="flex w-full justify-between items-start py-4 text-left">
-              <h2 className="sm:text-lg font-bold  text-main-600 dark:text-main-400">
-                {currentVideo?.description || ""}
-              </h2>
-              {currentVideo?.service ? (
-                <Link
-                  to={`/service/${currentVideo?.service.id}`}
-                  className="button"
-                >
-                  Buy
-                </Link>
-              ) : (
-                <Link
-                  to={`/destination/${currentVideo?.destination.id}`}
-                  className="button whitespace-nowrap"
-                >
-                  Go to destination
-                </Link>
-              )}
+        {/* Fallback video belongs to a different destination than the one
+            selected — suppressing its name/description/links here avoids
+            misattributing it (the same bug this fixed earlier). */}
+        {!isFallbackVideo && (
+          <figcaption className=" flex justify-between w-full bg-main-100 dark:bg-main-900 items-center px-4">
+            <div className="flex flex-col items-start py-4 w-full">
+              <h1 className="text-2xl font-bold uppercase text-green-800 dark:text-green-200 ">
+                {currentVideo?.destination.name || ""}
+              </h1>
+              <div className="flex w-full justify-between items-start py-4 text-left">
+                <h2 className="sm:text-lg font-bold  text-main-600 dark:text-main-400">
+                  {currentVideo?.description || ""}
+                </h2>
+                {currentVideo?.service ? (
+                  <Link
+                    to={`/service/${currentVideo?.service.id}`}
+                    className="button"
+                  >
+                    Buy
+                  </Link>
+                ) : (
+                  <Link
+                    to={`/destination/${currentVideo?.destination.id}`}
+                    className="button whitespace-nowrap"
+                  >
+                    Go to destination
+                  </Link>
+                )}
+              </div>
             </div>
-          </div>
-        </figcaption>
+          </figcaption>
+        )}
       </figure>
 
       <div
