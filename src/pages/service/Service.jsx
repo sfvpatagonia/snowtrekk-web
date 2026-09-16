@@ -59,7 +59,7 @@ const Service = () => {
             {currentService.description}
           </div>
 
-          {currentService.includes.length !== 0 && (
+          {(currentService.includes?.length ?? 0) !== 0 && (
             <div className="flex flex-col text-left rounded shadow text-main-0 dark:text-main-1000 p-4 gap-4 w-full bg-main-50 dark:bg-main-950">
               <div className="flex flex-col lg:flex-row items-start gap-4">
                 <div className="flex flex-col flex-1 w-full gap-4">
@@ -77,7 +77,7 @@ const Service = () => {
                     })}
                   </ul>
                 </div>
-                {currentService.notIncludes.length !== 0 && (
+                {(currentService.notIncludes?.length ?? 0) !== 0 && (
                   <div className="flex flex-col flex-1 w-full gap-4">
                     <h2 className="text-xl w-full flex-1 text-left border-b-2 border-main-600 dark:border-main-400  ">
                       Not includes
@@ -124,7 +124,7 @@ const Service = () => {
               </div>
             </div>
           </div>
-          {currentService.FAQ.length !== 0 && <FAQ faqs={currentService.FAQ} />}
+          {(currentService.FAQ?.length ?? 0) !== 0 && <FAQ faqs={currentService.FAQ} />}
           <Questions
             questions={currentService.Questions}
             idService={id}
