@@ -3,7 +3,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export default async function getLeadsByDestination(destination) {
   try {
     const response = await fetch(
-      `${apiUrl}/leads/getAllInfo/${destination}`,
+      `${apiUrl}/brands/getAllInfo/${destination}`,
       {
         method: "GET",
         headers: {

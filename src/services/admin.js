@@ -106,7 +106,7 @@ async function getRegions() {
 async function getLeads(limit, offset) {
   try {
     const response = await fetch(
-      `${apiUrl}/leads?limit=${limit}&offset=${offset}/`,
+      `${apiUrl}/brands?limit=${limit}&offset=${offset}`,
       {
         method: "GET",
         credentials: "include",
@@ -125,7 +125,7 @@ async function getLeads(limit, offset) {
 async function searchLeads(searchQuery, limit, offset) {
   try {
     const response = await fetch(
-      `${apiUrl}/leads/search?search=${searchQuery}&limit=${limit}&offset=${offset}`,
+      `${apiUrl}/brands/search?search=${searchQuery}&limit=${limit}&offset=${offset}`,
       {
         method: "GET",
         credentials: "include",

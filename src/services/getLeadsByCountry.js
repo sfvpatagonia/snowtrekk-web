@@ -3,7 +3,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export default async function getLeadsByCountry(countryId) {
   try {
     const response = await fetch(
-      `${apiUrl}/leads/getInfoByCountry/${countryId}`,
+      `${apiUrl}/brands/getInfoByCountry/${countryId}`,
       {
         method: "GET",
         headers: {

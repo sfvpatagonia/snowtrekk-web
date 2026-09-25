@@ -3,7 +3,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export default async function getClientLeadsByActivity(activity) {
   try {
     const response = await fetch(
-      `${apiUrl}/leads/getInfoByActivity/${activity}`,
+      `${apiUrl}/brands/getInfoByActivity/${activity}`,
       {
         method: "GET",
         headers: {

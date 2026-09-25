@@ -367,7 +367,7 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
       fetchedOffsetsRef.current.add(offset);
       setLeads((prev) => {
         const existingIds = new Set(prev.map((lead) => lead.id));
-        const newLeads = data.body.leads.filter(
+        const newLeads = data.body.brands.filter(
           (lead) => !existingIds.has(lead.id)
         );
         return [...prev, ...newLeads];
@@ -428,7 +428,7 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
               // buscar
               admin.searchLeads(value, PAGE_SIZE, 0).then((res) => {
                 if (res.ok) {
-                  setLeads(res.body.leads);
+                  setLeads(res.body.brands);
                 }
               });
             }
