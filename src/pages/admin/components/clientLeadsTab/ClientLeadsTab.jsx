@@ -13,6 +13,8 @@ import changeVisibility from "@/services/changeVisibility";
 import AddLeadModal from "./components/AddLeadModal";
 import AdminHugeTable from "../adminHugeTable/AdminHugeTable";
 import SendEmailModal from "./components/SendEmailModal";
+import SearchIcon from "@mui/icons-material/Search";
+import { normalizeUrl } from "@/utils/normalizeUrl";
 
 const ClientLeadsTab = ({ darkMode, active, data }) => {
   const {
@@ -81,9 +83,42 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
     //{ field: "id", headerName: "ID", width: 150 },
     {
       field: "companyName",
-      renderCell: (params) => (
-        <span title={params.value || ""}>{params.value}</span>
-      ),
+      custom: true,
+      renderCell: (params) => {
+        const companyName = params.value || "";
+        const location = params.row.location || "";
+        const query = location ? `${companyName} ${location}` : companyName;
+        return (
+          <span
+            title={companyName}
+            style={{ display: "flex", alignItems: "center", gap: 4 }}
+          >
+            {companyName}
+            <button
+              type="button"
+              aria-label={`Search ${companyName} on the web`}
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(
+                  `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+                  "_blank",
+                  "noopener,noreferrer"
+                );
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <SearchIcon fontSize="inherit" />
+            </button>
+          </span>
+        );
+      },
     },
     {
       field: "responsableName",
@@ -99,9 +134,30 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
     },
     {
       field: "website",
-      renderCell: (params) => (
-        <span title={params.value || ""}>{params.value}</span>
-      ),
+      custom: true,
+      renderCell: (params) => {
+        const normalized = normalizeUrl(params.value);
+        if (!normalized) {
+          return <span title={params.value || ""}>{params.value}</span>;
+        }
+        return (
+          <a
+            href={normalized}
+            title={normalized}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              display: "block",
+            }}
+          >
+            {params.value}
+          </a>
+        );
+      },
     },
     {
       field: "facebook",
