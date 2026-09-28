@@ -69,17 +69,22 @@ const DestinationGuide = () => {
       try {
         const result = await getLeadsByDestination(destination);
         if (result.ok) {
-          setClientLeads(result.body.clientLeads);
-          setActivities(result.body.activities);
+          // getAllInfo (Phase 3 ClientLeads -> Brands migration) returns
+          // body.brands, not body.clientLeads — the frontend's own field
+          // name for this page, kept for the rest of the component/its
+          // children (ClientLeadCard etc. still read `clientLeads`/
+          // `clientActivities`/`clientDestinations`, aliased by the backend).
+          setClientLeads(result.body.brands ?? []);
+          setActivities(result.body.activities ?? []);
         }
 
         const servicesResult =
           await service.getServicesByDestinationId(destination);
         if (servicesResult.ok) {
-          setServices(servicesResult.body.services);
-          setAds(servicesResult.body.ads);
-          setMostViewed(servicesResult.body.mostViewed);
-          setBestScored(servicesResult.body.bestRated[0]);
+          setServices(servicesResult.body.services ?? []);
+          setAds(servicesResult.body.ads ?? []);
+          setMostViewed(servicesResult.body.mostViewed ?? []);
+          setBestScored(servicesResult.body.bestRated?.[0] ?? null);
         }
       } catch (err) {
         console.error(err);
@@ -211,10 +216,10 @@ const DestinationGuide = () => {
     );
   };
 
-  const filteredClientLeads = clientLeads.filter(
+  const filteredClientLeads = (clientLeads ?? []).filter(
     (clientLead) =>
       selectedActivities.length === 0 ||
-      clientLead.clientActivities.some((activity) =>
+      (clientLead.clientActivities ?? []).some((activity) =>
         selectedActivities.includes(activity.id),
       ),
   );

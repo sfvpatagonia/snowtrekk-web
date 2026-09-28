@@ -103,7 +103,7 @@ export default function ServiceCard({ item }) {
           at{" "}
           {item.firstDestination
             ? item.firstDestination?.name
-            : item.destinations[0].name}
+            : item.destinations?.[0]?.name}
         </h5>
         <ul className="flex flex-col gap-2 w-full pb-2">
           <li className="flex items-start gap-2 text-main-0 dark:text-main-1000 text-sm">

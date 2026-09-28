@@ -4,7 +4,7 @@ import ServiceCard from "./ServiceCard";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
-export default function ServiceSlide({ services }) {
+export default function ServiceSlide({ services = [] }) {
   const sliderRef = useRef(null);
 
   const scrollLeft = () => {

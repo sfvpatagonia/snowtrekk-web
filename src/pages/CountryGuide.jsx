@@ -40,8 +40,8 @@ const CountryGuide = () => {
     const fetchData = async () => {
       const result = await getLeadsByCountry(country);
       if (result.ok) {
-        setAreas(result.body.areas);
-        setActivities(Object.values(result.body.activityCounts)); // Asumiendo que los contadores de actividades vienen así
+        setAreas(result.body.areas ?? []);
+        setActivities(Object.values(result.body.activityCounts ?? {})); // Asumiendo que los contadores de actividades vienen así
       }
       setLoading(false);
     };
@@ -56,23 +56,35 @@ const CountryGuide = () => {
     );
   };
 
-  const filteredAreas = areas.map((area) => {
-    const filteredCities = area.Cities.map((city) => {
-      const filteredDestinations = city.destinationCity.map((destination) => {
-        if (selectedActivities.length > 0) {
-          const filteredClients = destination.clients.filter((client) =>
-            client.clientActivities.some((activity) =>
-              selectedActivities.includes(activity.id)
-            )
-          );
-          return {
-            ...destination,
-            clients: filteredClients,
-          };
-        } else {
-          return destination;
+  const filteredAreas = (areas ?? []).map((area) => {
+    const filteredCities = (area.Cities ?? []).map((city) => {
+      const filteredDestinations = (city.destinationCity ?? []).map(
+        (destination) => {
+          // getInfoByCountry (Phase 3 ClientLeads -> Brands migration)
+          // nests each destination's businesses under `.brands`, not
+          // `.clients` — normalize to `.clients` here (the name the render
+          // below and ClientLeadCard expect) in both branches, since the
+          // "no filter selected" branch used to skip this entirely and leave
+          // `.clients` undefined.
+          const brands = destination.brands ?? [];
+          if (selectedActivities.length > 0) {
+            const filteredClients = brands.filter((client) =>
+              (client.clientActivities ?? []).some((activity) =>
+                selectedActivities.includes(activity.id)
+              )
+            );
+            return {
+              ...destination,
+              clients: filteredClients,
+            };
+          } else {
+            return {
+              ...destination,
+              clients: brands,
+            };
+          }
         }
-      });
+      );
 
       return {
         ...city,

@@ -9,7 +9,7 @@ import {
 import { useEffect } from "react";
 
 const ActivitiesFilter = ({
-  activities,
+  activities = [],
   selectedActivities,
   handleActivitySelection,
   initialActivityId,

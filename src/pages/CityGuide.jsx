@@ -41,8 +41,8 @@ const CityGuide = () => {
     const fetchData = async () => {
       const result = await getLeadsByCity(city);
       if (result.ok) {
-        setDestinations(result.body.destinations);
-        setActivities(Object.values(result.body.activityCounts));
+        setDestinations(result.body.destinations ?? []);
+        setActivities(Object.values(result.body.activityCounts ?? {}));
       }
       setLoading(false);
     };
@@ -57,10 +57,16 @@ const CityGuide = () => {
     );
   };
 
-  const filteredDestinations = destinations.map((destination) => {
+  const filteredDestinations = (destinations ?? []).map((destination) => {
+    // getInfoByCity (Phase 3 ClientLeads -> Brands migration) nests each
+    // destination's businesses under `.brands`, not `.clients` — normalize
+    // to `.clients` here (the name the render below and ClientLeadCard
+    // expect) in both branches, since the "no filter selected" branch used
+    // to skip this entirely and leave `.clients` undefined.
+    const brands = destination.brands ?? [];
     if (selectedActivities.length > 0) {
-      const filteredClients = destination.clients.filter((client) =>
-        client.clientActivities.some((activity) =>
+      const filteredClients = brands.filter((client) =>
+        (client.clientActivities ?? []).some((activity) =>
           selectedActivities.includes(activity.id)
         )
       );
@@ -69,7 +75,10 @@ const CityGuide = () => {
         clients: filteredClients,
       };
     } else {
-      return destination;
+      return {
+        ...destination,
+        clients: brands,
+      };
     }
   });
 

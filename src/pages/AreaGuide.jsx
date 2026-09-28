@@ -41,8 +41,8 @@ const AreaGuide = () => {
     const fetchData = async () => {
       const result = await getLeadsByArea(area);
       if (result.ok) {
-        setCities(result.body.cities);
-        setActivities(Object.values(result.body.activityCounts));
+        setCities(result.body.cities ?? []);
+        setActivities(Object.values(result.body.activityCounts ?? {}));
       }
       setLoading(false);
     };
@@ -57,22 +57,34 @@ const AreaGuide = () => {
     );
   };
 
-  const filteredCities = cities.map((city) => {
-    const filteredDestinations = city.destinationCity.map((destination) => {
-      if (selectedActivities.length > 0) {
-        const filteredClients = destination.clients.filter((client) =>
-          client.clientActivities.some((activity) =>
-            selectedActivities.includes(activity.id)
-          )
-        );
-        return {
-          ...destination,
-          clients: filteredClients,
-        };
-      } else {
-        return destination;
+  const filteredCities = (cities ?? []).map((city) => {
+    const filteredDestinations = (city.destinationCity ?? []).map(
+      (destination) => {
+        // getInfoByArea (Phase 3 ClientLeads -> Brands migration) nests each
+        // destination's businesses under `.brands`, not `.clients` —
+        // normalize to `.clients` here (the name the render below and
+        // ClientLeadCard expect) in both branches, since the "no filter
+        // selected" branch used to skip this entirely and leave `.clients`
+        // undefined.
+        const brands = destination.brands ?? [];
+        if (selectedActivities.length > 0) {
+          const filteredClients = brands.filter((client) =>
+            (client.clientActivities ?? []).some((activity) =>
+              selectedActivities.includes(activity.id)
+            )
+          );
+          return {
+            ...destination,
+            clients: filteredClients,
+          };
+        } else {
+          return {
+            ...destination,
+            clients: brands,
+          };
+        }
       }
-    });
+    );
     return {
       ...city,
       destinationCity: filteredDestinations,

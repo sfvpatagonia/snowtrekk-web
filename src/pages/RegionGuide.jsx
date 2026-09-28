@@ -50,9 +50,9 @@ const Region = () => {
       const result = await getLeadsByRegion(region);
 
       if (result.ok) {
-        setAreas(result.body.areas);
-        setActivities(Object.values(result.body.activityCounts));
-        setDirectDestinations(result.body.directDestinations); // Almacena directDestinations
+        setAreas(result.body.areas ?? []);
+        setActivities(Object.values(result.body.activityCounts ?? {}));
+        setDirectDestinations(result.body.directDestinations ?? []); // Almacena directDestinations
       }
       setLoading(false);
     };
@@ -67,23 +67,35 @@ const Region = () => {
     );
   };
 
-  const filteredAreas = areas.map((area) => {
-    const filteredCities = area.Cities.map((city) => {
-      const filteredDestinations = city.destinationCity.map((destination) => {
-        if (selectedActivities.length > 0) {
-          const filteredClients = destination.clients.filter((client) =>
-            client.clientActivities.some((activity) =>
-              selectedActivities.includes(activity.id)
-            )
-          );
-          return {
-            ...destination,
-            clients: filteredClients,
-          };
-        } else {
-          return destination;
+  const filteredAreas = (areas ?? []).map((area) => {
+    const filteredCities = (area.Cities ?? []).map((city) => {
+      const filteredDestinations = (city.destinationCity ?? []).map(
+        (destination) => {
+          // getInfoByRegion (Phase 3 ClientLeads -> Brands migration)
+          // nests each destination's businesses under `.brands`, not
+          // `.clients` — normalize to `.clients` here (the name the render
+          // below and ClientLeadCard expect) in both branches, since the
+          // "no filter selected" branch used to skip this entirely and leave
+          // `.clients` undefined.
+          const brands = destination.brands ?? [];
+          if (selectedActivities.length > 0) {
+            const filteredClients = brands.filter((client) =>
+              (client.clientActivities ?? []).some((activity) =>
+                selectedActivities.includes(activity.id)
+              )
+            );
+            return {
+              ...destination,
+              clients: filteredClients,
+            };
+          } else {
+            return {
+              ...destination,
+              clients: brands,
+            };
+          }
         }
-      });
+      );
 
       return {
         ...city,
@@ -144,7 +156,7 @@ const Region = () => {
                 >
                   <Reveal>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full p-2 pt-8 place-items-center pb-8">
-                      {destination.clients.map((client, idx) => (
+                      {(destination.brands ?? []).map((client, idx) => (
                         <ClientLeadCard client={client} key={idx} />
                       ))}
                     </div>

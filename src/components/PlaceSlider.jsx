@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/autoplay";
 
-const PlaceSlider = ({ currentDestination, gallery }) => {
+const PlaceSlider = ({ currentDestination, gallery = [] }) => {
   return (
     <div
       className={` flex w-full flex-col  border-b-2 border-main-400

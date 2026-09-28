@@ -39,7 +39,11 @@ const ActivityGuide = () => {
     if (!currentActivity) return;
     getClientLeadsByActivity(activity)
       .then((data) => {
-        setLeads(data.body.leads);
+        // getInfoByActivity (Phase 3 ClientLeads -> Brands migration)
+        // returns body.brands, not body.leads.
+        if (data.ok) {
+          setLeads(data.body?.brands ?? []);
+        }
       })
       .finally(() => setLoading(false));
     setLoading(false);
