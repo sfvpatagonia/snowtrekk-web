@@ -143,16 +143,7 @@ export default function AdminHugeTable({
         pagination: { paginationModel: { pageSize, page } },
         filter: {
           filterModel: {
-            items: [
-              filter
-                ? filter
-                : {
-                    field: "isVisible",
-                    operator: "equals",
-                    value: "true",
-                    id: "1",
-                  },
-            ],
+            items: filter ? [filter] : [],
           },
         },
       }}

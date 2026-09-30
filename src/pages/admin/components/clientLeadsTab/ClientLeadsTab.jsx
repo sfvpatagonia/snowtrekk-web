@@ -1,8 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import deleteLead from "@/services/deleteLead";
-import { Popover, Skeleton, TextField } from "@mui/material";
+import {
+  MenuItem,
+  Popover,
+  Select,
+  Skeleton,
+  TextField,
+} from "@mui/material";
 import AdminConfirmationModal from "../adminConfirmationModal/AdminConfirmationModal";
 import AdminErrorModal from "../adminErrorModal/AdminErrorModal";
 import dayjs from "dayjs";
@@ -15,6 +21,11 @@ import AdminHugeTable from "../adminHugeTable/AdminHugeTable";
 import SendEmailModal from "./components/SendEmailModal";
 import SearchIcon from "@mui/icons-material/Search";
 import { normalizeUrl } from "@/utils/normalizeUrl";
+
+// Kept well under the backend's default Sequelize pool.max (5, unconfigured
+// in snowtrek-server/src/db.js) since that pool is shared with all other
+// traffic hitting the server, not just this backfill.
+const FULL_LOAD_CONCURRENCY = 3;
 
 const ClientLeadsTab = ({ darkMode, active, data }) => {
   const {
@@ -40,14 +51,17 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingAll, setLoadingAll] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [popover, setPopover] = useState(null);
   const [selectedClients, setSelectedClients] = useState([]);
   const [openEmailModal, setOpenEmailModal] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibilityFilter, setVisibilityFilter] = useState("visible"); // "visible" | "hidden" | "all"
   const fetchedOffsetsRef = useRef(new Set());
   const cachedLeadsRef = useRef([]);
+  const fullLoadTriggeredRef = useRef(false);
 
   const [columnVisibilityModel] = useState({
     id: false,
@@ -381,6 +395,10 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
       renderCell: (params) => <div> {params.row.isClient ? "Yes" : "No"}</div>,
     },
     {
+      field: "isVisible",
+      type: "boolean",
+    },
+    {
       field: "updatedAt",
       headerName: "Updated at",
       flex: 1,
@@ -433,8 +451,83 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
     });
   }, [active, offset, shouldFetch, searchQuery, PAGE_SIZE, setLeads, totalRows]);
 
+  // Backfills every raw page not yet in `leads`, once, so the visibilityFilter
+  // (which filters in-memory) isn't undercounting on pages nobody paginated to yet.
+  useEffect(() => {
+    if (!active || totalRows === 0 || fullLoadTriggeredRef.current) return;
+
+    const missingOffsets = [];
+    for (let o = 0; o < totalRows; o += PAGE_SIZE) {
+      if (!fetchedOffsetsRef.current.has(o)) {
+        missingOffsets.push(o);
+      }
+    }
+
+    if (missingOffsets.length === 0) return;
+
+    fullLoadTriggeredRef.current = true;
+    setLoadingAll(true);
+
+    const loadRemainingInChunks = async () => {
+      let firstErrorMessage = null;
+
+      for (let i = 0; i < missingOffsets.length; i += FULL_LOAD_CONCURRENCY) {
+        const chunk = missingOffsets.slice(i, i + FULL_LOAD_CONCURRENCY);
+        const results = await Promise.all(
+          chunk.map((o) =>
+            admin.getLeads(PAGE_SIZE, o).then((data) => ({ offset: o, data }))
+          )
+        );
+
+        setLeads((prev) => {
+          const existingIds = new Set(prev.map((lead) => lead.id));
+          const newLeads = [];
+          results.forEach((r) => {
+            if (!r.data.ok) return;
+            fetchedOffsetsRef.current.add(r.offset);
+            r.data.body.brands.forEach((lead) => {
+              if (!existingIds.has(lead.id)) {
+                existingIds.add(lead.id);
+                newLeads.push(lead);
+              }
+            });
+          });
+          return [...prev, ...newLeads];
+        });
+
+        if (!firstErrorMessage) {
+          const failed = results.find((r) => !r.data.ok);
+          if (failed) firstErrorMessage = failed.data.message;
+        }
+      }
+
+      if (firstErrorMessage) {
+        setError(firstErrorMessage);
+      }
+      setLoadingAll(false);
+    };
+
+    loadRemainingInChunks();
+  }, [active, totalRows, PAGE_SIZE, setLeads]);
+
   const refreshData = () => {
     setShouldFetch(true);
+  };
+
+  const filteredLeads = useMemo(() => {
+    if (visibilityFilter === "visible") {
+      return leads.filter((lead) => lead.isVisible === true);
+    }
+    if (visibilityFilter === "hidden") {
+      return leads.filter((lead) => lead.isVisible === false);
+    }
+    return leads;
+  }, [leads, visibilityFilter]);
+
+  const handleVisibilityFilterChange = (e) => {
+    setVisibilityFilter(e.target.value);
+    setOffset(0);
+    setPage(0);
   };
 
   const handleVisibility = (id) => {
@@ -490,6 +583,20 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
             }
           }}
         />
+        <Select
+          value={visibilityFilter}
+          onChange={handleVisibilityFilterChange}
+          size="small"
+        >
+          <MenuItem value="visible">Visibles</MenuItem>
+          <MenuItem value="hidden">Ocultas</MenuItem>
+          <MenuItem value="all">Todas</MenuItem>
+        </Select>
+        {loadingAll && (
+          <span className="text-main-0 dark:text-main-1000 self-center text-sm">
+            Cargando todo…
+          </span>
+        )}
         <button
           className="button"
           onClick={() => setOpenEmailModal(true)}
@@ -506,8 +613,8 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
           loadingdGrid.map((loading, index) => <div key={index}>{loading}</div>)
         ) : (
           <AdminHugeTable
-            rows={leads.slice(offset, offset + PAGE_SIZE)}
-            totalRows={totalRows}
+            rows={filteredLeads.slice(offset, offset + PAGE_SIZE)}
+            totalRows={filteredLeads.length}
             columns={columns}
             pageSize={PAGE_SIZE}
             setOffset={setOffset}
