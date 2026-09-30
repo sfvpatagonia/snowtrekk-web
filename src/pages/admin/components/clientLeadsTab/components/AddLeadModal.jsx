@@ -15,6 +15,8 @@ import languagesEntities from "@/services/languagesEntities";
 import newLead from "@/services/newLead";
 import updateLead from "@/services/updateLead";
 
+const UNASSIGNED_COUNTRY_LABEL = "Sin país asignado";
+
 const AddLeadModal = ({
   open,
   setOpen,
@@ -115,20 +117,20 @@ const AddLeadModal = ({
     list.sort((a, b) => {
       let nameA = "";
       if (a.idArea) {
-        nameA = a.Area.Country.name;
+        nameA = a.Area?.Country?.name ?? UNASSIGNED_COUNTRY_LABEL;
       } else if (a.idRegion) {
-        nameA = a.Region.areas[0].Country.name;
+        nameA = a.Region?.areas[0]?.Country?.name ?? UNASSIGNED_COUNTRY_LABEL;
       } else {
-        nameA = a.cityDestination[0]?.Area.Country.name;
+        nameA = a.cityDestination[0]?.Area?.Country?.name ?? UNASSIGNED_COUNTRY_LABEL;
       }
 
       let nameB = "";
       if (b.idArea) {
-        nameB = b.Area.Country.name;
+        nameB = b.Area?.Country?.name ?? UNASSIGNED_COUNTRY_LABEL;
       } else if (b.idRegion) {
-        nameB = b.Region.areas[0].Country.name;
+        nameB = b.Region?.areas[0]?.Country?.name ?? UNASSIGNED_COUNTRY_LABEL;
       } else {
-        nameB = b.cityDestination[0].Area.Country.name;
+        nameB = b.cityDestination[0]?.Area?.Country?.name ?? UNASSIGNED_COUNTRY_LABEL;
       }
 
       if (nameA < nameB) {
@@ -386,7 +388,10 @@ const AddLeadModal = ({
                   if (option.idRegion) {
                     return option.Region.areas[0].Country.name;
                   }
-                  return option.cityDestination[0]?.Area.Country.name;
+                  return (
+                    option.cityDestination[0]?.Area.Country.name ??
+                    UNASSIGNED_COUNTRY_LABEL
+                  );
                 }}
                 renderTags={(value, getTagProps) => (
                   <Chip
