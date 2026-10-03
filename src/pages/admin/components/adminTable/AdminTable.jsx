@@ -13,6 +13,7 @@ export default function AdminTable({
   pageSize,
   darkMode,
   filter,
+  disableDefaultVisibleFilter,
   handleEdit,
   handleVisibility,
   handleDelete,
@@ -137,16 +138,18 @@ export default function AdminTable({
         pagination: { paginationModel: { pageSize } },
         filter: {
           filterModel: {
-            items: [
-              filter
-                ? filter
-                : {
+            items: filter
+              ? [filter]
+              : disableDefaultVisibleFilter
+              ? []
+              : [
+                  {
                     field: "isVisible",
                     operator: "equals",
                     value: "true",
                     id: "1",
                   },
-            ],
+                ],
           },
         },
       }}

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
-import { Skeleton } from "@mui/material";
+import { MenuItem, Select, Skeleton } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -19,6 +19,7 @@ const ShopsTab = ({ darkMode }) => {
 
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [visibilityFilter, setVisibilityFilter] = useState("all"); // "all" | "visible" | "hidden"
 
   const [selectedShop, setSelectedShop] = useState(null);
   const [open, setOpen] = useState(false);
@@ -37,6 +38,16 @@ const ShopsTab = ({ darkMode }) => {
       setLoading(false);
     });
   }, [user.token]);
+
+  const filteredShops = useMemo(() => {
+    if (visibilityFilter === "visible") {
+      return shops.filter((shop) => shop.isVisible === true);
+    }
+    if (visibilityFilter === "hidden") {
+      return shops.filter((shop) => shop.isVisible === false);
+    }
+    return shops;
+  }, [shops, visibilityFilter]);
 
   const handleEdit = (id) => {
     setSelectedShop(shops.find((shop) => shop.id === id));
@@ -169,15 +180,25 @@ const ShopsTab = ({ darkMode }) => {
   return (
     <div className="flex flex-col gap-4 items-end w-full overflow-auto py-4">
       <StoreApplicationsPanel setError={setError} setMessage={setMessage} />
+      <Select
+        value={visibilityFilter}
+        onChange={(e) => setVisibilityFilter(e.target.value)}
+        size="small"
+      >
+        <MenuItem value="all">Todos</MenuItem>
+        <MenuItem value="visible">Visibles</MenuItem>
+        <MenuItem value="hidden">Ocultos</MenuItem>
+      </Select>
       <Box sx={{ height: "90%", width: "100%" }}>
         {loading ? (
           loadingGrid.map((loading, index) => <div key={index}>{loading}</div>)
         ) : (
           <AdminTable
-            rows={shops}
+            rows={filteredShops}
             columns={columns}
             pageSize={PAGE_SIZE}
             darkMode={darkMode}
+            disableDefaultVisibleFilter
             handleEdit={(id) => {
               setSelectedShop(shops.find((shop) => shop.id === id));
               setEditModalOpen(true);
