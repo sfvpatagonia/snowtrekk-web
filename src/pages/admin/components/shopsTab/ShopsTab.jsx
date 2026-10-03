@@ -3,6 +3,8 @@ import Box from "@mui/material/Box";
 import { Skeleton } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import AdminTable from "../adminTable/AdminTable";
 import admin from "@/services/admin";
 import changeVisibility from "@/services/changeVisibility";
@@ -55,6 +57,20 @@ const ShopsTab = ({ darkMode }) => {
     );
   };
 
+  const handleToggleVisible = (id) => {
+    const index = shops.findIndex((shop) => shop.id === id);
+    changeVisibility({ id, field: "isVisible", type: "shop" }).then(
+      (data) => {
+        if (!data.ok) {
+          return setError(data.message);
+        }
+        setMessage(data.message);
+        shops[index].isVisible = !shops[index].isVisible;
+        setShops([...shops]);
+      },
+    );
+  };
+
   const columns = [
     { field: "name" },
 
@@ -100,6 +116,22 @@ const ShopsTab = ({ darkMode }) => {
             <StarIcon fontSize="small" style={{ color: "#f5b301" }} />
           ) : (
             <StarBorderIcon fontSize="small" color="disabled" />
+          )}
+        </button>
+      ),
+    },
+    {
+      field: "isVisible",
+      custom: true,
+      renderCell: (params) => (
+        <button
+          onClick={() => handleToggleVisible(params.row.id)}
+          title="IsVisible"
+        >
+          {params.row.isVisible ? (
+            <VisibilityIcon fontSize="small" style={{ color: "#f5b301" }} />
+          ) : (
+            <VisibilityOffIcon fontSize="small" color="disabled" />
           )}
         </button>
       ),
