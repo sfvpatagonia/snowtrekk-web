@@ -53,14 +53,23 @@ const ActivitiesFilter = ({
         className="bg-main-100 dark:bg-main-900 text-left"
       >
         {activities.map((activity) => (
-          <MenuItem key={activity.id} value={activity.id}>
-            <div
-              className={`flex items-center justify-between w-full ${
-                selectedActivities.includes(activity.id)
-                  ? "bg-main-100 dark:bg-main-900 !text-main-0 dark:!text-main-1000"
-                  : ""
-              } `}
-            >
+          <MenuItem
+            key={activity.id}
+            value={activity.id}
+            sx={{
+              "&.Mui-selected": { backgroundColor: "#D6ECFA" },
+              "&.Mui-selected:hover": { backgroundColor: "#C2E2F7" },
+              "&:hover": { backgroundColor: "#FCE1F1" },
+              "&.Mui-focusVisible": { backgroundColor: "#FCE1F1" },
+              "&.Mui-selected.Mui-focusVisible": { backgroundColor: "#C2E2F7" },
+              "html.dark &.Mui-selected": { backgroundColor: "#1E4A63" },
+              "html.dark &.Mui-selected:hover": { backgroundColor: "#256080" },
+              "html.dark &:hover": { backgroundColor: "#5A2A4C" },
+              "html.dark &.Mui-focusVisible": { backgroundColor: "#5A2A4C" },
+              "html.dark &.Mui-selected.Mui-focusVisible": { backgroundColor: "#256080" },
+            }}
+          >
+            <div className="flex items-center justify-between w-full">
               <span>{activity.name}</span>
 
               <Badge
