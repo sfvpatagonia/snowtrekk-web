@@ -2,8 +2,9 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 export default async function deleteLead(id) {
   try {
-    const response = await fetch(`${apiUrl}/leads/${id}`, {
+    const response = await fetch(`${apiUrl}/brands/${id}`, {
       method: "DELETE",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

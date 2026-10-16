@@ -2,8 +2,9 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 export default async function newLead(lead) {
   try {
-    const response = await fetch(`${apiUrl}/leads/`, {
+    const response = await fetch(`${apiUrl}/brands/`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

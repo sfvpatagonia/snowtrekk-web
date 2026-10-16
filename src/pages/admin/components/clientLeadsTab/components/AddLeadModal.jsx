@@ -73,10 +73,11 @@ const AddLeadModal = ({
             setOpen(false);
             return setError(data.message);
           }
+          const savedLead = data.body?.lead ?? lead;
           setLeads((prevLeads) => {
             return prevLeads.map((item) => {
               if (item.id === editData.id) {
-                return lead;
+                return savedLead;
               }
               return item;
             });
@@ -97,7 +98,7 @@ const AddLeadModal = ({
           setLoading(false);
           setMessage(data.message);
           setOpen(false);
-          setLeads((prevLeads) => [data.body.newLead, ...prevLeads]);
+          setLeads((prevLeads) => [data.body?.newLead ?? lead, ...prevLeads]);
         })
         .finally(() => {
           setLead(initialState);

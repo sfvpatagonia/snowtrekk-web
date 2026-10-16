@@ -532,7 +532,7 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
 
   const handleVisibility = (id) => {
     const index = leads.findIndex((lead) => lead.id === id);
-    changeVisibility({ id, field: "isVisible", type: "leads" }).then((data) => {
+    changeVisibility({ id, field: "isVisible", type: "brands" }).then((data) => {
       if (!data.ok) {
         return setError(data.message);
       }

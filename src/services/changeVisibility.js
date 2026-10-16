@@ -4,6 +4,7 @@ export default async function changeVisibility(item) {
   try {
     const response = await fetch(`${apiUrl}/${item.type}/${item.field}`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

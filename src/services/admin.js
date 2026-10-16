@@ -144,7 +144,7 @@ async function searchLeads(searchQuery, limit, offset) {
 
 async function sendEmail(body) {
   try {
-    const response = await fetch(`${apiUrl}/leads/send-email/`, {
+    const response = await fetch(`${apiUrl}/brands/send-email/`, {
       method: "POST",
       credentials: "include",
       headers: {
