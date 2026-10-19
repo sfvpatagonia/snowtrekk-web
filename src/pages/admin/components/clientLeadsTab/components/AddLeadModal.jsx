@@ -16,6 +16,7 @@ import newLead from "@/services/newLead";
 import updateLead from "@/services/updateLead";
 
 const UNASSIGNED_COUNTRY_LABEL = "Sin país asignado";
+const EMAIL_SHAPE_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const AddLeadModal = ({
   open,
@@ -60,14 +61,18 @@ const AddLeadModal = ({
   const onSubmit = (e) => {
     e.preventDefault();
 
-    if (lead.email === "") {
-      return setError("Complete the email field");
+    const trimmedEmail = (lead.email || "").trim();
+
+    if (trimmedEmail !== "" && !EMAIL_SHAPE_RE.test(trimmedEmail)) {
+      return setError("Invalid email");
     }
+
+    const payload = { ...lead, email: trimmedEmail === "" ? null : trimmedEmail };
 
     setLoading(true);
 
     if (editData) {
-      updateLead(lead)
+      updateLead(payload)
         .then((data) => {
           if (!data.ok) {
             setOpen(false);
@@ -90,7 +95,7 @@ const AddLeadModal = ({
           setLead(initialState);
         });
     } else {
-      newLead(lead)
+      newLead(payload)
         .then((data) => {
           if (!data.ok) {
             return setError(data.message);
@@ -98,7 +103,7 @@ const AddLeadModal = ({
           setLoading(false);
           setMessage(data.message);
           setOpen(false);
-          setLeads((prevLeads) => [data.body?.newLead ?? lead, ...prevLeads]);
+          setLeads((prevLeads) => [data.body?.newLead ?? payload, ...prevLeads]);
         })
         .finally(() => {
           setLead(initialState);

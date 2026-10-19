@@ -101,15 +101,6 @@ const ClientLeadCard = ({ client }) => {
           </div>
 
           <div className="flex flex-col gap-2 p-4 text-left border-b border-main-600 dark:border-main-400 ">
-            {client.responsableName && (
-              <div className="flex flex-col">
-                <h4 className="text-main-0 dark:text-main-1000">Responsable</h4>
-                <p className="text-main-0 dark:text-main-1000">
-                  {client.responsableName}
-                </p>
-              </div>
-            )}
-
             {client.email && (
               <div className="flex flex-col">
                 <h4 className="text-main-0 dark:text-main-1000">Email:</h4>
@@ -191,15 +182,6 @@ const ClientLeadCard = ({ client }) => {
                     </span>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {client.notes && (
-              <div className="flex flex-col gap-2">
-                <h4 className="text-main-0 dark:text-main-1000">Notes</h4>
-                <p className="flex items-center bg-main-50 dark:bg-main-950 gap-2 p-4 border-main-600 dark:border-main-400 text-main-600 dark:text-main-400 border-l rounded-xl">
-                  {client.notes}
-                </p>
               </div>
             )}
           </div>
