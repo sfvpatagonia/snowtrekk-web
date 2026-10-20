@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Box from "@mui/material/Box";
-import { MenuItem, Select, Skeleton } from "@mui/material";
+import { MenuItem, Select, Skeleton, TextField } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -20,6 +20,8 @@ const ShopsTab = ({ darkMode }) => {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visibilityFilter, setVisibilityFilter] = useState("all"); // "all" | "visible" | "hidden"
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const [selectedShop, setSelectedShop] = useState(null);
   const [open, setOpen] = useState(false);
@@ -39,15 +41,31 @@ const ShopsTab = ({ darkMode }) => {
     });
   }, [user.token]);
 
+  // Shops are fetched once, unpaginated — filter/search both run client-side.
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const filteredShops = useMemo(() => {
+    let result = shops;
     if (visibilityFilter === "visible") {
-      return shops.filter((shop) => shop.isVisible === true);
+      result = result.filter((shop) => shop.isVisible === true);
+    } else if (visibilityFilter === "hidden") {
+      result = result.filter((shop) => shop.isVisible === false);
     }
-    if (visibilityFilter === "hidden") {
-      return shops.filter((shop) => shop.isVisible === false);
+
+    const query = debouncedSearch.trim().toLowerCase();
+    if (query) {
+      result = result.filter((shop) =>
+        [shop.name, shop.email, shop.city].some((field) =>
+          field?.toLowerCase().includes(query),
+        ),
+      );
     }
-    return shops;
-  }, [shops, visibilityFilter]);
+
+    return result;
+  }, [shops, visibilityFilter, debouncedSearch]);
 
   const handleEdit = (id) => {
     setSelectedShop(shops.find((shop) => shop.id === id));
@@ -180,15 +198,25 @@ const ShopsTab = ({ darkMode }) => {
   return (
     <div className="flex flex-col gap-4 items-end w-full overflow-auto py-4">
       <StoreApplicationsPanel setError={setError} setMessage={setMessage} />
-      <Select
-        value={visibilityFilter}
-        onChange={(e) => setVisibilityFilter(e.target.value)}
-        size="small"
-      >
-        <MenuItem value="all">Todos</MenuItem>
-        <MenuItem value="visible">Visibles</MenuItem>
-        <MenuItem value="hidden">Ocultos</MenuItem>
-      </Select>
+      <div className="flex gap-2 w-full">
+        <TextField
+          placeholder="Search by name, email or city"
+          value={searchQuery}
+          fullWidth
+          size="small"
+          sx={{ flex: 1, minWidth: "430px" }}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <Select
+          value={visibilityFilter}
+          onChange={(e) => setVisibilityFilter(e.target.value)}
+          size="small"
+        >
+          <MenuItem value="all">Todos</MenuItem>
+          <MenuItem value="visible">Visibles</MenuItem>
+          <MenuItem value="hidden">Ocultos</MenuItem>
+        </Select>
+      </div>
       <Box sx={{ height: "90%", width: "100%" }}>
         {loading ? (
           loadingGrid.map((loading, index) => <div key={index}>{loading}</div>)
