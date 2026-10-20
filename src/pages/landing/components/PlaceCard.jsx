@@ -20,10 +20,10 @@ export default function PlaceCard({ place, changeVideo }) {
                    transition-all duration-300 ease-in-out group-hover:border-green-700"
       >
         <img
-          src={place.Images[0]?.url || placeholder}
+          src={place.Images?.[0]?.url || placeholder}
           alt={place.name}
           className={`w-full aspect-video ${
-            place.Images[0]?.url ? "object-cover" : "object-contain"
+            place.Images?.[0]?.url ? "object-cover" : "object-contain"
           } transition-transform duration-300 ease-in-out group-hover:scale-120`}
         />
       </div>
