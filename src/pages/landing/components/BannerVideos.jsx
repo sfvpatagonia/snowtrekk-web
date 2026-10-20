@@ -30,6 +30,20 @@ import PersonPinCircleIcon from "@mui/icons-material/PersonPinCircle";
 // Service listed there regardless of whether it made the rail.
 const RAIL_SHOP_LIMIT = 4;
 
+// Stable reference (not an inline object literal re-created every render,
+// e.g. on every onProgress tick) — ReactPlayer reinitializes the underlying
+// player when `config` changes identity, which was silently dropping
+// pause-on-hover (the video kept playing through to the end regardless of
+// the `playing` prop).
+const PLAYER_CONFIG = {
+  file: {
+    attributes: {
+      style: { width: "100%", height: "100%", objectFit: "cover" },
+    },
+  },
+};
+const PLAYER_STYLE = { position: "absolute", top: 0, left: 0 };
+
 // Same 14 Collector categories as CATEGORY_CONFIG in
 // scripts/import-collector-prospects.js — generic icon fallback since Shops
 // have no real photos yet.
@@ -129,7 +143,10 @@ function ShopRailCard({ shop, onSelect }) {
 export default function BannerVideos() {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
-  const [playing] = useState(true);
+  // Paused while the user hovers/interacts with the video area (see
+  // onMouseEnter/onMouseLeave on the video wrapper below) — auto-advance is
+  // driven by onEnded, so pausing playback pauses the whole sequence.
+  const [playing, setPlaying] = useState(true);
   // Autoplay stays muted-by-default (browser autoplay-with-sound policies
   // would otherwise likely block playback outright with no prior user
   // gesture) — the button below unmutes on click, which counts as that
@@ -137,6 +154,11 @@ export default function BannerVideos() {
   const [isMuted, setIsMuted] = useState(true);
   const [loading, setLoading] = useState(true);
   // const [videoLoading, setVideoLoading] = useState(false);
+
+  // Progress bar for the current destination's video — resets on every
+  // video change (see the effect below) so it never carries over stale
+  // progress from the previous destination.
+  const [playedFraction, setPlayedFraction] = useState(0);
 
   // Same URL convention MomentsCarousel/DestinationPills already use: read
   // the selected destination directly from ?destino= (a Destination id),
@@ -298,6 +320,16 @@ export default function BannerVideos() {
 
   const currentVideo = flatVideos[currentVideoIndex];
 
+  // New video (manual pick, or auto-advance via onEnded) — the progress bar
+  // always restarts at 0 for it rather than carrying over the previous
+  // video's fraction for one frame.
+  useEffect(() => {
+    setPlayedFraction(0);
+  }, [currentVideoIndex]);
+
+  const pauseOnHover = () => setPlaying(false);
+  const resumeOnLeave = () => setPlaying(true);
+
   // const fetchServices = async () => {
   //   const servicesObj = {};
   //   await Promise.all(
@@ -323,59 +355,88 @@ export default function BannerVideos() {
       ref={containerRef}
       className={`flex flex-col lg:flex-row overflow-hidden  border-b-4 border-main-400 transition-all duration-300 `}
     >
-      <figure className="relative group flex flex-col justify-center items-start lg:w-5/6 w-full bg-main-100 rounded-sm dark:bg-main-900  aspect-video">
-        <ReactPlayer
-          ref={videoRef}
-          url={currentVideo?.url}
-          playing={playing}
-          onEnded={nextVideo}
-          muted={isMuted}
-          width="100%"
-          height="100%"
-          // onStart={() => setVideoLoading(false)}
-          // onReady={() => setVideoLoading(true)}
-          controls
-        />
-
-        <button
-          onClick={() => setIsMuted((prev) => !prev)}
-          className="absolute top-3 left-3 z-10 flex items-center gap-2 bg-black/70 hover:bg-black/90 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors"
+      <figure className="relative group flex flex-col items-start lg:w-5/6 w-full bg-main-100 rounded-sm dark:bg-main-900">
+        {/* Strictly 16:9, independent of the source video's own intrinsic
+            aspect ratio (object-fit: cover via the config below) — ReactPlayer's
+            width/height="100%" otherwise resolve against this wrapper's own
+            auto/content-driven height, which for a non-16:9 source made the
+            whole figure (and everything below it: title, description, the
+            "Go to destination" button) balloon to the video's raw pixel
+            height and get pushed far down/off the fold. */}
+        <div
+          className="relative w-full aspect-video overflow-hidden"
+          onMouseEnter={pauseOnHover}
+          onMouseLeave={resumeOnLeave}
         >
-          {isMuted ? (
-            <>
-              <VolumeOffIcon fontSize="small" />
-              Activar sonido
-            </>
-          ) : (
-            <VolumeUpIcon fontSize="small" />
-          )}
-        </button>
-        {/* {videoLoading && (
-          <div className="absolute top-0 left-0 w-full aspect-video flex flex-col items-center justify-center bg-main-200 border-y-2 border-main-600 dark:border-main-400 ">
-            <img src={logo} alt="Loading..." className="w-60 md:w-[600px]" />
-            <div className="w-1/2 lg:w-2/5 h-[10px] bg-gray-300 rounded-full overflow-hidden">
-              <div
-                className="h-full w-0 bg-main-600 dark:bg-main-400 
-                    animate-fill"
-              />
-            </div>
-          </div>
-        )} */}
-
-        {/* ✅ OVERLAY DE CONTROL */}
-
-        <div className="absolute group-hover:opacity-100 opacity-0 top-3 right-3 bg-black/60 text-white px-4 py-2 rounded-lg flex items-center gap-4">
-          <span className="text-sm font-semibold">
-            {currentVideo?.indexInDestination} /{" "}
-            {currentVideo?.totalInDestination}
-          </span>
+          <ReactPlayer
+            ref={videoRef}
+            url={currentVideo?.url}
+            playing={playing}
+            onEnded={nextVideo}
+            onProgress={({ played }) => setPlayedFraction(played)}
+            muted={isMuted}
+            width="100%"
+            height="100%"
+            style={PLAYER_STYLE}
+            config={PLAYER_CONFIG}
+            // onStart={() => setVideoLoading(false)}
+            // onReady={() => setVideoLoading(true)}
+            controls
+          />
 
           <button
-            onClick={nextVideo}
-            className="button px-3 py-1 rounded text-sm font-bold"
+            onClick={() => setIsMuted((prev) => !prev)}
+            className="absolute top-3 left-3 z-10 flex items-center gap-2 bg-black/70 hover:bg-black/90 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors"
           >
-            Next ▶
+            {isMuted ? (
+              <>
+                <VolumeOffIcon fontSize="small" />
+                Activar sonido
+              </>
+            ) : (
+              <VolumeUpIcon fontSize="small" />
+            )}
           </button>
+          {/* {videoLoading && (
+            <div className="absolute top-0 left-0 w-full aspect-video flex flex-col items-center justify-center bg-main-200 border-y-2 border-main-600 dark:border-main-400 ">
+              <img src={logo} alt="Loading..." className="w-60 md:w-[600px]" />
+              <div className="w-1/2 lg:w-2/5 h-[10px] bg-gray-300 rounded-full overflow-hidden">
+                <div
+                  className="h-full w-0 bg-main-600 dark:bg-main-400
+                      animate-fill"
+                />
+              </div>
+            </div>
+          )} */}
+
+          {/* ✅ OVERLAY DE CONTROL */}
+
+          <div className="absolute group-hover:opacity-100 opacity-0 top-3 right-3 bg-black/60 text-white px-4 py-2 rounded-lg flex items-center gap-4">
+            <span className="text-sm font-semibold">
+              {currentVideo?.indexInDestination} /{" "}
+              {currentVideo?.totalInDestination}
+            </span>
+
+            <button
+              onClick={nextVideo}
+              className="button px-3 py-1 rounded text-sm font-bold"
+            >
+              Next ▶
+            </button>
+          </div>
+        </div>
+
+        {/* Auto-advance progress for the current destination's video — fills
+            as it plays, reaching 100% exactly when onEnded fires and the
+            banner moves on. Turns green (the same hover color as every other
+            pink/green control in this component) while paused, so hovering
+            the video doubles as visual confirmation that auto-advance is
+            on hold. */}
+        <div className="w-full h-1.5 bg-main-200 dark:bg-main-800">
+          <div
+            className={`h-full ${playing ? "bg-main-500" : "bg-green-700"} transition-[width] duration-150 ease-linear`}
+            style={{ width: `${Math.min(playedFraction, 1) * 100}%` }}
+          />
         </div>
 
         {/* Fallback video belongs to a different destination than the one
