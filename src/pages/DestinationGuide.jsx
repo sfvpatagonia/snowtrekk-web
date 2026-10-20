@@ -15,6 +15,7 @@ import ActivitiesFilter from "../components/ActivitiesFilter";
 import { getDestinationById } from "@/services/destinations";
 
 const DEBUG_SCROLLSPY = false; // poner true para ver logs
+const ACTIVITY_NAME_COLLATOR = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
 
 const DestinationGuide = () => {
   const navigate = useNavigate();
@@ -75,7 +76,13 @@ const DestinationGuide = () => {
           // children (ClientLeadCard etc. still read `clientLeads`/
           // `clientActivities`/`clientDestinations`, aliased by the backend).
           setClientLeads(result.body.brands ?? []);
-          setActivities(result.body.activities ?? []);
+          // "Activities Provided" dropdown reads alphabetically — the backend
+          // sorts this list by usage count, not name, for other consumers.
+          setActivities(
+            [...(result.body.activities ?? [])].sort((a, b) =>
+              ACTIVITY_NAME_COLLATOR.compare(a.name ?? "", b.name ?? ""),
+            ),
+          );
         }
 
         const servicesResult =
