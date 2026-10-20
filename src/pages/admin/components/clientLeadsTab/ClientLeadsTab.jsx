@@ -537,8 +537,15 @@ const ClientLeadsTab = ({ darkMode, active, data }) => {
         return setError(data.message);
       }
       setMessage(data.message);
-      leads[index].isVisible = !leads[index].isVisible;
-      setLeads([...leads]);
+      // New object (not leads[index].isVisible = ...) so the row's
+      // reference changes — DataGrid's cell re-render is keyed off that,
+      // mutating in place left the eye icon stuck until the visibility
+      // filter itself forced a re-render by changing the row count.
+      setLeads(
+        leads.map((lead, i) =>
+          i === index ? { ...lead, isVisible: !lead.isVisible } : lead,
+        ),
+      );
     });
   };
 

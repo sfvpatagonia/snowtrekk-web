@@ -103,10 +103,10 @@ export default function AdminHugeTable({
               !params.row.isVisible ? (
                 <VisibilityOffIcon fontSize={16} color="disabled" />
               ) : (
-                <VisibilityIcon fontSize={16} color="info" />
+                <VisibilityIcon fontSize={16} style={{ color: "#f5b301" }} />
               )
             }
-            label="Visible"
+            label="Lead activo / archivado — no afecta la guía pública"
             className="textPrimary"
             onClick={() => handleVisibility(params.id)}
             color="inherit"
