@@ -9,7 +9,7 @@ export default function LearnAbout({ destination }) {
       <div className="flex flex-col lg:flex-row w-full h-auto">
         <div className="flex w-full px-4 lg:w-1/2 justify-center items-center ">
           <img
-            src={destination.Images[0]?.url || ""}
+            src={destination.Images?.[0]?.url || ""}
             alt={destination.name}
             className="aspect-video w-3/4 lg:aspect-square bg-center object-cover rounded-2xl border-3 border-green-700"
           />
