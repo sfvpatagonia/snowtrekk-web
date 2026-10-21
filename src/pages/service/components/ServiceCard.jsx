@@ -83,9 +83,7 @@ const ServiceCard = ({ service }) => {
             {service.name}
           </h1>
           <h2 className="bg-main-100 dark:bg-main-900 text-start flex-1 p-1 rounded mr-12 ">
-            {service.firstDestination
-              ? service.firstDestination.name
-              : service.destinations[0].name}
+            {service.firstDestination?.name ?? service.destinations?.[0]?.name ?? ""}
           </h2>
         </div>
         <div className="flex flex-col lg:flex-row p-0 md:px-4 gap-2 lg:px-12 lg:gap-1">
@@ -93,7 +91,7 @@ const ServiceCard = ({ service }) => {
             <div className="flex gap-2">
               <p className="font-bold flex-1">Activity:</p>
               <p className="flex-1 text-start bg-main-100 dark:bg-main-900 pl-2 rounded">
-                {service.categories.map((cat) => cat.name).join(", ")}
+                {(service.categories ?? []).map((cat) => cat.name).join(", ")}
               </p>
             </div>
             <div className="flex gap-2">

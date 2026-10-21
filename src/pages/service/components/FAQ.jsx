@@ -5,7 +5,7 @@ export default function FAQ({ faqs }) {
         Frecuently asked questions
       </h3>
       <ul>
-        {faqs.map((item, index) => {
+        {(faqs ?? []).map((item, index) => {
           return (
             <li key={index} className=" text-main-0 dark:text-main-1000">
               <h3 className="text-lg ">{item.question}</h3>

@@ -22,6 +22,10 @@ export default function Questions({
   const [error, setError] = useState("");
   const user = useSelector((state) => state.user);
   const [deleteModal, setDeleteModal] = useState("");
+  const safeQuestions = questions ?? [];
+  // Shop.users isn't always included in this endpoint's response (e.g. the
+  // Collector-import placeholder shape) — never assume it's there.
+  const isShopOwner = service?.Shop?.users?.some((u) => u.id === user.id) ?? false;
 
   const handleSubmitQuestion = () => {
     if (!newQuestion.trim()) {
@@ -43,7 +47,7 @@ export default function Questions({
 
           setService((s) => ({
             ...s,
-            Questions: [data.newQuestion, ...s.Questions],
+            Questions: [data.newQuestion, ...(s.Questions ?? [])],
           }));
         } else {
           setError(data.message);
@@ -70,7 +74,7 @@ export default function Questions({
           setSuccess("answer");
           setService((s) => ({
             ...s,
-            Questions: s.Questions.map((q) =>
+            Questions: (s.Questions ?? []).map((q) =>
               q.id === answerModal ? { ...q, Answer: data.newAnswer } : q,
             ),
           }));
@@ -88,7 +92,7 @@ export default function Questions({
         if (data.ok) {
           setService((s) => ({
             ...s,
-            Questions: s.Questions.filter((q) => q.id !== id),
+            Questions: (s.Questions ?? []).filter((q) => q.id !== id),
           }));
           setDeleteModal("success");
         } else {
@@ -104,14 +108,14 @@ export default function Questions({
       <h3 className="text-xl w-full flex-1 text-left border-b-2 border-main-600 dark:border-main-400  ">
         User&apos;s Questions
       </h3>
-      {questions.length > 0 ? (
+      {safeQuestions.length > 0 ? (
         <ul className=" text-main-0 dark:text-main-1000 flex flex-col gap-2">
-          {questions.slice(0, 3).map((item, index) => {
+          {safeQuestions.slice(0, 3).map((item, index) => {
             return (
               <li key={index} className="flex flex-col gap-2">
                 <div className="flex justify-between">
                   <p className=" text-lg font-bold ">{item.body}</p>
-                  {service.Shop.users.some((u) => u.id === user.id) && (
+                  {isShopOwner && (
                     <DeleteIcon
                       onClick={() => handleDeleteQuestion(item.id)}
                       className="text-red-600 dark:text-red-400 cursor-pointer hover:text-red-400 dark:hover:text-red-600 duration-200"
@@ -122,8 +126,7 @@ export default function Questions({
                   <p className="p-2 bg-main-100 dark:bg-main-900 mb-2 rounded">
                     {item.Answer.body}
                   </p>
-                ) : !item.Answer &&
-                  service.Shop.users.some((u) => u.id === user.id) ? (
+                ) : !item.Answer && isShopOwner ? (
                   <p
                     className="underline flex gap-2 bg-main-100 dark:bg-main-900 rounded p-2 cursor-pointer hover:text-main-800 dark:hover:text-main-200 duration-200"
                     onClick={() => setAnswerModal(item.id)}
@@ -139,7 +142,7 @@ export default function Questions({
               </li>
             );
           })}
-          {questions.length > 3 && (
+          {safeQuestions.length > 3 && (
             <p
               className="underline flex gap-2 bg-main-100 dark:bg-main-900 rounded p-2 cursor-pointer hover:text-main-800 dark:hover:text-main-200 duration-200"
               onClick={() => setQuestionsModal(true)}
@@ -151,7 +154,7 @@ export default function Questions({
       ) : (
         <p>No questions yet</p>
       )}
-      {!service.Shop.users.some((u) => u.id === user.id) && (
+      {!isShopOwner && (
         <p
           className="underline flex gap-2 bg-main-100 dark:bg-main-900 rounded p-2 cursor-pointer hover:text-main-800 dark:hover:text-main-200 duration-200"
           onClick={() => setNewQuestionModal(true)}
@@ -164,7 +167,7 @@ export default function Questions({
         <div className="absolute max-w-xl flex flex-col gap-4 bg-main-100 dark:bg-main-900 rounded-lg p-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-main-0 dark:text-main-1000 max-h-3/4 overflow-auto">
           <h2 className="font-bold text-xl">Questions & Answers</h2>
           <ul className="w-90 flex flex-col gap-2">
-            {questions.map((item, index) => {
+            {safeQuestions.map((item, index) => {
               return (
                 <li
                   key={index}
@@ -172,7 +175,7 @@ export default function Questions({
                 >
                   <div className="flex justify-between">
                     <p className=" text-lg font-bold text-left">{item.body}</p>
-                    {service.Shop.users.some((u) => u.id === user.id) && (
+                    {isShopOwner && (
                       <DeleteIcon
                         onClick={() => handleDeleteQuestion(item.id)}
                         className="text-red-600 dark:text-red-400 cursor-pointer hover:text-red-400 dark:hover:text-red-600 duration-200"
@@ -184,8 +187,7 @@ export default function Questions({
                     <p className="p-2 bg-main-100 dark:bg-main-900 mb-2 rounded">
                       {item.Answer.body}
                     </p>
-                  ) : !item.Answer &&
-                    service.Shop.users.some((u) => u.id === user.id) ? (
+                  ) : !item.Answer && isShopOwner ? (
                     <p
                       className="underline flex gap-2 bg-main-100 dark:bg-main-900 rounded p-2 cursor-pointer hover:text-main-800 dark:hover:text-main-200 duration-200"
                       onClick={() => setAnswerModal(item.id)}

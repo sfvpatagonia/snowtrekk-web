@@ -18,7 +18,7 @@ export default function AddToCartMenu({ item }) {
   const [schedules, setSchedules] = useState(["11:00", "12:30", "14:00"]);
 
   useEffect(() => {
-    const daySchedules = item.Availabilities.flatMap((availability) =>
+    const daySchedules = (item?.Availabilities ?? []).flatMap((availability) =>
       availability.turnosDisponibles
         .filter((turno) =>
           isSameDay(new Date(turno.startAt), selectedDate.date),
@@ -30,7 +30,7 @@ export default function AddToCartMenu({ item }) {
     const uniqueSchedules = [...new Set(daySchedules)].sort();
 
     setSchedules(uniqueSchedules);
-  }, [selectedDate, item.Availabilities]);
+  }, [selectedDate, item?.Availabilities]);
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -39,7 +39,7 @@ export default function AddToCartMenu({ item }) {
 
     window.addEventListener("resize", handleResize);
   });
-  const subtotal = participants * item.price;
+  const subtotal = participants * (item?.price ?? 0);
 
   return (
     <>
@@ -61,13 +61,13 @@ export default function AddToCartMenu({ item }) {
           <DatePicker
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
-            availableDates={item.Availabilities}
+            availableDates={item?.Availabilities ?? []}
           />
         ) : (
           <Calendar
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
-            availableDates={item.Availabilities}
+            availableDates={item?.Availabilities ?? []}
           />
         )}
 
@@ -77,7 +77,7 @@ export default function AddToCartMenu({ item }) {
               Pick a time
             </h3>
             <h4 className="-m-4 text-main-0 dark:text-main-1000 font-thin mb-1">
-              {item.destinations[0].name} local time
+              {item?.destinations?.[0]?.name ?? item?.firstDestination?.name ?? ""} local time
             </h4>
             <ul className="flex flex-col bg-main-100 dark:bg-main-900 py-4 px-2 gap-2 rounded">
               {schedules.map((schedule, index) => {
@@ -110,9 +110,12 @@ export default function AddToCartMenu({ item }) {
           <SelectData
             items={Array.from(
               {
-                length: item.maximumParticipants - item.minimumParticipants + 1,
+                length:
+                  (item?.maximumParticipants ?? 0) -
+                  (item?.minimumParticipants ?? 0) +
+                  1,
               },
-              (_, index) => item.minimumParticipants + index,
+              (_, index) => (item?.minimumParticipants ?? 0) + index,
             )}
             data={participants}
             setData={setParticipants}

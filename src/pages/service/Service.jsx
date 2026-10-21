@@ -43,6 +43,21 @@ const Service = () => {
     return <LoadingComponent />;
   }
 
+  // Collector-placeholder/hidden/not-found services reach here as a null
+  // currentService — superseded by FallbackScreen once Step 2/3 wire it in,
+  // but this page must not crash in the meantime.
+  if (!currentService) {
+    return (
+      <div>
+        <Header />
+        <p className="text-center py-20 text-main-0 dark:text-main-1000">
+          Service not found
+        </p>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Header />
@@ -105,28 +120,30 @@ const Service = () => {
             </div> */}
           <div className="flex flex-col text-left rounded shadow text-main-0 dark:text-main-1000 p-4 gap-4 w-full bg-main-50 dark:bg-main-950">
             <h3 className="text-xl w-full flex-1 text-left border-b-2 border-main-600 dark:border-main-400  ">
-              {currentService.Shop.name}
+              {currentService.Shop?.name}
             </h3>
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4">
               <img
-                src={currentService.Shop.storeLogo || placeholderLogo}
-                alt={currentService.Shop.name}
+                src={currentService.Shop?.storeLogo || placeholderLogo}
+                alt={currentService.Shop?.name}
                 className="max-w-38 p-2 object-contain bg-main-100 dark:bg-main-900 rounded"
               />
               <div className="flex flex-col justify-between h-full flex-1">
                 <p>{currentService.description}</p>
-                <Link
-                  to={`/shop/${currentService.Shop.id}`}
-                  className="flex gap-1 items-center hover:text-main-600 dark:hover:text-main-400 duration-200 self-end justify-baseline"
-                >
-                  Go to Shop <ArrowForwardIcon />
-                </Link>
+                {currentService.Shop?.id && (
+                  <Link
+                    to={`/shop/${currentService.Shop.id}`}
+                    className="flex gap-1 items-center hover:text-main-600 dark:hover:text-main-400 duration-200 self-end justify-baseline"
+                  >
+                    Go to Shop <ArrowForwardIcon />
+                  </Link>
+                )}
               </div>
             </div>
           </div>
           {(currentService.FAQ?.length ?? 0) !== 0 && <FAQ faqs={currentService.FAQ} />}
           <Questions
-            questions={currentService.Questions}
+            questions={currentService.Questions ?? []}
             idService={id}
             setService={setCurrentService}
             service={currentService}
