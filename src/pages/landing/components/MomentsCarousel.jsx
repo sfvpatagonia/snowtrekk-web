@@ -4,6 +4,7 @@ import momentService from "@/services/moment";
 import videoService from "@/services/video";
 import BannerVideos from "./BannerVideos";
 import LoadingComponent from "@/components/LoadingComponent";
+import VideoFrame from "@/components/VideoFrame";
 
 const CAPTION_PREVIEW_LENGTH = 140;
 
@@ -159,46 +160,45 @@ export default function MomentsCarousel() {
     // promo: no-op for now — Fase 3 will define this behavior.
   };
 
+  const momentOverlay = (
+    <div className="absolute group-hover:opacity-100 opacity-0 top-3 right-3 pointer-events-auto bg-black/60 text-white px-4 py-2 rounded-lg flex items-center gap-4">
+      <span className="text-sm font-semibold">
+        {currentIndex + 1} / {moments.length}
+      </span>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          nextMoment();
+        }}
+        className="button px-3 py-1 rounded text-sm font-bold"
+      >
+        Next ▶
+      </button>
+    </div>
+  );
+
   return (
     <div className="flex flex-col lg:flex-row overflow-hidden border-b-4 border-main-400 transition-all duration-300">
       <figure
-        className={`relative group flex flex-col justify-center items-start lg:w-5/6 w-full bg-main-100 rounded-sm dark:bg-main-900 aspect-video ${
+        className={`relative group flex flex-col items-start lg:w-5/6 w-full bg-main-100 rounded-sm dark:bg-main-900 ${
           currentMoment.momentType !== "promo" ? "cursor-pointer" : ""
         }`}
         onClick={() => handleMomentClick(currentMoment)}
       >
         {currentMoment.mediaType === "video" ? (
-          <video
-            key={currentMoment.id}
-            src={currentMoment.mediaUrl}
-            className="w-full h-full object-cover"
-            muted
-            autoPlay
-            loop
-            playsInline
-          />
+          <VideoFrame key={currentMoment.id} src={currentMoment.mediaUrl} loop>
+            {momentOverlay}
+          </VideoFrame>
         ) : (
-          <img
-            src={currentMoment.mediaUrl}
-            alt={currentMoment.caption}
-            className="w-full h-full object-cover"
-          />
+          <div className="relative overflow-hidden w-full max-w-full bg-neutral-950 aspect-[4/5] md:aspect-video max-h-[70vh]">
+            <img
+              src={currentMoment.mediaUrl}
+              alt={currentMoment.caption}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 z-20 pointer-events-none">{momentOverlay}</div>
+          </div>
         )}
-
-        <div className="absolute group-hover:opacity-100 opacity-0 top-3 right-3 bg-black/60 text-white px-4 py-2 rounded-lg flex items-center gap-4">
-          <span className="text-sm font-semibold">
-            {currentIndex + 1} / {moments.length}
-          </span>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              nextMoment();
-            }}
-            className="button px-3 py-1 rounded text-sm font-bold"
-          >
-            Next ▶
-          </button>
-        </div>
 
         <figcaption className="flex justify-between w-full bg-main-100 dark:bg-main-900 items-center px-4">
           <div className="flex flex-col items-start py-4 w-full">

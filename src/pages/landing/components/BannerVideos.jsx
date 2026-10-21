@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import ReactPlayer from "react-player";
 import videoService from "@/services/video";
 import shopService from "@/services/shop";
 import PlaceCard from "./PlaceCard";
 import LoadingComponent from "@/components/LoadingComponent";
+import VideoFrame from "@/components/VideoFrame";
 import { Link, useSearchParams } from "react-router-dom";
 import StarIcon from "@mui/icons-material/Star";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
@@ -29,20 +29,6 @@ import PersonPinCircleIcon from "@mui/icons-material/PersonPinCircle";
 // "Our most popular services" down the page. Every Shop still has its
 // Service listed there regardless of whether it made the rail.
 const RAIL_SHOP_LIMIT = 4;
-
-// Stable reference (not an inline object literal re-created every render,
-// e.g. on every onProgress tick) — ReactPlayer reinitializes the underlying
-// player when `config` changes identity, which was silently dropping
-// pause-on-hover (the video kept playing through to the end regardless of
-// the `playing` prop).
-const PLAYER_CONFIG = {
-  file: {
-    attributes: {
-      style: { width: "100%", height: "100%", objectFit: "cover" },
-    },
-  },
-};
-const PLAYER_STYLE = { position: "absolute", top: 0, left: 0 };
 
 // Same 14 Collector categories as CATEGORY_CONFIG in
 // scripts/import-collector-prospects.js — generic icon fallback since Shops
@@ -141,7 +127,6 @@ function ShopRailCard({ shop, onSelect }) {
 }
 
 export default function BannerVideos() {
-  const videoRef = useRef(null);
   const containerRef = useRef(null);
   // Paused while the user hovers/interacts with the video area (see
   // onMouseEnter/onMouseLeave on the video wrapper below) — auto-advance is
@@ -356,37 +341,20 @@ export default function BannerVideos() {
       className={`flex flex-col lg:flex-row overflow-hidden  border-b-4 border-main-400 transition-all duration-300 `}
     >
       <figure className="relative group flex flex-col items-start lg:w-5/6 w-full bg-main-100 rounded-sm dark:bg-main-900">
-        {/* Strictly 16:9, independent of the source video's own intrinsic
-            aspect ratio (object-fit: cover via the config below) — ReactPlayer's
-            width/height="100%" otherwise resolve against this wrapper's own
-            auto/content-driven height, which for a non-16:9 source made the
-            whole figure (and everything below it: title, description, the
-            "Go to destination" button) balloon to the video's raw pixel
-            height and get pushed far down/off the fold. */}
-        <div
-          className="relative w-full aspect-video overflow-hidden"
+        <VideoFrame
+          src={currentVideo?.url}
+          usePlayer
+          playing={playing}
+          muted={isMuted}
+          controls
+          onEnded={nextVideo}
+          onProgress={({ played }) => setPlayedFraction(played)}
           onMouseEnter={pauseOnHover}
           onMouseLeave={resumeOnLeave}
         >
-          <ReactPlayer
-            ref={videoRef}
-            url={currentVideo?.url}
-            playing={playing}
-            onEnded={nextVideo}
-            onProgress={({ played }) => setPlayedFraction(played)}
-            muted={isMuted}
-            width="100%"
-            height="100%"
-            style={PLAYER_STYLE}
-            config={PLAYER_CONFIG}
-            // onStart={() => setVideoLoading(false)}
-            // onReady={() => setVideoLoading(true)}
-            controls
-          />
-
           <button
             onClick={() => setIsMuted((prev) => !prev)}
-            className="absolute top-3 left-3 z-10 flex items-center gap-2 bg-black/70 hover:bg-black/90 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors"
+            className="absolute top-3 left-3 pointer-events-auto flex items-center gap-2 bg-black/70 hover:bg-black/90 text-white px-3 py-2 rounded-lg text-sm font-bold transition-colors"
           >
             {isMuted ? (
               <>
@@ -397,21 +365,9 @@ export default function BannerVideos() {
               <VolumeUpIcon fontSize="small" />
             )}
           </button>
-          {/* {videoLoading && (
-            <div className="absolute top-0 left-0 w-full aspect-video flex flex-col items-center justify-center bg-main-200 border-y-2 border-main-600 dark:border-main-400 ">
-              <img src={logo} alt="Loading..." className="w-60 md:w-[600px]" />
-              <div className="w-1/2 lg:w-2/5 h-[10px] bg-gray-300 rounded-full overflow-hidden">
-                <div
-                  className="h-full w-0 bg-main-600 dark:bg-main-400
-                      animate-fill"
-                />
-              </div>
-            </div>
-          )} */}
 
           {/* ✅ OVERLAY DE CONTROL */}
-
-          <div className="absolute group-hover:opacity-100 opacity-0 top-3 right-3 bg-black/60 text-white px-4 py-2 rounded-lg flex items-center gap-4">
+          <div className="absolute group-hover:opacity-100 opacity-0 top-3 right-3 pointer-events-auto bg-black/60 text-white px-4 py-2 rounded-lg flex items-center gap-4">
             <span className="text-sm font-semibold">
               {currentVideo?.indexInDestination} /{" "}
               {currentVideo?.totalInDestination}
@@ -424,7 +380,7 @@ export default function BannerVideos() {
               Next ▶
             </button>
           </div>
-        </div>
+        </VideoFrame>
 
         {/* Auto-advance progress for the current destination's video — fills
             as it plays, reaching 100% exactly when onEnded fires and the
