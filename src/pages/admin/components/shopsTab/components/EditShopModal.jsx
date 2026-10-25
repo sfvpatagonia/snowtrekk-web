@@ -1,15 +1,8 @@
 import { useState, useEffect } from "react";
-import {
-  Modal,
-  TextField,
-  CircularProgress,
-  Box,
-  MenuItem,
-} from "@mui/material";
-import { parsePhone, phonePrefixes } from "../../../../../utils/phonePrefixes";
-import ReactCountryFlag from "react-country-flag";
+import { Modal, TextField, CircularProgress, Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import admin from "../../../../../services/admin";
+import PhoneInput from "../../../../../components/PhoneInput";
 
 export default function EditShopModal({
   open,
@@ -25,17 +18,7 @@ export default function EditShopModal({
 
   useEffect(() => {
     if (shopData) {
-      const { number: phoneNumber, prefix: phonePrefix } = parsePhone(
-        shopData.phone || "",
-      );
-      const { number: mobileNumber } = parsePhone(shopData.mobile || "");
-
-      setShop({
-        ...shopData,
-        phone: phoneNumber,
-        phonePrefix: phonePrefix?.code || "",
-        mobile: mobileNumber,
-      });
+      setShop({ ...shopData });
     }
   }, [shopData]);
 
@@ -64,21 +47,8 @@ export default function EditShopModal({
     if (!shop.email) {
       return setError("Shop email is required");
     }
-    if (shop.phone && !shop.phonePrefix) {
-      return setError("Phone prefix is required if phone number is provided");
-    }
-
-    if (shop.mobile && !shop.phonePrefix) {
-      return setError("Phone prefix is required if mobile number is provided");
-    }
 
     setLoading(true);
-
-    setShop((prev) => ({
-      ...prev,
-      phone: shop.phone ? shop.phonePrefix + shop.phone : "",
-      mobile: shop.mobile ? shop.phonePrefix + shop.mobile : "",
-    }));
 
     admin
       .updateBasicInfoShop(shop, user.token)
@@ -146,60 +116,21 @@ export default function EditShopModal({
           />
 
           <Box display="flex" alignItems="center" gap={2}>
-            <TextField
-              select
-              label="Country"
-              name="phonePrefix"
-              fullWidth
-              value={shop.phonePrefix}
-              disabled={loading}
-              onChange={handleChange}
-              SelectProps={{
-                renderValue: (value) => {
-                  const country = phonePrefixes.find((p) => p.code === value);
-                  return (
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <ReactCountryFlag
-                        svg
-                        countryCode={country?.iso}
-                        style={{ width: "1.5em", height: "1.5em" }}
-                      />
-                      <span>{country?.code}</span>
-                    </Box>
-                  );
-                },
-              }}
-            >
-              {phonePrefixes.map((p) => (
-                <MenuItem key={p.code + p.country} value={p.code}>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <ReactCountryFlag
-                      svg
-                      countryCode={p.iso}
-                      style={{ width: "1.2em", height: "1.2em" }}
-                    />
-                    <span>{p.country}</span>
-                    <span style={{ opacity: 0.6 }}>{p.code}</span>
-                  </Box>
-                </MenuItem>
-              ))}
-            </TextField>
-
-            <TextField
+            <PhoneInput
               label="Phone number"
-              name="phone"
               value={shop.phone}
               disabled={loading}
-              onChange={handleChange}
-              fullWidth
+              onChange={(newValue) =>
+                setShop((prev) => ({ ...prev, phone: newValue }))
+              }
             />
-            <TextField
+            <PhoneInput
               label="Mobile number"
-              name="mobile"
               value={shop.mobile}
               disabled={loading}
-              onChange={handleChange}
-              fullWidth
+              onChange={(newValue) =>
+                setShop((prev) => ({ ...prev, mobile: newValue }))
+              }
             />
           </Box>
 

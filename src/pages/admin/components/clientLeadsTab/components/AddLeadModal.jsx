@@ -11,6 +11,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import admin from "@/services/admin";
 import BasicModal from "@/components/basicModal/BasicModal";
+import PhoneInput from "@/components/PhoneInput";
 import languagesEntities from "@/services/languagesEntities";
 import newLead from "@/services/newLead";
 import updateLead from "@/services/updateLead";
@@ -197,13 +198,13 @@ const AddLeadModal = ({
               disabled={loading}
               sx={{ width: 300 }}
             />
-            <TextField
+            <PhoneInput
               label="Phone"
-              name="phone"
               value={lead.phone}
-              onChange={handleChange}
+              onChange={(newValue) =>
+                setLead((prev) => ({ ...prev, phone: newValue }))
+              }
               disabled={loading}
-              sx={{ width: 300 }}
             />
 
             <TextField
