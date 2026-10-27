@@ -57,10 +57,14 @@ export default function EditShopModal({
           return setError(data.message);
         }
 
+        const updatedShop = data.body?.updatedShop || shop;
+
         setMessage("Shop updated successfully");
         setOpen(false);
         if (setShops) {
-          setShops((prev) => prev.map((s) => (s.id === shop.id ? shop : s)));
+          setShops((prev) =>
+            prev.map((s) => (s.id === shop.id ? { ...s, ...updatedShop } : s)),
+          );
         }
       })
       .finally(() => {
