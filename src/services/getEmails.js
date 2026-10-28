@@ -1,18 +1,10 @@
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "@/api/axios";
 
 export default async function getEmails() {
   try {
-    const response = await fetch(`${apiUrl}/emails/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-    return data;
+    const response = await api.get(`/emails/`);
+    return response.data;
   } catch (error) {
-    console.error("Network error:", error);
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }

@@ -1,17 +1,10 @@
-const apiUrl = import.meta.env.VITE_API_URL;
+import api from "@/api/axios";
 
 export default async function deleteEmail(id) {
   try {
-    const response = await fetch(`${apiUrl}/emails/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-
-    return data;
+    const response = await api.delete(`/emails/${id}`);
+    return response.data;
   } catch (error) {
-    return { ok: false, message: "Network error" };
+    return error.response?.data || { ok: false, message: "Network error" };
   }
 }
