@@ -2,6 +2,7 @@
 import AdminChoiceModal from "./AdminChoiceModal";
 import AdminConfirmationModal from "./adminConfirmationModal/AdminConfirmationModal";
 import AdminErrorModal from "./adminErrorModal/AdminErrorModal";
+import AdminMessageModal from "./AdminMessageModal";
 import AdminTable from "./adminTable/AdminTable";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -37,6 +38,7 @@ export default function SuggestionsTab({ darkMode, active }) {
   const [shouldFetch, setShouldFetch] = useState(true);
   const [choiceModal, setChoiceModal] = useState(null);
   const [filterType, setFilterType] = useState("all");
+  const [selectedMessage, setSelectedMessage] = useState(null);
   const loadingdGrid = new Array(PAGE_SIZE + 2).fill(<Skeleton height={37} />);
 
   const rows = useMemo(
@@ -88,6 +90,10 @@ export default function SuggestionsTab({ darkMode, active }) {
 
   const handleDelete = (id) => {
     setChoiceModal(id);
+  };
+
+  const handleView = (id) => {
+    setSelectedMessage(filteredRows.find((row) => row.id === id) || null);
   };
 
   const handleExportCsv = () => {
@@ -161,9 +167,16 @@ export default function SuggestionsTab({ darkMode, active }) {
             filter={null}
             columnsVisibility={{ isVisible: false }}
             handleDelete={handleDelete}
+            handleView={handleView}
           />
         )}
       </Box>
+
+      <AdminMessageModal
+        open={selectedMessage !== null}
+        onClose={() => setSelectedMessage(null)}
+        message={selectedMessage}
+      />
 
       <AdminConfirmationModal
         open={message !== ""}

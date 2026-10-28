@@ -2,6 +2,7 @@ import { Box, Skeleton } from "@mui/material";
 import AdminChoiceModal from "./AdminChoiceModal";
 import AdminConfirmationModal from "./adminConfirmationModal/AdminConfirmationModal";
 import AdminErrorModal from "./adminErrorModal/AdminErrorModal";
+import AdminMessageModal from "./AdminMessageModal";
 import AdminTable from "./adminTable/AdminTable";
 import { useEffect, useState } from "react";
 import getEmails from "../../../services/getEmails";
@@ -15,6 +16,7 @@ export default function EmailTab({ darkMode, active }) {
   const [loading, setLoading] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(true);
   const [choiceModal, setChoiceModal] = useState(null);
+  const [selectedMessage, setSelectedMessage] = useState(null);
   const loadingdGrid = new Array(PAGE_SIZE + 2).fill(<Skeleton height={37} />);
 
   const columns = [
@@ -43,6 +45,10 @@ export default function EmailTab({ darkMode, active }) {
     setChoiceModal(id);
   };
 
+  const handleView = (id) => {
+    setSelectedMessage(emails.find((email) => email.id === id) || null);
+  };
+
   return (
     <div className="flex flex-col gap-4 items-end w-full overflow-auto py-4">
       <Box sx={{ height: "90%", width: "100%" }}>
@@ -57,9 +63,16 @@ export default function EmailTab({ darkMode, active }) {
             filter={null}
             columnsVisibility={{ isVisible: false }}
             handleDelete={handleDelete}
+            handleView={handleView}
           />
         )}
       </Box>
+
+      <AdminMessageModal
+        open={selectedMessage !== null}
+        onClose={() => setSelectedMessage(null)}
+        message={selectedMessage}
+      />
 
       <AdminConfirmationModal
         open={message !== ""}

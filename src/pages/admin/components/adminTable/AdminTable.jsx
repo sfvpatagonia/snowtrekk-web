@@ -4,6 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { useState } from "react";
 
 export default function AdminTable({
@@ -17,6 +18,7 @@ export default function AdminTable({
   handleEdit,
   handleVisibility,
   handleDelete,
+  handleView,
 }) {
   const [columnVisibilityModel, setColumnVisibilityModel] =
     useState(columnsVisibility);
@@ -92,6 +94,19 @@ export default function AdminTable({
             color="inherit"
           />,
         ];
+
+        if (handleView) {
+          actions.push(
+            <GridActionsCellItem
+              key="view"
+              icon={<RemoveRedEyeIcon fontSize={16} color="info" />}
+              label="View"
+              className="textPrimary"
+              onClick={() => handleView(params.id)}
+              color="inherit"
+            />,
+          );
+        }
 
         if (handleVisibility) {
           actions.push(
