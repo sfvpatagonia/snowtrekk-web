@@ -78,22 +78,20 @@ export default function AdminTable({
       width: 100,
       cellClassName: "actions",
       getActions: (params) => {
-        const actions = [
-          <GridActionsCellItem
-            key="edit"
-            icon={
-              <EditIcon
-                fontSize={16}
-                color={!handleEdit ? "disabled" : "success"}
-              />
-            }
-            label="Edit"
-            className="textPrimary"
-            onClick={() => handleEdit(params.id)}
-            disabled={!handleEdit}
-            color="inherit"
-          />,
-        ];
+        const actions = [];
+
+        if (handleEdit) {
+          actions.push(
+            <GridActionsCellItem
+              key="edit"
+              icon={<EditIcon fontSize={16} color="success" />}
+              label="Edit"
+              className="textPrimary"
+              onClick={() => handleEdit(params.id)}
+              color="inherit"
+            />,
+          );
+        }
 
         if (handleView) {
           actions.push(
